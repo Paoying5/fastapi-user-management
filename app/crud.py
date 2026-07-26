@@ -1,3 +1,4 @@
+from app import schemas
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
@@ -148,7 +149,9 @@ def create_post(
 
 
 def get_posts(
-    db: Session
+    db: Session,
+    limit: int ,
+    offset: int
 ):
     return (
         db.query(Post)
@@ -158,7 +161,10 @@ def get_posts(
         .order_by(
             desc(Post.id)
         )
+        .offset(offset)
+        .limit(limit)
         .all()
+
     )
 
 
@@ -195,3 +201,33 @@ def get_my_posts(
         )
         .all()
     )
+
+
+# =====================================================
+# UPDATE POST
+# =====================================================
+def update_post(
+    db: Session,
+    post_id: int,
+    post: schemas.PostCreate,
+    user_id: int
+):
+    db_post = get_post(
+        db,
+        post_id
+    )
+
+    if not db_post:
+        return None
+
+    if db_post.user_id != user_id:
+        return False
+
+    db_post.title = post.title
+    db_post.content = post.content
+
+    db.commit()
+
+    db.refresh(db_post)
+
+    return db_post

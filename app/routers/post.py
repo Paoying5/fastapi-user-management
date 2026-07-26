@@ -34,14 +34,29 @@ def create_post(
 
     )
 
-@router.get("/", response_model=list[schemas.PostResponse])
+@router.get(
+    "/",
+    response_model=list[schemas.PostResponse]
+)
 def get_posts(
+
+    limit: int = 10,
+
+    offset: int = 0,
 
     db: Session = Depends(get_db)
 
 ):
 
-    return crud.get_posts(db)
+    return crud.get_posts(
+
+        db,
+
+        limit,
+
+        offset
+
+    )
 
 
 @router.get(

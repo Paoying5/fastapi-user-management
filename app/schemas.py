@@ -139,3 +139,13 @@ class PostResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True
     )
+
+
+# Schema dùng để cập nhật bài viết (Request Body)
+class PostUpdate(BaseModel):
+
+    title:str
+
+    content:str
+
+    
