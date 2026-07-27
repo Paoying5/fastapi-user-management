@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-A learning project built with <strong>FastAPI</strong>, <strong>SQLAlchemy ORM</strong>, <strong>PostgreSQL</strong>, <strong>Docker</strong>, and <strong>JWT Authentication</strong>.
+A backend learning project built with <strong>FastAPI</strong>, <strong>SQLAlchemy ORM</strong>, <strong>PostgreSQL</strong>, <strong>Docker</strong>, and <strong>JWT Authentication</strong>.
 </p>
 
 <p align="center">
@@ -14,6 +14,7 @@ A learning project built with <strong>FastAPI</strong>, <strong>SQLAlchemy ORM</
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker)
 ![JWT](https://img.shields.io/badge/JWT-Authentication-black)
+![Linux](https://img.shields.io/badge/Linux-Bash-orange?logo=linux)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 </p>
@@ -22,11 +23,18 @@ A learning project built with <strong>FastAPI</strong>, <strong>SQLAlchemy ORM</
 
 # 📖 Project Overview
 
-This project is part of my backend learning journey using **FastAPI** and **PostgreSQL**.
+FastAPI User Management is a backend learning project focused on building a practical REST API system.
 
-The goal is not only to build a CRUD application, but also to understand how a real backend system is structured, how authentication works, and how SQLAlchemy communicates with PostgreSQL.
+The project was created to understand how a modern backend application is structured, including:
 
-This repository will continue to grow into a more practical and enterprise-oriented backend project.
+* API design
+* Database modeling
+* Authentication and authorization
+* ORM communication
+* Containerized development workflow
+* Linux automation scripts
+
+The project continues to evolve toward a more production-oriented backend architecture.
 
 ---
 
@@ -34,86 +42,198 @@ This repository will continue to grow into a more practical and enterprise-orien
 
 ## 👤 User Management
 
-- Create User
-- Get All Users
-- Get User by ID
-- Update User
-- Delete User
+Implemented:
+
+* Create User
+* Get All Users
+* Get User By ID
+* Update User
+* Delete User
 
 ---
 
 ## 📝 Post Management
 
-- Create Post
-- Get All Posts
-- Get Post by ID
-- Get Current User's Posts (`/posts/me`)
-- Update only your own post
-- Relationship between User and Post
+Implemented:
+
+* Create Post
+* Get All Posts
+* Get Post By ID
+* Get Current User Posts
+* Update Own Post
+* User - Post Relationship
+
+Database relationship:
+
+```
+User (1) -------- (*) Post
+```
 
 ---
 
-## 🔐 Authentication
+# 🔐 Authentication & Security
 
-- JWT Authentication
-- OAuth2 Password Flow
-- Login API
-- Current User API (`/auth/me`)
-- Protected Endpoints
-- Password Hashing with BCrypt
+Implemented:
 
----
+* JWT Authentication
+* OAuth2 Password Flow
+* Login API
+* Current User API
+* Protected Routes
+* Password Hashing with BCrypt
 
-## 🗄 Database
+Authentication flow:
 
-- PostgreSQL
-- SQLAlchemy ORM
-- One-to-Many Relationship
-- Foreign Key
-- Joined Loading (`joinedload`)
-- Password Encryption
-
----
-
-## 🔍 SQL Practice
-
-During this project I also practiced SQL concepts behind SQLAlchemy:
-
-- SELECT
-- INSERT
-- UPDATE
-- DELETE
-- WHERE
-- ORDER BY
-- LIMIT
-- Relationships
-- Foreign Keys
-
-More SQL features will be implemented in future updates.
+```
+User
+ |
+ | Login
+ v
+FastAPI
+ |
+ | Generate JWT
+ v
+Access Token
+ |
+ | Bearer Token
+ v
+Protected Endpoint
+```
 
 ---
 
-# 🏗 Project Structure
+# 🗄 Database
 
-```text
+Database:
+
+* PostgreSQL 16
+* SQLAlchemy ORM
+
+Implemented concepts:
+
+* Table Modeling
+* Primary Key
+* Foreign Key
+* One-to-Many Relationship
+* Query Filtering
+* Ordering
+* Pagination preparation
+* Joined Loading
+
+Example:
+
+```
+users
+
+id
+name
+email
+role
+password
+
+
+posts
+
+id
+title
+content
+user_id
+```
+
+---
+
+# 🏗 Project Architecture
+
+```
+Client
+
+   |
+   |
+   v
+
+FastAPI Router
+
+   |
+   |
+   v
+
+CRUD Layer
+
+   |
+   |
+   v
+
+SQLAlchemy ORM
+
+   |
+   |
+   v
+
+PostgreSQL Database
+```
+
+Application layers:
+
+```
+app/
+
+├── routers
+│   API endpoints
+
+├── schemas
+│   Request / Response validation
+
+├── models
+│   Database models
+
+├── crud
+│   Database operations
+
+├── core
+│   Configuration and security
+
+└── utils
+    Helper functions
+```
+
+---
+
+# 📂 Project Structure
+
+```
 fastapi-user-management/
 
 ├── app/
 │   ├── core/
+│   │   ├── config.py
+│   │   └── security.py
+│   │
 │   ├── routers/
+│   │   ├── auth.py
+│   │   ├── user.py
+│   │   └── post.py
+│   │
 │   ├── utils/
+│   │   └── response.py
+│   │
 │   ├── crud.py
 │   ├── database.py
 │   ├── models.py
 │   ├── schemas.py
 │   └── main.py
 │
+├── scripts/
+│   └── menu.sh
+│
 ├── tests/
 │   └── screenshots/
+│
+├── notebook/
 │
 ├── docker-compose.yml
 ├── Dockerfile
 ├── requirements.txt
+├── .env
 └── README.md
 ```
 
@@ -121,16 +241,54 @@ fastapi-user-management/
 
 # ⚙️ Tech Stack
 
-| Technology | Description |
-|------------|-------------|
-| Python | Main Programming Language |
-| FastAPI | Backend Framework |
-| PostgreSQL | Relational Database |
-| SQLAlchemy ORM | Database ORM |
-| Docker | Containerization |
-| JWT | Authentication |
-| Uvicorn | ASGI Server |
-| Pydantic v2 | Data Validation |
+| Technology     | Purpose                    |
+| -------------- | -------------------------- |
+| Python 3.12    | Programming Language       |
+| FastAPI        | Backend Framework          |
+| PostgreSQL 16  | Relational Database        |
+| SQLAlchemy     | ORM                        |
+| Pydantic v2    | Data Validation            |
+| Docker         | Containerization           |
+| Docker Compose | Multi-container Management |
+| JWT            | Authentication             |
+| Uvicorn        | ASGI Server                |
+| Bash Script    | Development Automation     |
+
+---
+
+# 🐳 Docker Development Workflow
+
+This project uses Docker Compose to simplify environment setup.
+
+Instead of manually running:
+
+```bash
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload
+```
+
+the application can run through containers.
+
+Services:
+
+```
+docker-compose.yml
+
+
+api
+
+|
+|
+FastAPI Container
+
+
+postgres
+
+|
+|
+PostgreSQL Container
+```
 
 ---
 
@@ -160,41 +318,70 @@ cd fastapi-user-management
 
 ---
 
-## Install Dependencies
+# Option 1: Using Automation Menu (Recommended)
+
+Give permission:
 
 ```bash
-pip install -r requirements.txt
+chmod +x scripts/menu.sh
+```
+
+Run:
+
+```bash
+./scripts/menu.sh
+```
+
+The menu provides shortcuts for:
+
+```
+1. Start Containers
+2. Stop Containers
+3. Restart Containers
+4. Rebuild Containers
+
+5. Application Shell
+6. PostgreSQL Shell
+7. View Logs
+
+8. Reset Database
+
+9. Alembic Migration
+
+10. Docker Utilities
+
+0. Exit
 ```
 
 ---
 
-## Start Docker
+# Option 2: Using Docker Compose
+
+Build and start:
 
 ```bash
-docker compose up --build
+docker compose up --build -d
+```
+
+Check containers:
+
+```bash
+docker compose ps
 ```
 
 ---
 
-## Run FastAPI
+# 🌐 API Documentation
 
-```bash
-uvicorn app.main:app --reload
-```
+After starting the application:
 
----
-
-# 📚 API Documentation
-
-After starting the server:
-
-Swagger UI
+Swagger UI:
 
 ```
 http://127.0.0.1:8000/docs
 ```
 
-OpenAPI
+OpenAPI:
 
 ```
 http://127.0.0.1:8000/openapi.json
@@ -202,29 +389,100 @@ http://127.0.0.1:8000/openapi.json
 
 ---
 
-# 📷 API Testing
+# 🐘 PostgreSQL Access
 
-Swagger API testing screenshots are available in:
+Open PostgreSQL shell:
+
+```bash
+docker compose exec postgres psql -U admin -d fastapi_db
+```
+
+Database information:
+
+```
+Database:
+fastapi_db
+
+User:
+admin
+
+Port:
+5433
+```
+
+---
+
+# 📜 Automation Scripts
+
+The project contains Bash scripts to simplify repetitive development commands.
+
+Location:
+
+```
+scripts/
+```
+
+Current:
+
+```
+scripts/
+
+└── menu.sh
+```
+
+Purpose:
+
+* Reduce repetitive Docker commands
+* Provide developer-friendly workflow
+* Simplify project operation
+
+Future scripts:
+
+* Git automation
+* Database migration helper
+* Backup scripts
+* Deployment scripts
+
+---
+
+# 📷 API Testing Screenshots
+
+Swagger API testing results:
 
 ```
 tests/screenshots/
 ```
 
+Examples:
+
 ## Authentication
 
-![](tests/screenshots/Authentication/Authentication%20Post%20Auth%20Login.png)
+![Authentication](tests/screenshots/Authentication/Authentication%20Post%20Auth%20Login.png)
+
+## Users
+
+![Users](tests/screenshots/User/Test%20Get%20User.png)
+
+## Posts
+
+![Posts](tests/screenshots/Post/Get%20Posts.png)
 
 ---
 
-## Users API
+# 📚 SQL Practice
 
-![](tests/screenshots/User/Test%20Get%20User.png)
+During development, SQL concepts were practiced through SQLAlchemy:
 
----
-
-## Posts API
-
-![](tests/screenshots/Post/Get%20Posts.png)
+* SELECT
+* INSERT
+* UPDATE
+* DELETE
+* WHERE
+* ORDER BY
+* LIMIT
+* Foreign Key
+* Relationship Query
+* JOIN preparation
 
 ---
 
@@ -232,55 +490,56 @@ tests/screenshots/
 
 Completed:
 
-- ✅ FastAPI Basics
-- ✅ APIRouter
-- ✅ Dependency Injection
-- ✅ Pydantic Schema
-- ✅ CRUD Operations
-- ✅ SQLAlchemy ORM
-- ✅ PostgreSQL
-- ✅ Docker
-- ✅ JWT Authentication
-- ✅ Password Hashing
-- ✅ User Authorization
-- ✅ One-to-Many Relationship
-- ✅ Git & GitHub
-- ✅ Swagger API Testing
+* ✅ FastAPI Fundamentals
+* ✅ APIRouter
+* ✅ Dependency Injection
+* ✅ Pydantic Schema
+* ✅ CRUD Operations
+* ✅ SQLAlchemy ORM
+* ✅ PostgreSQL
+* ✅ Docker
+* ✅ Docker Compose
+* ✅ JWT Authentication
+* ✅ Password Hashing
+* ✅ Authorization
+* ✅ One-to-Many Relationship
+* ✅ Git & GitHub
+* ✅ Linux Terminal Workflow
+* ✅ Bash Automation Script
 
 Currently Learning:
 
-- 🔄 Pagination
-- 🔄 Search
-- 🔄 Advanced SQLAlchemy Query
-- 🔄 JOIN
-- 🔄 Aggregate Functions
-- 🔄 Alembic Migration
+* 🔄 Pagination
+* 🔄 Search
+* 🔄 Advanced SQLAlchemy Query
+* 🔄 JOIN
+* 🔄 Aggregate Functions
+* 🔄 Alembic Migration
+* 🔄 Unit Testing
 
 Future Goals:
 
-- Redis
-- Celery
-- CI/CD
-- Unit Testing
-- Nginx
-- Deployment
-- Clean Architecture
-- Enterprise Backend Design
+* Redis
+* Celery
+* CI/CD
+* Nginx
+* Deployment
+* Clean Architecture
+* Enterprise Backend Design
 
 ---
 
 # 🎯 Learning Objectives
 
-This project focuses on understanding:
+This project focuses on:
 
-- Backend API Development
-- Database Design
-- Authentication & Authorization
-- SQL Fundamentals
-- SQLAlchemy ORM
-- Docker Workflow
-- RESTful API Design
-- Clean Project Structure
+* Backend API Development
+* Database Design
+* Authentication System
+* RESTful API Design
+* Docker Workflow
+* Linux Development Environment
+* Software Project Organization
 
 ---
 
@@ -290,7 +549,7 @@ This project focuses on understanding:
 
 Final-year Information Technology Student
 
-GitHub
+GitHub:
 
 https://github.com/Paoying5
 
@@ -300,4 +559,6 @@ https://github.com/Paoying5
 
 This project is built for learning purposes.
 
-I continuously improve this repository as I learn new backend technologies and best practices. My long-term goal is to evolve it into a more practical, production-oriented backend system inspired by real enterprise applications.
+The repository documents my backend development journey, including daily learning notes, implementation experiments, and improvements toward a more practical backend system.
+
+The goal is to gradually transform this project into a production-oriented backend application following real-world engineering practices.
