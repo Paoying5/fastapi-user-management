@@ -231,3 +231,30 @@ def update_post(
     db.refresh(db_post)
 
     return db_post
+
+
+# =====================================================
+# DELETE POST
+# =====================================================
+
+def delete_post(
+    db: Session,
+    post_id: int,
+    user_id: int
+):
+    db_post = get_post(
+        db,
+        post_id
+    )
+
+    if not db_post:
+        return None
+
+    if db_post.user_id != user_id:
+        return False
+
+    db.delete(db_post)
+
+    db.commit()
+
+    return True

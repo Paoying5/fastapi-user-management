@@ -100,3 +100,35 @@ def get_post(
         )
 
     return post
+
+
+@router.delete(
+    "/{post_id}"
+)
+def delete_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+
+    result = crud.delete_post(
+        db,
+        post_id,
+        current_user.id
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Post not found"
+        )
+
+    if result is False:
+        raise HTTPException(
+            status_code=403,
+            detail="Permission denied"
+        )
+
+    return {
+        "message": "Post deleted successfully"
+    }
