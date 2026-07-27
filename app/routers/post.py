@@ -44,6 +44,8 @@ def get_posts(
 
     offset: int = 0,
 
+    search: str = "",
+
     db: Session = Depends(get_db)
 
 ):
@@ -54,7 +56,9 @@ def get_posts(
 
         limit,
 
-        offset
+        offset,
+
+        search
 
     )
 

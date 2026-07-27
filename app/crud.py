@@ -151,12 +151,16 @@ def create_post(
 def get_posts(
     db: Session,
     limit: int ,
-    offset: int
+    offset: int,
+    search: str
 ):
     return (
         db.query(Post)
         .options(
             joinedload(Post.owner)
+        )
+        .filter(
+            Post.title.ilike(f"%{search}%")
         )
         .order_by(
             desc(Post.id)
