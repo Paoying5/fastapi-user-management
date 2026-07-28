@@ -46,6 +46,8 @@ def get_posts(
 
     search: str = "",
 
+    user_id: int | None = None,
+
     db: Session = Depends(get_db)
 
 ):
@@ -58,10 +60,55 @@ def get_posts(
 
         offset,
 
-        search
+        search,
+
+        user_id
 
     )
 
+@router.get("/ids")
+def get_posts_by_ids(
+
+    ids: list[int],
+
+    db: Session = Depends(get_db)
+
+):
+
+    return crud.get_posts_by_ids(
+        db,
+        ids
+    )
+
+@router.get("/between")
+def get_posts_between(
+
+    start: int,
+
+    end: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    return crud.get_posts_between(
+        db,
+        start,
+        end
+    )
+
+@router.get("/count")
+def count_posts(
+
+    db: Session = Depends(get_db)
+
+):
+
+    total = crud.count_posts(db)
+
+    return {
+        "total_posts": total
+    }
 
 @router.get(
     "/me",

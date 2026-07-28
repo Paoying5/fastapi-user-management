@@ -2,7 +2,8 @@ from app import schemas
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
-
+from sqlalchemy import or_
+from sqlalchemy import and_
 from app.models import User, Post
 from app.core.security import hash_password, verify_password
 
@@ -152,21 +153,48 @@ def get_posts(
     db: Session,
     limit: int ,
     offset: int,
-    search: str
+    search: str,
+    user_id: int | None = None
 ):
-    return (
+    query = (
         db.query(Post)
         .options(
             joinedload(Post.owner)
         )
-        .filter(
+    )
+
+    if user_id:
+
+        query = query.filter(
+
+            and_(
+
+                Post.title.ilike(f"%{search}%"),
+
+                Post.user_id == user_id
+
+            )
+
+        )
+
+    else:
+
+        query = query.filter(
+
             Post.title.ilike(f"%{search}%")
+
         )
-        .order_by(
-            desc(Post.id)
-        )
+
+    return (
+
+        query
+
+        .order_by(desc(Post.id))
+
         .offset(offset)
+
         .limit(limit)
+
         .all()
 
     )
@@ -206,6 +234,67 @@ def get_my_posts(
         .all()
     )
 
+def get_posts_by_ids(
+    db: Session,
+    ids: list[int]
+):
+    return (
+        db.query(Post)
+        .options(
+            joinedload(Post.owner)
+        )
+        .filter(
+            Post.id.in_(ids)
+        )
+        .order_by(
+            desc(Post.id)
+        )
+        .all()
+    )
+
+def get_posts_between(
+    db: Session,
+    start: int,
+    end: int
+):
+    return (
+        db.query(Post)
+        .options(
+            joinedload(Post.owner)
+        )
+        .filter(
+            Post.id.between(start, end)
+        )
+        .order_by(
+            desc(Post.id)
+        )
+        .all()
+    )
+
+def count_posts(
+    db: Session
+):
+    return (
+        db.query(Post)
+        .count()
+    )
+
+def count_users(
+    db: Session
+):
+    return (
+        db.query(User)
+        .count()
+    )
+
+def count_admins(
+    db: Session
+):
+    return (
+        db.query(User)
+        .filter(User.role == "admin")
+        .count()
+    )
 
 # =====================================================
 # UPDATE POST
