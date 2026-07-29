@@ -1,11 +1,10 @@
+-r requirements.txt
+
 pytest
-
-black
-
-flake8
-
-isort
-
-httpx
-
 pytest-cov
+httpx
+black
+isort
+flake8
+mypy
+alembic
