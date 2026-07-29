@@ -1,9 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app import crud
-from app.database import get_db
-from app.schemas import UserCreate, UserResponse, APIResponse, UserUpdate 
+from app.crud import user as user_crud
+from app.dependencies import get_db
+from app.schemas import (
+    APIResponse,
+    UserCreate,
+    UserPatch,
+    UserResponse,
+    UserUpdate,
+)
 from app.utils.response import response
 
 router = APIRouter(
@@ -23,7 +29,7 @@ def get_users(
 
 ):
 
-    users = crud.get_users(db)
+    users = user_crud.get_users(db)
 
     data = [
 
@@ -137,6 +143,34 @@ def update_user(
         UserResponse
         .model_validate(updated_user)
         .model_dump()
+    )
+
+@router.patch(
+    "/{user_id}",
+    response_model=APIResponse,
+)
+def patch_user(
+    user_id: int,
+    user_data: UserPatch,
+    db: Session = Depends(get_db),
+):
+    updated_user = user_crud.patch_user(
+        db,
+        user_id,
+        user_data,
+    )
+
+    if updated_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    return response(
+        "User partially updated successfully",
+        UserResponse
+        .model_validate(updated_user)
+        .model_dump(),
     )
 
 # Delete user

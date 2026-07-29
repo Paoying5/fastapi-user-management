@@ -1,0 +1,33 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+from app.dependencies import get_db
+
+
+router = APIRouter(
+    tags=["Health"],
+)
+
+
+@router.get("/health")
+def health_check(
+    db: Session = Depends(get_db),
+):
+    try:
+        db.execute(
+            text("SELECT 1"),
+        )
+
+    except SQLAlchemyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database connection failed",
+        ) from exc
+
+    return {
+        "status": "healthy",
+        "api": "running",
+        "database": "connected",
+    }

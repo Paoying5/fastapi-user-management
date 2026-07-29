@@ -1,133 +1,60 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from app.schemas import Token 
-from app.core.security import create_access_token
-from app.database import get_db
-from app import crud
-from app.schemas import LoginRequest
-from jose import jwt, JWTError
-from fastapi.security import OAuth2PasswordBearer
-from app.core.config import settings
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
-# Token của ứng dụng được lấy thông qua endpoint /auth/login
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login"
-)
+from app.core.security import create_access_token
+from app.crud.auth import authenticate_user
+from app.dependencies import get_current_user, get_db
+from app.models import User
+from app.schemas import Token, UserResponse
 
-def get_current_user(
-
-    token: str = Depends(oauth2_scheme),
-
-    db: Session = Depends(get_db)
-
-):
-
-    credentials_exception = HTTPException(
-
-        status_code=401,
-
-        detail="Could not validate credentials"
-
-    )
-
-    try:
-
-        payload = jwt.decode(
-
-            token,
-
-            settings.SECRET_KEY,
-
-            algorithms=[settings.ALGORITHM]
-
-        )
-
-        email = payload.get("sub")
-
-        if email is None:
-
-            raise credentials_exception
-
-        user = crud.get_user_by_email(
-
-            db,
-
-            email
-
-        )
-
-        if user is None:
-
-            raise credentials_exception
-
-        return user
-
-    except JWTError:
-
-        raise credentials_exception 
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Authentication"]
+    tags=["Authentication"],
 )
 
-# Tạo endpoint Login
+
 @router.post(
     "/login",
-    response_model=Token
+    response_model=Token,
 )
 def login(
-
     form_data: OAuth2PasswordRequestForm = Depends(),
-
-    db: Session = Depends(get_db)
-
-):
-
-    user = crud.login_user(
-
+    db: Session = Depends(get_db),
+) -> Token:
+    user = authenticate_user(
         db,
-
         form_data.username,
-
-        form_data.password
-
+        form_data.password,
     )
 
-    if not user:
-
+    if user is None:
         raise HTTPException(
-
-            status_code=401,
-
-            detail="Invalid email or password"
-
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+            headers={
+                "WWW-Authenticate": "Bearer",
+            },
         )
 
     access_token = create_access_token(
+        {
+            "sub": user.email,
+        }
+    )
 
-    {
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+    )
 
-        "sub": user.email
 
-    }
-
+@router.get(
+    "/me",
+    response_model=UserResponse,
 )
-
-    return {
-
-        "access_token": access_token,
-
-        "token_type": "bearer"
-
-}
-
-@router.get("/me")
 def read_me(
-
-    current_user = Depends(get_current_user)
-
-):
-
+    current_user: User = Depends(get_current_user),
+) -> User:
     return current_user
