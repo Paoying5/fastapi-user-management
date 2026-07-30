@@ -3,6 +3,8 @@ services:
   api:
     build: .
 
+    user: "${UID}:${GID}"
+
     container_name: fastapi-api
 
     ports:
