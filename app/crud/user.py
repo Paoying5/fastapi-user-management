@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.core.security import hash_password
 from app.models import User
-from app.schemas import UserCreate, UserPatch, UserUpdate
+from app.schemas import UserCreate, UserPatch, UserUpdate, user
 
 
 def get_users(db: Session) -> list[User]:
@@ -46,6 +46,7 @@ def create_user(
         email=user_data.email,
         role=user_data.role,
         password=hash_password(user_data.password),
+        full_name=user.full_name
     )
 
     db.add(db_user)

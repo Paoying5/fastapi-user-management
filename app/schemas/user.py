@@ -22,6 +22,8 @@ class UserCreate(BaseModel):
         max_length=128,
     )
 
+    full_name: str | None = None
+
 
 class UserUpdate(BaseModel):
     name: str = Field(

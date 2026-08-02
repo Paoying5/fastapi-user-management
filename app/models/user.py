@@ -41,3 +41,8 @@ class User(Base):
         back_populates="owner",
         cascade="all, delete-orphan",
     )
+
+    full_name = Column(
+    String(100),
+    nullable=True,
+)

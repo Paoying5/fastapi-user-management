@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
-from app.crud import user as user_crud
+from app.repositories.user_repository import UserRepository
 from app.dependencies import get_db
 from app.schemas import (
     APIResponse,
@@ -9,8 +8,10 @@ from app.schemas import (
     UserPatch,
     UserResponse,
     UserUpdate,
+    user,
 )
 from app.utils.response import response
+
 
 router = APIRouter(
     prefix="/users",
@@ -29,7 +30,8 @@ def get_users(
 
 ):
 
-    users = user_crud.get_users(db)
+    repo = UserRepository(db)
+    users = repo.get_all()
 
     data = [
 
@@ -62,7 +64,10 @@ def get_user(
 
 ):
 
-    user = crud.get_user(db, user_id)
+    repo = UserRepository(db)
+
+    user = repo.get_by_id(user_id)
+    
     if not user:
 
         raise HTTPException(
@@ -180,15 +185,19 @@ def delete_user(
     db: Session = Depends(get_db)
 ):
 
-    deleted = crud.delete_user(db, user_id)
+    repo = UserRepository(db)
 
-    if not deleted:
+    user = repo.get_by_id(user_id)
+
+    if not user:
         raise HTTPException(
-            status_code=404,
-            detail="User not found"
-        )
+                status_code=404,
+                detail="User not found"
+    )
+
+    repo.delete(user)
 
     return response(
-        "User deleted successfully",
-        None
-    )
+    "User deleted successfully",
+    None
+)
