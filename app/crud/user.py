@@ -46,7 +46,7 @@ def create_user(
         email=user_data.email,
         role=user_data.role,
         password=hash_password(user_data.password),
-        full_name=user.full_name
+        full_name=user.full_name    
     )
 
     db.add(db_user)
