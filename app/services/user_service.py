@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
+from app.models.user import User
 
 from app.crud import user as user_repository
 from app.schemas.user import (
@@ -28,6 +30,17 @@ def create_user(
     db: Session,
     user: UserCreate,
 ):
+    user.email = user.email.strip().lower()
+
+    if email_exists(
+        db,
+        user.email,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists",
+        )
+
     return user_repository.create_user(
         db,
         user,
@@ -39,6 +52,29 @@ def update_user(
     user_id: int,
     user: UserUpdate,
 ):
+
+    user.email = user.email.strip().lower()
+
+    old_user = user_repository.get_user(
+        db,
+        user_id,
+    )
+
+    if old_user is None:
+        return None
+
+    if (
+        old_user.email != user.email
+        and email_exists(
+            db,
+            user.email,
+        )
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists",
+        )
+
     return user_repository.update_user(
         db,
         user_id,
@@ -51,6 +87,31 @@ def patch_user(
     user_id: int,
     user: UserPatch,
 ):
+
+    old_user = user_repository.get_user(
+        db,
+        user_id,
+    )
+
+    if old_user is None:
+        return None
+
+    if user.email is not None:
+
+        user.email = user.email.strip().lower()
+
+        if (
+            old_user.email != user.email
+            and email_exists(
+                db,
+                user.email,
+            )
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Email already exists",
+            )
+
     return user_repository.patch_user(
         db,
         user_id,
@@ -65,4 +126,16 @@ def delete_user(
     return user_repository.delete_user(
         db,
         user_id,
+    )
+
+def email_exists(
+    db: Session,
+    email: str,
+) -> bool:
+
+    return (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+        is not None
     )
