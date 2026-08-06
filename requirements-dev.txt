@@ -8,3 +8,6 @@ isort
 flake8
 mypy
 alembic
+pytest-playwright
+pytest-html
+playwright
