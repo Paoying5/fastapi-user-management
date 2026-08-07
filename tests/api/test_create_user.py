@@ -7,9 +7,10 @@ def test_create_user(client):
     email = f"{uuid.uuid4()}@gmail.com"
 
     payload = {
-        "name": "Test User",
-        "email": email,
-        "password": "12345678",
+    "name": "Test User",
+    "full_name": "Test User",
+    "email": email,
+    "password": "12345678",
 }
 
     response = client.post(
