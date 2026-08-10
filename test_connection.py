@@ -9,3 +9,6 @@ try:
 
 except Exception as e:
     print(e)
+
+# Tạo migration initial mới
+# alembic revision --autogenerate -m "initial schema"
