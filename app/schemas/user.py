@@ -38,6 +38,11 @@ class UserUpdate(BaseModel):
         max_length=30,
     )
 
+    full_name: str | None = Field(
+    default=None,
+    max_length=100,
+)
+
 
 class UserPatch(BaseModel):
     name: str | None = Field(
@@ -54,12 +59,18 @@ class UserPatch(BaseModel):
         max_length=30,
     )
 
+    full_name: str | None = Field(
+    default=None,
+    max_length=100,
+)
+
 
 class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
     role: str
+    full_name: str | None = None
 
     posts: list[PostSimple] = Field(
         default_factory=list,

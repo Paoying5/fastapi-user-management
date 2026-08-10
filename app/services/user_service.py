@@ -59,6 +59,7 @@ class UserService:
         user.name = user_data.name
         user.email = email
         user.role = user_data.role
+        user.full_name = user_data.full_name
         return self._commit_update(user)
 
     def patch_user(self, user_id: int, user_data: UserPatch) -> User | None:
