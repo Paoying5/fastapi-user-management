@@ -31,7 +31,7 @@ class UserService:
         user = User(
             name=user_data.name,
             email=email,
-            role=user_data.role,
+            role="user",
             password=hash_password(user_data.password),
             full_name=user_data.full_name,
         )

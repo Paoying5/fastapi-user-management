@@ -27,8 +27,7 @@ class User(Base):
 
     role = Column(
         String(50),
-        nullable=False,
-        default="user",
+        nullable=True,
     )
 
     password = Column(

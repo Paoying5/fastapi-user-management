@@ -11,18 +11,17 @@ class UserCreate(BaseModel):
 
     email: EmailStr
 
-    role: str = Field(
-        default="user",
-        min_length=2,
-        max_length=30,
-    )
-
     password: str = Field(
         min_length=6,
         max_length=128,
     )
 
-    full_name: str | None = None
+    # Không nên cho client tự tạo admin.
+    # Service sẽ quyết định role mặc định.
+    full_name: str | None = Field(
+        default=None,
+        max_length=100,
+    )
 
 
 class UserUpdate(BaseModel):
@@ -39,9 +38,9 @@ class UserUpdate(BaseModel):
     )
 
     full_name: str | None = Field(
-    default=None,
-    max_length=100,
-)
+        default=None,
+        max_length=100,
+    )
 
 
 class UserPatch(BaseModel):
@@ -60,9 +59,9 @@ class UserPatch(BaseModel):
     )
 
     full_name: str | None = Field(
-    default=None,
-    max_length=100,
-)
+        default=None,
+        max_length=100,
+    )
 
 
 class UserResponse(BaseModel):
