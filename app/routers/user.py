@@ -1,3 +1,4 @@
+from app.models.user import User
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies import get_admin_user, get_user_service
@@ -11,14 +12,14 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("/", response_model=APIResponse, summary="Get all users")
-def get_users(service: UserService = Depends(get_user_service)):
+def get_users(service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
     users = service.get_users()
     data = [UserResponse.model_validate(user).model_dump() for user in users]
     return response("Users retrieved successfully", data)
 
 
 @router.get("/{user_id}", response_model=APIResponse, summary="Get user by ID")
-def get_user(user_id: int, service: UserService = Depends(get_user_service)):
+def get_user(user_id: int, service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
     user = service.get_user(user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
@@ -36,6 +37,7 @@ def update_user(
     user_id: int,
     user: UserUpdate,
     service: UserService = Depends(get_user_service),
+    admin: User = Depends(get_admin_user)
 ):
     updated_user = service.update_user(user_id, user)
     if updated_user is None:
@@ -48,6 +50,7 @@ def patch_user(
     user_id: int,
     user_data: UserPatch,
     service: UserService = Depends(get_user_service),
+    admin: User = Depends(get_admin_user)
 ):
     updated_user = service.patch_user(user_id, user_data)
     if updated_user is None:
@@ -56,7 +59,7 @@ def patch_user(
 
 
 @router.delete("/{user_id}", response_model=APIResponse, summary="Delete user")
-def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
+def delete_user(user_id: int, service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
     deleted = service.delete_user(user_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")

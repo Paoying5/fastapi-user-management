@@ -1,4 +1,4 @@
-from sqlalchemy import desc
+from sqlalchemy import desc, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.post import Post
@@ -16,31 +16,59 @@ class PostRepository:
         offset: int = 0,
         search: str = "",
     ) -> list[Post]:
-        query = self.db.query(Post).options(joinedload(Post.owner))
+
+        statement = (
+            select(Post)
+            .options(joinedload(Post.owner))
+        )
+
         if search:
-            query = query.filter(Post.title.ilike(f"%{search}%"))
-        return (
-            query.order_by(desc(Post.id))
+            statement = statement.where(
+                Post.title.ilike(
+                    f"%{search}%"
+                )
+            )
+
+        statement = (
+            statement
+            .order_by(desc(Post.id))
             .offset(offset)
             .limit(limit)
-            .all()
         )
 
-    def get_by_id(self, post_id: int) -> Post | None:
-        return (
-            self.db.query(Post)
-            .options(joinedload(Post.owner))
-            .filter(Post.id == post_id)
-            .first()
+        return list(
+            self.db.scalars(statement).unique().all()
         )
 
-    def get_by_user_id(self, user_id: int) -> list[Post]:
-        return (
-            self.db.query(Post)
+    def get_by_id(
+        self,
+        post_id: int,
+    ) -> Post | None:
+
+        statement = (
+            select(Post)
             .options(joinedload(Post.owner))
-            .filter(Post.user_id == user_id)
+            .where(Post.id == post_id)
+        )
+
+        return self.db.scalars(
+            statement
+        ).unique().first()
+
+    def get_by_user_id(
+        self,
+        user_id: int,
+    ) -> list[Post]:
+
+        statement = (
+            select(Post)
+            .options(joinedload(Post.owner))
+            .where(Post.user_id == user_id)
             .order_by(desc(Post.id))
-            .all()
+        )
+
+        return list(
+            self.db.scalars(statement).unique().all()
         )
 
     def add(self, post: Post) -> Post:

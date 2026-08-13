@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.user import User
@@ -10,23 +11,41 @@ class UserRepository:
         self.db = db
 
     def get_all(self) -> list[User]:
-        return (
-            self.db.query(User)
+        statement = (
+            select(User)
             .options(joinedload(User.posts))
             .order_by(User.id.asc())
-            .all()
         )
 
-    def get_by_id(self, user_id: int) -> User | None:
-        return (
-            self.db.query(User)
+        return list(
+            self.db.scalars(statement).unique().all()
+        )
+
+    def get_by_id(
+        self,
+        user_id: int,
+    ) -> User | None:
+
+        statement = (
+            select(User)
             .options(joinedload(User.posts))
-            .filter(User.id == user_id)
-            .first()
+            .where(User.id == user_id)
         )
 
-    def get_by_email(self, email: str) -> User | None:
-        return self.db.query(User).filter(User.email == email).first()
+        return self.db.scalars(
+            statement
+        ).unique().first()
+
+    def get_by_email(
+        self,
+        email: str,
+    ) -> User | None:
+
+        statement = select(User).where(
+            User.email == email
+        )
+
+        return self.db.scalars(statement).first()
 
     def add(self, user: User) -> User:
         self.db.add(user)

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.core.security import create_access_token
+from app.core.security import create_access_token, verify_password
 from app.dependencies import get_auth_service, get_current_user
 from app.models import User
 from app.schemas import Token, UserResponse
 from app.services.auth_service import AuthService
-
+from app.schemas.auth import Token
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -16,17 +16,14 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     service: AuthService = Depends(get_auth_service),
 ) -> Token:
-    user = service.authenticate_user(form_data.username, form_data.password)
-    if user is None:
+    token = service.login(form_data.username, form_data.password)
+    if token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return Token(
-        access_token=create_access_token({"sub": user.email}),
-        token_type="bearer",
-    )
+    return Token
 
 
 @router.get("/me", response_model=UserResponse)

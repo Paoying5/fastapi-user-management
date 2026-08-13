@@ -25,7 +25,7 @@ def verify_password(
         hashed_password
     )
 
-def create_access_token(data: dict):
+def create_access_token(data: dict) -> str:
 
     to_encode = data.copy()
 
