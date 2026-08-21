@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.database import SessionLocal
 from app.models import User
-from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.post_service import PostService
 from app.services.user_service import UserService
@@ -39,12 +38,15 @@ def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db),
+    service: AuthService = Depends(get_auth_service),
 ) -> User:
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={
+            "WWW-Authenticate": "Bearer",
+        },
     )
 
     try:
@@ -53,24 +55,29 @@ def get_current_user(
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM],
         )
+
         email = payload.get("sub")
+
         if not isinstance(email, str):
             raise credentials_exception
+
     except JWTError as exc:
         raise credentials_exception from exc
 
-    user = UserRepository(db).get_by_email(email)
+    user = service.get_user_by_email(email)
+
     if user is None:
         raise credentials_exception
-    return user
 
+    return user
 
 def get_admin_user(
     current_user: User = Depends(get_current_user),
 ) -> User:
-    if current_user.role not in {"admin", "super_admin"}:
+    if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Administrator permission required",
+            detail="Admin access required",
         )
+
     return current_user
