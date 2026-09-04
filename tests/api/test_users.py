@@ -1,16 +1,20 @@
-def test_get_users(client):
+def test_get_users(auth_client):
 
-    response = client.get(
-        client.base_url + "/users"
-    )
-
-    print()
-
-    print("STATUS =", response.status_code)
-
-    print("BODY =", response.text)
+    def test_get_users(auth_client):
+    response = auth_client.get("/users/")
 
     assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "success"
+    assert isinstance(data["data"], list)
+
+def test_get_users_unauthorized(client):
+
+    response = client.get("/users/")
+
+    assert response.status_code == 401
 
 def test_create_user(client):
     response = client.post(

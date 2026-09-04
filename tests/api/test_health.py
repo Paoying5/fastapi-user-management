@@ -1,6 +1,6 @@
 def test_health(client):
 
-    response = client.get(client.base_url + "/health")
+    response = client.get("/health")
 
     assert response.status_code == 200
 
