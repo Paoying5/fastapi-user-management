@@ -1,6 +1,4 @@
 def test_get_users(auth_client):
-
-    def test_get_users(auth_client):
     response = auth_client.get("/users/")
 
     assert response.status_code == 200
@@ -10,8 +8,8 @@ def test_get_users(auth_client):
     assert data["status"] == "success"
     assert isinstance(data["data"], list)
 
-def test_get_users_unauthorized(client):
 
+def test_get_users_unauthorized(client):
     response = client.get("/users/")
 
     assert response.status_code == 401
