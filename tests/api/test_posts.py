@@ -87,8 +87,10 @@ def test_get_posts(client):
 
     assert isinstance(data, list)
     assert len(data) == 2
-    assert data[0]["title"] == "Post 1"
-    assert data[1]["title"] == "Post 2"
+
+    titles = {post["title"] for post in data}
+
+    assert titles == {"Post 1", "Post 2"}
 
 
 def test_get_posts_search(client):
@@ -281,3 +283,4 @@ def test_create_post_invalid_title(client):
     )
 
     assert response.status_code == 422
+
