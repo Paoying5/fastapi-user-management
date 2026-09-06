@@ -6,6 +6,8 @@ COPY requirements.txt requirements-dev.txt ./
 
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
+RUN playwright install --with-deps firefox
+
 COPY . .
 
 HEALTHCHECK \

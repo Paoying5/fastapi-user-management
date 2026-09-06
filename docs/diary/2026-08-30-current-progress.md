@@ -1,39 +1,52 @@
 # 📅 Development Diary — 2026-08-30
 
 ## Chủ đề
-**Debugging có kiểm soát và chuẩn hóa cách thực hành.**
+**Tiếp tục refactor Clean Architecture cho FastAPI User Management.**
 
-Tôi tiếp tục xây dựng lại quy trình thực hành theo từng checkpoint nhỏ thay vì sửa nhiều phần cùng lúc.
+---
 
-### Quy trình kiểm chứng
+## 1. Kiến trúc được chốt
+
+Kiến trúc mục tiêu:
 
 ```text
-Root / Health
-    ↓
-OpenAPI
-    ↓
-Create User
-    ↓
-Login
-    ↓
-Lưu access token
-    ↓
-/auth/me
-    ↓
-Protected User API
-    ↓
-PATCH / PUT / DELETE
-    ↓
-Post API
-    ↓
-pytest
-    ↓
-Database / Alembic verification
+Router
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Database
 ```
 
-Mỗi lần test chỉ nên chứng minh một mắt xích. Nếu một bước fail thì dừng ở đó, đọc status code + response + server log rồi mới sửa.
+Router xử lý HTTP. Service xử lý business logic và orchestration. Repository xử lý database access.
 
-### Insight
+---
 
-> Quy trình debugging tốt giúp giảm việc “sửa quá trời sửa” và giúp tôi biết chính xác thay đổi nào đã tạo ra kết quả nào.
+## 2. CRUD / Repository
 
+Nhận ra project có sự chồng chéo giữa `crud/`, `repository/` và `service/`.
+
+Khi đã có Repository và Service thì CRUD layer cũ không còn cần thiết. Mục tiêu là loại bỏ logic database trùng lặp và giữ flow:
+
+```text
+Router → Service → Repository → PostgreSQL
+```
+
+---
+
+## 3. Alembic
+
+Thống nhất nguyên tắc:
+
+```text
+Alembic → Database schema
+```
+
+Không sử dụng `Base.metadata.create_all()` trong `app/main.py`. `main.py` chỉ khởi tạo FastAPI và đăng ký router.
+
+---
+
+## 4. Bài học
+
+Refactor không chỉ là đổi tên folder. Cần kiểm tra import, dependency injection, request flow, transaction, database schema và test.
