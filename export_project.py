@@ -1,7 +1,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-OUTPUT = ROOT / "project_context.txt"
+OUTPUT = ROOT / "project_context.md"
 
 # Những thư mục không cần đưa cho ChatGPT
 EXCLUDED_DIRS = {
@@ -21,7 +21,7 @@ EXCLUDED_DIRS = {
 EXCLUDED_FILES = {
     ".env",
     ".env.docker",
-    "project_context.txt",
+    "project_context.md",
 }
 
 # Chỉ lấy những loại file có ích cho việc đọc source
@@ -67,7 +67,8 @@ def should_include(path: Path) -> bool:
 
 def main():
     files = [
-        p for p in ROOT.rglob("*")
+        p
+        for p in ROOT.rglob("*")
         if p.is_file() and should_include(p)
     ]
 
@@ -76,46 +77,85 @@ def main():
 
     with OUTPUT.open("w", encoding="utf-8") as out:
 
-        out.write("=" * 80 + "\n")
-        out.write("PROJECT CONTEXT\n")
-        out.write("=" * 80 + "\n\n")
+        # =========================================================
+        # PROJECT CONTEXT
+        # =========================================================
 
-        out.write(f"Project root: {ROOT}\n")
-        out.write(f"Total included files: {len(files)}\n\n")
+        out.write("# PROJECT CONTEXT\n\n")
 
-        # ---------------------------------------------------------
+        out.write(f"**Project root:** `{ROOT}`  \n")
+        out.write(f"**Total included files:** {len(files)}\n\n")
+
+        # =========================================================
         # 1. PROJECT STRUCTURE
-        # ---------------------------------------------------------
+        # =========================================================
 
-        out.write("=" * 80 + "\n")
-        out.write("PROJECT STRUCTURE\n")
-        out.write("=" * 80 + "\n\n")
+        out.write("## Project Structure\n\n")
 
         for file in files:
             relative = file.relative_to(ROOT)
-            out.write(f"{relative}\n")
+            out.write(f"- `{relative}`\n")
 
-        # ---------------------------------------------------------
+        # =========================================================
         # 2. FILE CONTENTS
-        # ---------------------------------------------------------
+        # =========================================================
+
+        out.write("\n## File Contents\n")
 
         for file in files:
             relative = file.relative_to(ROOT)
 
             out.write("\n\n")
-            out.write("#" * 80 + "\n")
-            out.write(f"FILE: {relative}\n")
-            out.write("#" * 80 + "\n\n")
+            out.write("---\n\n")
+            out.write(f"## `{relative}`\n\n")
 
             try:
                 content = file.read_text(encoding="utf-8")
-                out.write(content)
-            except UnicodeDecodeError:
-                out.write("[Could not decode this file as UTF-8]\n")
-            except Exception as e:
-                out.write(f"[Could not read file: {e}]\n")
 
-    print(f"Done!")
+                # Xác định ngôn ngữ cho Markdown code fence
+                suffix = file.suffix.lower()
+
+                language_map = {
+                    ".py": "python",
+                    ".md": "markdown",
+                    ".txt": "text",
+                    ".ini": "ini",
+                    ".yml": "yaml",
+                    ".yaml": "yaml",
+                    ".sh": "bash",
+                    ".dockerfile": "dockerfile",
+                }
+
+                language = language_map.get(suffix, "")
+
+                # Các file không có extension
+                if file.name == "Dockerfile":
+                    language = "dockerfile"
+                elif file.name in {".gitignore", ".dockerignore"}:
+                    language = "gitignore"
+                elif file.name == "LICENSE":
+                    language = "text"
+
+                out.write(f"```{language}\n")
+                out.write(content)
+
+                # Đảm bảo code fence không dính vào nội dung file
+                if not content.endswith("\n"):
+                    out.write("\n")
+
+                out.write("```\n")
+
+            except UnicodeDecodeError:
+                out.write(
+                    "[Could not decode this file as UTF-8]\n"
+                )
+
+            except Exception as e:
+                out.write(
+                    f"[Could not read file: {e}]\n"
+                )
+
+    print("Done!")
     print(f"Included files: {len(files)}")
     print(f"Output: {OUTPUT}")
 

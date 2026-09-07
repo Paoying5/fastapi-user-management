@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 
 from tests.e2e.utils import (
     click_execute,
@@ -10,42 +10,7 @@ from tests.e2e.utils import (
 )
 
 
-def test_swagger_health(page: Page):
-    open_swagger(page)
-
-    screenshot(
-        page,
-        "01_swagger_home.png",
-    )
-
-
-def test_swagger_openapi(page: Page):
-    response = page.request.get(
-        "http://api:8000/openapi.json"
-    )
-
-    assert response.status == 200
-
-    data = response.json()
-
-    assert data["info"]["title"] == (
-        "FastAPI User Management"
-    )
-
-    assert "/health" in data["paths"]
-    assert "/auth/login" in data["paths"]
-    assert "/users/" in data["paths"]
-    assert "/posts/" in data["paths"]
-
-    open_swagger(page)
-
-    screenshot(
-        page,
-        "02_swagger_endpoints.png",
-    )
-
-
-def test_swagger_create_user(page: Page):
+def test_swagger_create_user(page):
     open_swagger(page)
 
     endpoint = get_post_endpoint(
@@ -83,6 +48,5 @@ def test_swagger_create_user(page: Page):
 
     screenshot(
         page,
-        "03_swagger_create_user_success.png",
+        "swagger/03_create_user_success.png",
     )
-

@@ -1,126 +1,128 @@
-================================================================================
-PROJECT CONTEXT
-================================================================================
+# PROJECT CONTEXT
 
-Project root: /home/truongp/Documents/fastapi-user-management
-Total included files: 106
+**Project root:** `/home/truongp/Documents/fastapi-user-management`  
+**Total included files:** 109
 
-================================================================================
-PROJECT STRUCTURE
-================================================================================
+## Project Structure
 
-.dockerignore
-.gitignore
-Dockerfile
-LICENSE
-README.md
-alembic.ini
-alembic/env.py
-alembic/versions/e7d9b8aad922_initial_schema.py
-app/__init__.py
-app/constants.py
-app/core/config.py
-app/core/exceptions.py
-app/core/logging.py
-app/core/security.py
-app/database.py
-app/dependencies.py
-app/main.py
-app/models/__init__.py
-app/models/post.py
-app/models/user.py
-app/repositories/__init__.py
-app/repositories/post_repository.py
-app/repositories/user_repository.py
-app/routers/__init__.py
-app/routers/auth.py
-app/routers/health.py
-app/routers/post.py
-app/routers/user.py
-app/schemas/__init__.py
-app/schemas/auth.py
-app/schemas/common.py
-app/schemas/post.py
-app/schemas/user.py
-app/services/__init__.py
-app/services/auth_service.py
-app/services/post_service.py
-app/services/user_service.py
-app/utils/helpers.py
-app/utils/pagination.py
-app/utils/response.py
-app/utils/validators.py
-docker-compose.yml
-docs/diary/2026-07-28-current-progress.md
-docs/diary/2026-07-29-current-progress.md
-docs/diary/2026-07-30-current-progress.md
-docs/diary/2026-07-31-current-progress.md
-docs/diary/2026-08-02-current-progress.md
-docs/diary/2026-08-03-current-progress.md
-docs/diary/2026-08-04-current-progress.md
-docs/diary/2026-08-05-current-progress.md
-docs/diary/2026-08-06-current-progress.md
-docs/diary/2026-08-07-current-progress.md
-docs/diary/2026-08-08-current-progress.md
-docs/diary/2026-08-09-current-progress.md
-docs/diary/2026-08-09-project-summary.md
-docs/diary/2026-08-1-current-progress.md
-docs/diary/2026-08-10-current-progress.md
-docs/diary/2026-08-10-to-2026-08-28-retrospective-gap.md
-docs/diary/2026-08-11-current-progress.md
-docs/diary/2026-08-12-current-progress.md
-docs/diary/2026-08-13-current-progress.md
-docs/diary/2026-08-14-current-progress.md
-docs/diary/2026-08-15-current-progress.md
-docs/diary/2026-08-16-current-progress.md
-docs/diary/2026-08-17-current-progress.md
-docs/diary/2026-08-18-current-progress.md
-docs/diary/2026-08-19-current-progress.md
-docs/diary/2026-08-20-current-progress.md
-docs/diary/2026-08-21-current-progress.md
-docs/diary/2026-08-22-current-progress.md
-docs/diary/2026-08-23-current-progress.md
-docs/diary/2026-08-24-current-progress.md
-docs/diary/2026-08-25-current-progress.md
-docs/diary/2026-08-26-current-progress.md
-docs/diary/2026-08-27-current-progress.md
-docs/diary/2026-08-28-current-progress.md
-docs/diary/2026-08-29-current-progress.md
-docs/diary/2026-08-30-current-progress.md
-docs/diary/2026-08-31-current-progress.md
-docs/diary/2026-09-01-current-progress.md
-docs/diary/2026-09-02-current-progress.md
-docs/diary/2026-09-03-current-progress.md
-docs/diary/2026-09-04-current-progress.md
-docs/diary/2026-09-05-current-progress.md
-docs/diary/2026-09-06-current-progress.md
-docs/diary/README.md
-export_project.py
-pytest.ini
-requirements-dev.txt
-requirements.txt
-scripts/menu.sh
-test_connection.py
-tests/__init__.py
-tests/api/test_auth.py
-tests/api/test_create_user.py
-tests/api/test_health.py
-tests/api/test_posts.py
-tests/api/test_users.py
-tests/conftest.py
-tests/e2e/__init__.py
-tests/e2e/test_swagger_capture.py
-tests/e2e/utils.py
-tests/swagger/test_auth_swagger.py
-tests/swagger/test_posts_swagger.py
-tests/swagger/test_users_swagger.py
-tests/swagger/utils.py
+- `.dockerignore`
+- `.gitignore`
+- `Dockerfile`
+- `LICENSE`
+- `README.md`
+- `alembic.ini`
+- `alembic/env.py`
+- `alembic/versions/e7d9b8aad922_initial_schema.py`
+- `app/__init__.py`
+- `app/constants.py`
+- `app/core/config.py`
+- `app/core/exceptions.py`
+- `app/core/logging.py`
+- `app/core/security.py`
+- `app/database.py`
+- `app/dependencies.py`
+- `app/main.py`
+- `app/models/__init__.py`
+- `app/models/post.py`
+- `app/models/user.py`
+- `app/repositories/__init__.py`
+- `app/repositories/post_repository.py`
+- `app/repositories/user_repository.py`
+- `app/routers/__init__.py`
+- `app/routers/auth.py`
+- `app/routers/health.py`
+- `app/routers/post.py`
+- `app/routers/user.py`
+- `app/schemas/__init__.py`
+- `app/schemas/auth.py`
+- `app/schemas/common.py`
+- `app/schemas/post.py`
+- `app/schemas/user.py`
+- `app/services/__init__.py`
+- `app/services/auth_service.py`
+- `app/services/post_service.py`
+- `app/services/user_service.py`
+- `app/utils/helpers.py`
+- `app/utils/pagination.py`
+- `app/utils/response.py`
+- `app/utils/validators.py`
+- `docker-compose.yml`
+- `docs/diary/2026-07-28-current-progress.md`
+- `docs/diary/2026-07-29-current-progress.md`
+- `docs/diary/2026-07-30-current-progress.md`
+- `docs/diary/2026-07-31-current-progress.md`
+- `docs/diary/2026-08-02-current-progress.md`
+- `docs/diary/2026-08-03-current-progress.md`
+- `docs/diary/2026-08-04-current-progress.md`
+- `docs/diary/2026-08-05-current-progress.md`
+- `docs/diary/2026-08-06-current-progress.md`
+- `docs/diary/2026-08-07-current-progress.md`
+- `docs/diary/2026-08-08-current-progress.md`
+- `docs/diary/2026-08-09-current-progress.md`
+- `docs/diary/2026-08-09-project-summary.md`
+- `docs/diary/2026-08-1-current-progress.md`
+- `docs/diary/2026-08-10-current-progress.md`
+- `docs/diary/2026-08-10-to-2026-08-28-retrospective-gap.md`
+- `docs/diary/2026-08-11-current-progress.md`
+- `docs/diary/2026-08-12-current-progress.md`
+- `docs/diary/2026-08-13-current-progress.md`
+- `docs/diary/2026-08-14-current-progress.md`
+- `docs/diary/2026-08-15-current-progress.md`
+- `docs/diary/2026-08-16-current-progress.md`
+- `docs/diary/2026-08-17-current-progress.md`
+- `docs/diary/2026-08-18-current-progress.md`
+- `docs/diary/2026-08-19-current-progress.md`
+- `docs/diary/2026-08-20-current-progress.md`
+- `docs/diary/2026-08-21-current-progress.md`
+- `docs/diary/2026-08-22-current-progress.md`
+- `docs/diary/2026-08-23-current-progress.md`
+- `docs/diary/2026-08-24-current-progress.md`
+- `docs/diary/2026-08-25-current-progress.md`
+- `docs/diary/2026-08-26-current-progress.md`
+- `docs/diary/2026-08-27-current-progress.md`
+- `docs/diary/2026-08-28-current-progress.md`
+- `docs/diary/2026-08-29-current-progress.md`
+- `docs/diary/2026-08-30-current-progress.md`
+- `docs/diary/2026-08-31-current-progress.md`
+- `docs/diary/2026-09-01-current-progress.md`
+- `docs/diary/2026-09-02-current-progress.md`
+- `docs/diary/2026-09-03-current-progress.md`
+- `docs/diary/2026-09-04-current-progress.md`
+- `docs/diary/2026-09-05-current-progress.md`
+- `docs/diary/2026-09-06-current-progress.md`
+- `docs/diary/README.md`
+- `export_project.py`
+- `pytest.ini`
+- `requirements-dev.txt`
+- `requirements.txt`
+- `scripts/menu.sh`
+- `test_connection.py`
+- `tests/__init__.py`
+- `tests/api/test_auth.py`
+- `tests/api/test_create_user.py`
+- `tests/api/test_health.py`
+- `tests/api/test_posts.py`
+- `tests/api/test_users.py`
+- `tests/conftest.py`
+- `tests/e2e/__init__.py`
+- `tests/e2e/test_swagger_auth.py`
+- `tests/e2e/test_swagger_home.py`
+- `tests/e2e/test_swagger_posts.py`
+- `tests/e2e/test_swagger_users.py`
+- `tests/e2e/utils.py`
+- `tests/swagger/test_auth_swagger.py`
+- `tests/swagger/test_posts_swagger.py`
+- `tests/swagger/test_users_swagger.py`
+- `tests/swagger/utils.py`
+
+## File Contents
 
 
-################################################################################
-FILE: .dockerignore
-################################################################################
+---
 
+## `.dockerignore`
+
+```gitignore
 # ==========================
 # Python
 # ==========================
@@ -197,11 +199,14 @@ alembic/__pycache__/
 # Misc
 # ==========================
 .cache/
+```
 
-################################################################################
-FILE: .gitignore
-################################################################################
 
+---
+
+## `.gitignore`
+
+```gitignore
 # Python
 __pycache__/
 *.py[cod]
@@ -231,11 +236,14 @@ venv/
 
 # Docker
 *.log
+```
 
-################################################################################
-FILE: Dockerfile
-################################################################################
 
+---
+
+## `Dockerfile`
+
+```dockerfile
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -256,11 +264,14 @@ HEALTHCHECK \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+```
 
-################################################################################
-FILE: LICENSE
-################################################################################
 
+---
+
+## `LICENSE`
+
+```text
 MIT License
 
 Copyright (c) 2026 Truong Pham
@@ -282,11 +293,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
-################################################################################
-FILE: README.md
-################################################################################
 
+---
+
+## `README.md`
+
+```markdown
 <h1 align="center">
 🚀 FastAPI User Management
 </h1>
@@ -851,12 +865,14 @@ This project is built for learning purposes.
 The repository documents my backend development journey, including daily learning notes, implementation experiments, and improvements toward a more practical backend system.
 
 The goal is to gradually transform this project into a production-oriented backend application following real-world engineering practices.
+```
 
 
-################################################################################
-FILE: alembic.ini
-################################################################################
+---
 
+## `alembic.ini`
+
+```ini
 # A generic, single database configuration.
 
 [alembic]
@@ -1006,12 +1022,14 @@ formatter = generic
 [formatter_generic]
 format = %(levelname)-5.5s [%(name)s] %(message)s
 datefmt = %H:%M:%S
+```
 
 
-################################################################################
-FILE: alembic/env.py
-################################################################################
+---
 
+## `alembic/env.py`
+
+```python
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -1108,12 +1126,14 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+```
 
 
-################################################################################
-FILE: alembic/versions/e7d9b8aad922_initial_schema.py
-################################################################################
+---
 
+## `alembic/versions/e7d9b8aad922_initial_schema.py`
+
+```python
 """initial schema
 
 Revision ID: e7d9b8aad922
@@ -1171,18 +1191,23 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
     # ### end Alembic commands ###
+```
 
 
-################################################################################
-FILE: app/__init__.py
-################################################################################
+---
+
+## `app/__init__.py`
+
+```python
+
+```
 
 
+---
 
-################################################################################
-FILE: app/constants.py
-################################################################################
+## `app/constants.py`
 
+```python
 # ADMIN
 
 #USER
@@ -1190,11 +1215,14 @@ FILE: app/constants.py
 #MODERATOR
 
 # không hard-code.
+```
 
-################################################################################
-FILE: app/core/config.py
-################################################################################
 
+---
+
+## `app/core/config.py`
+
+```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -1220,23 +1248,32 @@ class Config:
 
 
 settings = Settings()
-
-################################################################################
-FILE: app/core/exceptions.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: app/core/logging.py
-################################################################################
+## `app/core/exceptions.py`
+
+```python
+
+```
 
 
+---
 
-################################################################################
-FILE: app/core/security.py
-################################################################################
+## `app/core/logging.py`
 
+```python
+
+```
+
+
+---
+
+## `app/core/security.py`
+
+```python
 from passlib.context import CryptContext
 from datetime import datetime
 from datetime import timedelta
@@ -1295,11 +1332,14 @@ def create_access_token(data: dict) -> str:
     )
 
     return encoded_jwt
+```
 
-################################################################################
-FILE: app/database.py
-################################################################################
 
+---
+
+## `app/database.py`
+
+```python
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -1326,12 +1366,14 @@ def get_db():
         yield db
     finally:
         db.close()
+```
 
 
-################################################################################
-FILE: app/dependencies.py
-################################################################################
+---
 
+## `app/dependencies.py`
+
+```python
 from collections.abc import Generator
 
 from fastapi import Depends, HTTPException, status
@@ -1415,11 +1457,14 @@ def get_admin_user(
         )
 
     return current_user
+```
 
-################################################################################
-FILE: app/main.py
-################################################################################
 
+---
+
+## `app/main.py`
+
+```python
 from fastapi import FastAPI
 
 from app.routers import auth, health, post, user
@@ -1449,11 +1494,14 @@ def root():
         "docs": "/docs",
         "health": "/health",
     }
+```
 
-################################################################################
-FILE: app/models/__init__.py
-################################################################################
 
+---
+
+## `app/models/__init__.py`
+
+```python
 from app.models.user import User
 from app.models.post import Post
 
@@ -1461,11 +1509,14 @@ __all__ = [
     "User",
     "Post",
 ]
+```
 
-################################################################################
-FILE: app/models/post.py
-################################################################################
 
+---
+
+## `app/models/post.py`
+
+```python
 from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
@@ -1502,11 +1553,14 @@ class Post(Base):
         "User",
         back_populates="posts",
     )
+```
 
-################################################################################
-FILE: app/models/user.py
-################################################################################
 
+---
+
+## `app/models/user.py`
+
+```python
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -1554,17 +1608,23 @@ class User(Base):
     String(100),
     nullable=True,
 )
-
-################################################################################
-FILE: app/repositories/__init__.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: app/repositories/post_repository.py
-################################################################################
+## `app/repositories/__init__.py`
 
+```python
+
+```
+
+
+---
+
+## `app/repositories/post_repository.py`
+
+```python
 from sqlalchemy import desc, select
 from sqlalchemy.orm import Session, joinedload
 
@@ -1652,12 +1712,14 @@ class PostRepository:
     def delete(self, post: Post) -> None:
         self.db.delete(post)
         self.db.flush()
+```
 
 
-################################################################################
-FILE: app/repositories/user_repository.py
-################################################################################
+---
 
+## `app/repositories/user_repository.py`
+
+```python
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
@@ -1721,18 +1783,23 @@ class UserRepository:
     def delete(self, user: User) -> None:
         self.db.delete(user)
         self.db.flush()
+```
 
 
-################################################################################
-FILE: app/routers/__init__.py
-################################################################################
+---
+
+## `app/routers/__init__.py`
+
+```python
+
+```
 
 
+---
 
-################################################################################
-FILE: app/routers/auth.py
-################################################################################
+## `app/routers/auth.py`
 
+```python
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -1782,11 +1849,14 @@ def read_me(
     current_user: User = Depends(get_current_user),
 ) -> User:
     return current_user
+```
 
-################################################################################
-FILE: app/routers/health.py
-################################################################################
 
+---
+
+## `app/routers/health.py`
+
+```python
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -1820,11 +1890,14 @@ def health_check(
         "api": "running",
         "database": "connected",
     }
+```
 
-################################################################################
-FILE: app/routers/post.py
-################################################################################
 
+---
+
+## `app/routers/post.py`
+
+```python
 from fastapi import APIRouter, Depends, Query, status
 
 from app.dependencies import get_current_user, get_post_service
@@ -1900,12 +1973,14 @@ def delete_post(
 ):
     service.delete_post(post_id, current_user.id)
     return MessageResponse(message="Post deleted successfully")
+```
 
 
-################################################################################
-FILE: app/routers/user.py
-################################################################################
+---
 
+## `app/routers/user.py`
+
+```python
 from app.models.user import User
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -1972,12 +2047,14 @@ def delete_user(user_id: int, service: UserService = Depends(get_user_service), 
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return response("User deleted successfully", None)
+```
 
 
-################################################################################
-FILE: app/schemas/__init__.py
-################################################################################
+---
 
+## `app/schemas/__init__.py`
+
+```python
 from app.schemas.auth import LoginRequest, Token
 from app.schemas.common import APIResponse, MessageResponse
 from app.schemas.post import (
@@ -2011,11 +2088,14 @@ __all__ = [
     "PostResponse",
     "UserSimple",
 ]
+```
 
-################################################################################
-FILE: app/schemas/auth.py
-################################################################################
 
+---
+
+## `app/schemas/auth.py`
+
+```python
 from pydantic import BaseModel, EmailStr
 
 
@@ -2027,11 +2107,14 @@ class LoginRequest(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str 
+```
 
-################################################################################
-FILE: app/schemas/common.py
-################################################################################
 
+---
+
+## `app/schemas/common.py`
+
+```python
 from typing import Any
 
 from pydantic import BaseModel
@@ -2045,11 +2128,14 @@ class APIResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+```
 
-################################################################################
-FILE: app/schemas/post.py
-################################################################################
 
+---
+
+## `app/schemas/post.py`
+
+```python
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -2110,11 +2196,14 @@ class PostResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
+```
 
-################################################################################
-FILE: app/schemas/user.py
-################################################################################
 
+---
+
+## `app/schemas/user.py`
+
+```python
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from app.schemas.post import PostSimple
@@ -2195,17 +2284,23 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
-
-################################################################################
-FILE: app/services/__init__.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: app/services/auth_service.py
-################################################################################
+## `app/services/__init__.py`
 
+```python
+
+```
+
+
+---
+
+## `app/services/auth_service.py`
+
+```python
 from sqlalchemy.orm import Session
 
 from app.core.security import (
@@ -2273,11 +2368,14 @@ class AuthService:
         return self.repository.get_by_email(
             email.strip().lower()
         )
+```
 
-################################################################################
-FILE: app/services/post_service.py
-################################################################################
 
+---
+
+## `app/services/post_service.py`
+
+```python
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -2360,12 +2458,14 @@ class PostService:
         except Exception:
             self.db.rollback()
             raise
+```
 
 
-################################################################################
-FILE: app/services/user_service.py
-################################################################################
+---
 
+## `app/services/user_service.py`
+
+```python
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -2470,24 +2570,32 @@ class UserService:
         except Exception:
             self.db.rollback()
             raise
+```
 
 
-################################################################################
-FILE: app/utils/helpers.py
-################################################################################
+---
+
+## `app/utils/helpers.py`
+
+```python
+
+```
 
 
+---
 
-################################################################################
-FILE: app/utils/pagination.py
-################################################################################
+## `app/utils/pagination.py`
+
+```python
+
+```
 
 
+---
 
-################################################################################
-FILE: app/utils/response.py
-################################################################################
+## `app/utils/response.py`
 
+```python
 def response(
     message: str,
     data=None
@@ -2502,17 +2610,23 @@ def response(
         "data": data
 
     }
-
-################################################################################
-FILE: app/utils/validators.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: docker-compose.yml
-################################################################################
+## `app/utils/validators.py`
 
+```python
+
+```
+
+
+---
+
+## `docker-compose.yml`
+
+```yaml
 services:
 
   api:
@@ -2554,11 +2668,14 @@ services:
 
 volumes:
   postgres_data:
+```
 
-################################################################################
-FILE: docs/diary/2026-07-28-current-progress.md
-################################################################################
 
+---
+
+## `docs/diary/2026-07-28-current-progress.md`
+
+```markdown
 <h1 align="center">
 📅 Development Log #01
 </h1>
@@ -2770,11 +2887,14 @@ Next:
 This document marks the first official development log for the project.
 
 Future logs will focus on incremental improvements instead of rewriting existing features, allowing the repository to better reflect the actual learning journey and project evolution.
+```
 
-################################################################################
-FILE: docs/diary/2026-07-29-current-progress.md
-################################################################################
 
+---
+
+## `docs/diary/2026-07-29-current-progress.md`
+
+```markdown
 # 📅 Development Log #02
 
 **Date:** 2026-07-29
@@ -3067,12 +3187,14 @@ Qua quá trình thực hành, mình đã hiểu rõ hơn về:
 Những kiến thức này sẽ là nền tảng cho các chủ đề khó hơn như `GROUP BY`, các hàm tổng hợp (`AVG`, `MAX`, `MIN`, `SUM`), `JOIN`, Raw SQL và Alembic Migration.
 
 Mục tiêu tiếp theo là hiểu được cách SQLAlchemy ánh xạ từng truy vấn Python sang câu SQL thực tế và dần xây dựng tư duy thiết kế truy vấn giống như trong các dự án backend sử dụng PostgreSQL ở môi trường production.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-07-30-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-07-30-current-progress.md`
+
+```markdown
 # 📅 2026-07-30 Current Progress
 
 ---
@@ -3649,11 +3771,14 @@ Current project status:
 - Initial migration has been created.
 
 The project now manages database schema using Alembic instead of create_all(), making it closer to a production-ready architecture.
+```
 
-################################################################################
-FILE: docs/diary/2026-07-31-current-progress.md
-################################################################################
 
+---
+
+## `docs/diary/2026-07-31-current-progress.md`
+
+```markdown
 # 📘 Current Progress
 # Ngày / Date: 2026-07-31
 
@@ -4080,11 +4205,14 @@ Completed
 - Partial Router migration
 - Understanding Repository responsibilities
 - Preparing for Service Layer
+```
 
-################################################################################
-FILE: docs/diary/2026-08-02-current-progress.md
-################################################################################
 
+---
+
+## `docs/diary/2026-08-02-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-02
 
 ## Chủ đề
@@ -4148,12 +4276,14 @@ HTTP request
 ## Ghi chú
 
 Tôi bắt đầu quan tâm nhiều hơn đến **tính nhất quán của toàn project** thay vì chỉ làm cho từng endpoint chạy được.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-03-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-03-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-03
 
 ## Chủ đề
@@ -4227,12 +4357,14 @@ model_dump(exclude_unset=True)
 Service Layer không phải là nơi “ném tất cả code vào cho dài project”.
 
 Một tầng mới chỉ có giá trị khi nó giúp trách nhiệm rõ ràng hơn.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-04-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-04-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-04
 
 ## Chủ đề
@@ -4297,12 +4429,14 @@ Pydantic Schema  → API contract / validation
 ```
 
 Đây là một trong những điểm tôi muốn giải thích được với mentor thay vì chỉ biết viết code theo mẫu.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-05-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-05-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-05
 
 ## Chủ đề
@@ -4388,12 +4522,14 @@ Cần xem:
 6. database schema có khớp model không?
 
 Đây trở thành một thói quen debugging quan trọng.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-06-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-06-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-06
 
 ## Chủ đề
@@ -4475,12 +4611,14 @@ Migration phải phản ánh thay đổi schema.
 Docker giúp môi trường nhất quán hơn, nhưng Docker không tự sửa lỗi application.
 
 Nếu database schema sai hoặc migration sai, container vẫn có thể “Up” và healthcheck vẫn có thể trả `200` trong khi một API business vẫn trả `500`.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-07-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-07-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-07
 
 ## Chủ đề
@@ -4553,12 +4691,14 @@ alembic current
 ```
 
 rồi kết luận database đã đúng.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-08-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-08-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-08
 
 ## Chủ đề
@@ -4662,12 +4802,14 @@ Refactor kiến trúc giúp code dễ tổ chức hơn, nhưng cũng làm tôi n
 > **Tách code chỉ là bước đầu. Điều khó hơn là giữ toàn bộ hệ thống đồng bộ.**
 
 Đây là lý do project cần migration, test, logging và quy trình kiểm tra rõ ràng.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-09-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-09-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-09
 
 ## Chủ đề
@@ -4683,12 +4825,14 @@ Tôi cũng giữ lại các lỗi đã gặp thay vì che chúng đi, vì debugg
 
 > Một API “chạy được” chưa đồng nghĩa với một hệ thống mà tôi thực sự hiểu.
 
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-09-project-summary.md
-################################################################################
+---
 
+## `docs/diary/2026-08-09-project-summary.md`
+
+```markdown
 # 🚀 FastAPI User Management — Learning Journey
 
 > **Một tài liệu duy nhất dành cho mentor:** nếu chị chỉ muốn xem nhanh quá trình học, kiến trúc, những gì đã làm, những lỗi đã gặp và những gì tôi đang học tiếp, chỉ cần mở file này.
@@ -5653,12 +5797,14 @@ Một trong những bài học rõ nhất là:
 > **Tách code chỉ là bước đầu. Điều khó hơn là giữ toàn bộ hệ thống đồng bộ: source code, dependency, migration, database schema, test và runtime environment.**
 
 Đó chính là phần giá trị nhất tôi nhận được từ project FastAPI này.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-1-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-1-current-progress.md`
+
+```markdown
 # 📅 2026-08-01 Current Progress
 
 ---
@@ -6110,11 +6256,14 @@ The Repository layer manages all database operations.
 This separation significantly improves readability, maintainability, testing, and scalability.
 
 The project is now ready to move toward the next architectural layer, where business logic will be separated from the data access layer.
+```
 
-################################################################################
-FILE: docs/diary/2026-08-10-current-progress.md
-################################################################################
 
+---
+
+## `docs/diary/2026-08-10-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-10
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6136,12 +6285,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-10-to-2026-08-28-retrospective-gap.md
-################################################################################
+---
 
+## `docs/diary/2026-08-10-to-2026-08-28-retrospective-gap.md`
+
+```markdown
 # 📚 Retrospective Learning Record — 2026-08-10 → 2026-08-28
 
 > **Lưu ý về tính trung thực:** Khoảng thời gian này không còn log nhật ký nguyên bản theo từng ngày trong project context hiện tại. Vì vậy tôi **không dựng một lịch sử giả**. Tài liệu này ghi nhận khoảng trống và những gì có thể xác nhận từ trạng thái project về sau.
@@ -6213,12 +6364,14 @@ Next step
 ```
 
 Nếu thiếu log, tôi sẽ ghi rõ **không có log nguyên bản**, thay vì biến suy đoán thành lịch sử.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-11-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-11-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-11
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6240,12 +6393,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-12-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-12-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-12
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6267,12 +6422,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-13-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-13-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-13
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6294,12 +6451,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-14-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-14-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-14
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6321,12 +6480,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-15-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-15-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-15
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6348,12 +6509,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-16-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-16-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-16
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6375,12 +6538,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-17-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-17-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-17
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6402,12 +6567,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-18-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-18-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-18
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6429,12 +6596,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-19-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-19-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-19
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6456,12 +6625,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-20-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-20-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-20
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6483,12 +6654,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-21-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-21-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-21
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6510,12 +6683,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-22-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-22-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-22
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6537,12 +6712,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-23-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-23-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-23
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6564,12 +6741,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-24-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-24-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-24
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6591,12 +6770,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-25-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-25-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-25
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6618,12 +6799,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-26-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-26-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-26
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6645,12 +6828,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-27-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-27-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-27
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6672,12 +6857,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-28-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-28-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-28
 
 > **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
@@ -6699,12 +6886,14 @@ Tôi không muốn tự dựng một lịch sử giả cho ngày này.
 ```
 
 Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-29-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-29-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-29
 
 ## Chủ đề
@@ -6732,12 +6921,14 @@ Request tạo user gửi `role="admin"` nhưng response trả `role="user"`.
 
 > Khi debugging, phải kiểm tra runtime state trước khi sửa code và phải phân biệt authentication với authorization.
 
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-30-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-30-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-30
 
 ## Chủ đề
@@ -6790,12 +6981,14 @@ Không sử dụng `Base.metadata.create_all()` trong `app/main.py`. `main.py` c
 ## 4. Bài học
 
 Refactor không chỉ là đổi tên folder. Cần kiểm tra import, dependency injection, request flow, transaction, database schema và test.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-08-31-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-08-31-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-08-31
 
 ## Chủ đề
@@ -6846,12 +7039,14 @@ model_dump(exclude_unset=True)
 ## 4. Bài học
 
 Schema là boundary kiểm soát dữ liệu đi vào và đi ra khỏi API, không chỉ đơn thuần là khai báo kiểu dữ liệu.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-01-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-01-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-01
 
 ## Chủ đề
@@ -6918,12 +7113,14 @@ Các endpoint Post protected phải kiểm tra ownership.
 ## 5. Bài học
 
 Authentication không chỉ là tạo token; cần kiểm tra toàn bộ đường đi của token từ request đến business logic và database.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-02-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-02-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-02
 
 ## Chủ đề
@@ -6999,12 +7196,14 @@ Không dùng `create_all()` để tự động sửa schema.
 ## 5. Bài học
 
 Python Model, Alembic Migration và PostgreSQL Schema phải được giữ đồng bộ.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-03-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-03-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-03
 
 ## Chủ đề
@@ -7053,12 +7252,14 @@ Ownership được kiểm tra để user không thể sửa/xóa post của user
 ## 4. Bài học
 
 Test cần kiểm tra behavior thực tế của API, không chỉ kiểm tra `200 OK`.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-04-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-04-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-04
 
 ## Chủ đề
@@ -7119,12 +7320,14 @@ Có 2 deprecation warnings từ dependency, nhưng không phải test failure.
 ## 4. Bài học
 
 Cần phân biệt implementation bug và test assumption bug. Không nên sửa production code chỉ để thỏa mãn một assumption không nằm trong requirement.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-05-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-05-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-05
 
 ## Chủ đề
@@ -7241,12 +7444,14 @@ DELETE /posts/{post_id}
 ```
 
 Authentication và Posts E2E chưa hoàn thiện.
+```
 
 
-################################################################################
-FILE: docs/diary/2026-09-06-current-progress.md
-################################################################################
+---
 
+## `docs/diary/2026-09-06-current-progress.md`
+
+```markdown
 # 📅 Development Diary — 2026-09-06
 
 ## Chủ đề
@@ -7506,12 +7711,14 @@ Kết quả cuối ngày:
 Không chỉ source code cần đúng. Browser, system dependencies, Python packages và Docker image cũng phải được quản lý để test có thể chạy ổn định sau khi container được tạo lại.
 
 Bài học này nối tiếp nguyên tắc lớn của project: **tách code chỉ là bước đầu; điều khó hơn là giữ source code, dependency, migration, database schema, test và runtime environment đồng bộ.**
+```
 
 
-################################################################################
-FILE: docs/diary/README.md
-################################################################################
+---
 
+## `docs/diary/README.md`
+
+```markdown
 # FastAPI User Management — Development Diary
 ## 2026-08-30 → 2026-09-06
 
@@ -7565,16 +7772,18 @@ E2E hiện đạt:
 ```text
 3 passed, 2 warnings
 ```
+```
 
 
-################################################################################
-FILE: export_project.py
-################################################################################
+---
 
+## `export_project.py`
+
+```python
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-OUTPUT = ROOT / "project_context.txt"
+OUTPUT = ROOT / "project_context.md"
 
 # Những thư mục không cần đưa cho ChatGPT
 EXCLUDED_DIRS = {
@@ -7594,7 +7803,7 @@ EXCLUDED_DIRS = {
 EXCLUDED_FILES = {
     ".env",
     ".env.docker",
-    "project_context.txt",
+    "project_context.md",
 }
 
 # Chỉ lấy những loại file có ích cho việc đọc source
@@ -7640,7 +7849,8 @@ def should_include(path: Path) -> bool:
 
 def main():
     files = [
-        p for p in ROOT.rglob("*")
+        p
+        for p in ROOT.rglob("*")
         if p.is_file() and should_include(p)
     ]
 
@@ -7649,46 +7859,85 @@ def main():
 
     with OUTPUT.open("w", encoding="utf-8") as out:
 
-        out.write("=" * 80 + "\n")
-        out.write("PROJECT CONTEXT\n")
-        out.write("=" * 80 + "\n\n")
+        # =========================================================
+        # PROJECT CONTEXT
+        # =========================================================
 
-        out.write(f"Project root: {ROOT}\n")
-        out.write(f"Total included files: {len(files)}\n\n")
+        out.write("# PROJECT CONTEXT\n\n")
 
-        # ---------------------------------------------------------
+        out.write(f"**Project root:** `{ROOT}`  \n")
+        out.write(f"**Total included files:** {len(files)}\n\n")
+
+        # =========================================================
         # 1. PROJECT STRUCTURE
-        # ---------------------------------------------------------
+        # =========================================================
 
-        out.write("=" * 80 + "\n")
-        out.write("PROJECT STRUCTURE\n")
-        out.write("=" * 80 + "\n\n")
+        out.write("## Project Structure\n\n")
 
         for file in files:
             relative = file.relative_to(ROOT)
-            out.write(f"{relative}\n")
+            out.write(f"- `{relative}`\n")
 
-        # ---------------------------------------------------------
+        # =========================================================
         # 2. FILE CONTENTS
-        # ---------------------------------------------------------
+        # =========================================================
+
+        out.write("\n## File Contents\n")
 
         for file in files:
             relative = file.relative_to(ROOT)
 
             out.write("\n\n")
-            out.write("#" * 80 + "\n")
-            out.write(f"FILE: {relative}\n")
-            out.write("#" * 80 + "\n\n")
+            out.write("---\n\n")
+            out.write(f"## `{relative}`\n\n")
 
             try:
                 content = file.read_text(encoding="utf-8")
-                out.write(content)
-            except UnicodeDecodeError:
-                out.write("[Could not decode this file as UTF-8]\n")
-            except Exception as e:
-                out.write(f"[Could not read file: {e}]\n")
 
-    print(f"Done!")
+                # Xác định ngôn ngữ cho Markdown code fence
+                suffix = file.suffix.lower()
+
+                language_map = {
+                    ".py": "python",
+                    ".md": "markdown",
+                    ".txt": "text",
+                    ".ini": "ini",
+                    ".yml": "yaml",
+                    ".yaml": "yaml",
+                    ".sh": "bash",
+                    ".dockerfile": "dockerfile",
+                }
+
+                language = language_map.get(suffix, "")
+
+                # Các file không có extension
+                if file.name == "Dockerfile":
+                    language = "dockerfile"
+                elif file.name in {".gitignore", ".dockerignore"}:
+                    language = "gitignore"
+                elif file.name == "LICENSE":
+                    language = "text"
+
+                out.write(f"```{language}\n")
+                out.write(content)
+
+                # Đảm bảo code fence không dính vào nội dung file
+                if not content.endswith("\n"):
+                    out.write("\n")
+
+                out.write("```\n")
+
+            except UnicodeDecodeError:
+                out.write(
+                    "[Could not decode this file as UTF-8]\n"
+                )
+
+            except Exception as e:
+                out.write(
+                    f"[Could not read file: {e}]\n"
+                )
+
+    print("Done!")
     print(f"Included files: {len(files)}")
     print(f"Output: {OUTPUT}")
 
@@ -7696,12 +7945,14 @@ def main():
 if __name__ == "__main__":
     main()
 
+```
 
 
-################################################################################
-FILE: pytest.ini
-################################################################################
+---
 
+## `pytest.ini`
+
+```ini
 [pytest]
 python_files = test_*.py
 
@@ -7717,12 +7968,14 @@ addopts =
 
 testpaths =
     tests
+```
 
 
-################################################################################
-FILE: requirements-dev.txt
-################################################################################
+---
 
+## `requirements-dev.txt`
+
+```text
 -r requirements.txt
 
 pytest
@@ -7736,11 +7989,14 @@ alembic
 pytest-playwright
 pytest-html
 playwright
+```
 
-################################################################################
-FILE: requirements.txt
-################################################################################
 
+---
+
+## `requirements.txt`
+
+```text
 fastapi==0.116.1
 uvicorn==0.35.0
 
@@ -7757,11 +8013,14 @@ python-jose[cryptography]==3.5.0
 requests==2.32.4
 python-dotenv==1.1.1
 python-multipart==0.0.32
+```
 
-################################################################################
-FILE: scripts/menu.sh
-################################################################################
 
+---
+
+## `scripts/menu.sh`
+
+```bash
 #!/usr/bin/env bash
 
 
@@ -8293,11 +8552,14 @@ esac
 
 
 done
+```
 
-################################################################################
-FILE: test_connection.py
-################################################################################
 
+---
+
+## `test_connection.py`
+
+```python
 from app.database import engine
 
 try:
@@ -8312,17 +8574,23 @@ except Exception as e:
 
 # Tạo migration initial mới
 # alembic revision --autogenerate -m "initial schema"
-
-################################################################################
-FILE: tests/__init__.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: tests/api/test_auth.py
-################################################################################
+## `tests/__init__.py`
 
+```python
+
+```
+
+
+---
+
+## `tests/api/test_auth.py`
+
+```python
 def test_login_success(client):
     create_response = client.post(
         "/users/",
@@ -8384,11 +8652,14 @@ def test_login_unknown_user(client):
     )
 
     assert response.status_code == 401
+```
 
-################################################################################
-FILE: tests/api/test_create_user.py
-################################################################################
 
+---
+
+## `tests/api/test_create_user.py`
+
+```python
 import uuid
 
 
@@ -8417,11 +8688,14 @@ def test_create_user(client):
     assert body["data"]["email"] == email
     assert body["data"]["role"] == "user"
     assert "password" not in body["data"]
+```
 
-################################################################################
-FILE: tests/api/test_health.py
-################################################################################
 
+---
+
+## `tests/api/test_health.py`
+
+```python
 def test_health(client):
 
     response = client.get("/health")
@@ -8432,11 +8706,14 @@ def test_health(client):
 
     assert body["status"] == "healthy"
     assert body["database"] == "connected"
+```
 
-################################################################################
-FILE: tests/api/test_posts.py
-################################################################################
 
+---
+
+## `tests/api/test_posts.py`
+
+```python
 def create_user(client, name, email):
     response = client.post(
         "/users/",
@@ -8723,12 +9000,14 @@ def test_create_post_invalid_title(client):
 
     assert response.status_code == 422
 
+```
 
 
-################################################################################
-FILE: tests/api/test_users.py
-################################################################################
+---
 
+## `tests/api/test_users.py`
+
+```python
 def test_get_users(auth_client):
     response = auth_client.get("/users/")
 
@@ -8805,11 +9084,14 @@ def test_create_user_invalid_password(client):
     )
 
     assert response.status_code == 422
+```
 
-################################################################################
-FILE: tests/conftest.py
-################################################################################
 
+---
+
+## `tests/conftest.py`
+
+```python
 import pytest
 
 from fastapi.testclient import TestClient
@@ -8933,39 +9215,45 @@ def auth_client(client, db_session):
     yield client
 
     client.headers.pop("Authorization", None)
-
-################################################################################
-FILE: tests/e2e/__init__.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: tests/e2e/test_swagger_capture.py
-################################################################################
+## `tests/e2e/__init__.py`
 
-from playwright.sync_api import Page, expect
+```python
 
-from tests.e2e.utils import (
-    click_execute,
-    click_try_it_out,
-    fill_request_body,
-    get_post_endpoint,
-    open_swagger,
-    screenshot,
-)
+```
 
 
-def test_swagger_health(page: Page):
+---
+
+## `tests/e2e/test_swagger_auth.py`
+
+```python
+
+```
+
+
+---
+
+## `tests/e2e/test_swagger_home.py`
+
+```python
+from tests.e2e.utils import open_swagger, screenshot
+
+
+def test_swagger_home(page):
     open_swagger(page)
 
     screenshot(
         page,
-        "01_swagger_home.png",
+        "swagger/01_home.png",
     )
 
 
-def test_swagger_openapi(page: Page):
+def test_swagger_openapi(page):
     response = page.request.get(
         "http://api:8000/openapi.json"
     )
@@ -8987,11 +9275,38 @@ def test_swagger_openapi(page: Page):
 
     screenshot(
         page,
-        "02_swagger_endpoints.png",
+        "swagger/02_endpoints.png",
     )
+```
 
 
-def test_swagger_create_user(page: Page):
+---
+
+## `tests/e2e/test_swagger_posts.py`
+
+```python
+
+```
+
+
+---
+
+## `tests/e2e/test_swagger_users.py`
+
+```python
+from playwright.sync_api import expect
+
+from tests.e2e.utils import (
+    click_execute,
+    click_try_it_out,
+    fill_request_body,
+    get_post_endpoint,
+    open_swagger,
+    screenshot,
+)
+
+
+def test_swagger_create_user(page):
     open_swagger(page)
 
     endpoint = get_post_endpoint(
@@ -9029,21 +9344,22 @@ def test_swagger_create_user(page: Page):
 
     screenshot(
         page,
-        "03_swagger_create_user_success.png",
+        "swagger/03_create_user_success.png",
     )
+```
 
 
+---
 
-################################################################################
-FILE: tests/e2e/utils.py
-################################################################################
+## `tests/e2e/utils.py`
 
+```python
 from pathlib import Path
 
-from playwright.sync_api import Page, Locator, expect
+from playwright.sync_api import Locator, Page, expect
 
 
-SCREENSHOT_DIR = Path("tests/screenshots")
+SCREENSHOT_DIR = Path("tests/screenshots/automation")
 
 
 def open_swagger(page: Page) -> None:
@@ -9094,39 +9410,69 @@ def fill_request_body(
     request_body.fill(body)
 
 
+def fill_form_field(
+    endpoint: Locator,
+    field_name: str,
+    value: str,
+) -> None:
+    field = endpoint.locator(
+        f'input[name="{field_name}"]'
+    )
+
+    expect(field).to_be_visible()
+
+    field.fill(value)
+
+
 def screenshot(
     page: Page,
     filename: str,
 ) -> None:
-    SCREENSHOT_DIR.mkdir(
+    path = SCREENSHOT_DIR / filename
+
+    path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
     page.screenshot(
-        path=SCREENSHOT_DIR / filename,
+        path=path,
         full_page=True,
     )
-
-################################################################################
-FILE: tests/swagger/test_auth_swagger.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: tests/swagger/test_posts_swagger.py
-################################################################################
+## `tests/swagger/test_auth_swagger.py`
 
+```python
 
-
-################################################################################
-FILE: tests/swagger/test_users_swagger.py
-################################################################################
+```
 
 
+---
 
-################################################################################
-FILE: tests/swagger/utils.py
-################################################################################
+## `tests/swagger/test_posts_swagger.py`
 
+```python
+
+```
+
+
+---
+
+## `tests/swagger/test_users_swagger.py`
+
+```python
+
+```
+
+
+---
+
+## `tests/swagger/utils.py`
+
+```python
+
+```

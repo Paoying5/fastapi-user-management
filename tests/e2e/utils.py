@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from playwright.sync_api import Page, Locator, expect
+from playwright.sync_api import Locator, Page, expect
 
 
-SCREENSHOT_DIR = Path("tests/screenshots")
+SCREENSHOT_DIR = Path("tests/screenshots/automation")
 
 
 def open_swagger(page: Page) -> None:
@@ -54,16 +54,32 @@ def fill_request_body(
     request_body.fill(body)
 
 
+def fill_form_field(
+    endpoint: Locator,
+    field_name: str,
+    value: str,
+) -> None:
+    field = endpoint.locator(
+        f'input[name="{field_name}"]'
+    )
+
+    expect(field).to_be_visible()
+
+    field.fill(value)
+
+
 def screenshot(
     page: Page,
     filename: str,
 ) -> None:
-    SCREENSHOT_DIR.mkdir(
+    path = SCREENSHOT_DIR / filename
+
+    path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
     page.screenshot(
-        path=SCREENSHOT_DIR / filename,
+        path=path,
         full_page=True,
     )
