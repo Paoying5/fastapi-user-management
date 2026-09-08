@@ -59,8 +59,9 @@ def fill_form_field(
     field_name: str,
     value: str,
 ) -> None:
-    field = endpoint.locator(
-        f'input[name="{field_name}"]'
+    field = endpoint.get_by_role(
+        "textbox",
+        name=field_name,
     )
 
     expect(field).to_be_visible()
