@@ -82,7 +82,6 @@ def create_test_post(
 
     return token, post_id
 
-
 def authorize_swagger(
     page,
     email: str,
@@ -121,6 +120,16 @@ def authorize_swagger(
     expect(apply_button).to_be_enabled()
     apply_button.click()
 
+    page.evaluate("""
+        () => {
+            document.querySelectorAll(
+                '.modal-ux, .dialog-ux, .backdrop-ux'
+            ).forEach(element => {
+                element.remove();
+            });
+        }
+    """)
+
     authorization_button = page.get_by_role(
         "button",
         name="authorization button unlocked",
@@ -128,12 +137,6 @@ def authorize_swagger(
 
     expect(authorization_button).to_be_visible()
 
-    authorization_button = page.get_by_role(
-        "button",
-        name="authorization button unlocked",
-    ).first
-
-    expect(authorization_button).to_be_visible()
 
 
 def fill_post_id(endpoint, post_id: int) -> None:
@@ -222,7 +225,7 @@ def test_swagger_get_posts(page):
 
     expect(endpoint).to_be_visible()
 
-    endpoint.click()
+    endpoint.locator(".opblock-summary").click()
 
     click_try_it_out(endpoint)
     click_execute(endpoint)
@@ -270,7 +273,7 @@ def test_swagger_get_post_by_id(page):
 
     expect(endpoint).to_be_visible()
 
-    endpoint.click()
+    endpoint.locator(".opblock-summary").click()
 
     click_try_it_out(endpoint)
 
@@ -330,7 +333,7 @@ def test_swagger_update_post(page):
 
     expect(endpoint).to_be_visible()
 
-    endpoint.click()
+    endpoint.locator(".opblock-summary").click()
 
     click_try_it_out(endpoint)
 
