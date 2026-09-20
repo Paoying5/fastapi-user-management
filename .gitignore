@@ -27,3 +27,5 @@ venv/
 
 # Docker
 *.log
+.coverage
+htmlcov/
