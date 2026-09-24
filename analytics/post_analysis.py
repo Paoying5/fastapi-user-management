@@ -24,7 +24,7 @@ def get_posts_dataframe(session):
 
     return pd.DataFrame(data)
 
-
+# Đếm số Post của từng User
 def posts_per_user(df: pd.DataFrame):
     return (
         df["user_id"]
@@ -32,7 +32,7 @@ def posts_per_user(df: pd.DataFrame):
         .rename_axis("user_id")
         .reset_index(name="post_count")
     )
-
+# tính thống kê Post
 
 def calculate_post_statistics(df: pd.DataFrame):
     counts = (
