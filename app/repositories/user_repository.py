@@ -1,25 +1,42 @@
-from sqlalchemy import select
+from sqlalchemy import select, asc
 from sqlalchemy.orm import Session, joinedload
-
 from app.models.user import User
 
-
 class UserRepository:
-    """Persistence operations for User entities only."""
-
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self) -> list[User]:
+    def get_all(
+        self, 
+        limit: int = 10, 
+        offset: int = 0, 
+        search: str = ""
+    ) -> list[User]:
+        # Khởi tạo câu lệnh select kèm joinedload tối ưu câu query tránh N+1 problem
         statement = (
             select(User)
             .options(joinedload(User.posts))
-            .order_by(User.id.asc())
+        )
+
+        # Nếu có tham số tìm kiếm, lọc theo cả Name hoặc Email (không phân biệt hoa thường)
+        if search:
+            statement = statement.where(
+                User.name.ilike(f"%{search}%") | 
+                User.email.ilike(f"%{search}%")
+            )
+
+        # Áp dụng sắp xếp, phân trang limit và offset
+        statement = (
+            statement
+            .order_by(asc(User.id))
+            .offset(offset)
+            .limit(limit)
         )
 
         return list(
             self.db.scalars(statement).unique().all()
         )
+
 
     def get_by_id(
         self,

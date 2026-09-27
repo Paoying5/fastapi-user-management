@@ -8,14 +8,22 @@ from app.schemas.user import UserCreate, UserPatch, UserUpdate
 
 
 class UserService:
-    """Business rules for users. No direct SQL queries live here."""
-
     def __init__(self, db: Session):
         self.db = db
         self.repository = UserRepository(db)
 
-    def get_users(self) -> list[User]:
-        return self.repository.get_all()
+    def get_users(
+        self, 
+        limit: int = 10, 
+        offset: int = 0, 
+        search: str = ""
+    ) -> list[User]:
+        # Điều hướng xử lý dữ liệu qua repository
+        return self.repository.get_all(
+            limit=limit, 
+            offset=offset, 
+            search=search
+        )
 
     def get_user(self, user_id: int) -> User | None:
         return self.repository.get_by_id(user_id)

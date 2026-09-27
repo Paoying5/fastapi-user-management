@@ -1,19 +1,22 @@
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.models.user import User
-from fastapi import APIRouter, Depends, HTTPException, status
-
 from app.dependencies import get_admin_user, get_user_service
-from app.schemas import APIResponse, UserCreate, UserPatch, UserResponse, UserUpdate
+from app.schemas import APIResponse, UserResponse
 from app.services.user_service import UserService
 from app.utils.response import response
 
-
-
 router = APIRouter(prefix="/users", tags=["Users"])
 
-
 @router.get("/", response_model=APIResponse, summary="Get all users")
-def get_users(service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
-    users = service.get_users()
+def get_users(
+    limit: int = Query(default=10, ge=1, le=100, description="Số lượng bản ghi tối đa trả về"),
+    offset: int = Query(default=0, ge=0, description="Số lượng bản ghi bỏ qua (vị trí bắt đầu)"),
+    search: str = Query(default="", max_length=100, description="Từ khóa tìm kiếm theo tên hoặc email"),
+    service: UserService = Depends(get_user_service), 
+    admin: User = Depends(get_admin_user)
+):
+    # Truyền tham số phân trang vào service layer
+    users = service.get_users(limit=limit, offset=offset, search=search)
     data = [UserResponse.model_validate(user).model_dump() for user in users]
     return response("Users retrieved successfully", data)
 
