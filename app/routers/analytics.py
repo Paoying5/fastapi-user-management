@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.analytics.user_analysis import (
+from analytics.user_analysis import (
     get_users_dataframe,
     users_by_role,
+    add_age_column,
     calculate_age_statistics,
 )
 
@@ -20,11 +21,11 @@ def user_summary(
 ):
     df = get_users_dataframe(db)
 
+    df = add_age_column(df)
+
     role_counts = users_by_role(df)
 
-    age_statistics = (
-        calculate_age_statistics(df)
-    )
+    age_statistics = calculate_age_statistics(df)
 
     return {
         "total_users": len(df),
@@ -35,7 +36,6 @@ def user_summary(
         "age_statistics": age_statistics,
     }
 
-Response có thể có dạng:
 
 {
     "total_users": 69,
