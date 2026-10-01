@@ -3,9 +3,12 @@ services:
   api:
     build: .
 
-    user: "${UID}:${GID}"
+    # user: "${UID}:${GID}"
 
     container_name: fastapi-api
+
+    security_opt:
+      - seccomp:unconfined
 
     ports:
       - "8000:8000"

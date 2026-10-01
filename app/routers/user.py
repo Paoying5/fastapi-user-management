@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from app.models.user import User
+from sqlalchemy.orm import Session
+
 from app.dependencies import get_admin_user, get_user_service
-from app.schemas import APIResponse, UserResponse
+from app.models.user import User
+from app.schemas import APIResponse, UserCreate, UserUpdate, UserPatch, UserResponse
+
 from app.services.user_service import UserService
 from app.utils.response import response
 

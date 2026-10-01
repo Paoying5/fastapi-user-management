@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
 COPY requirements.txt requirements-dev.txt ./
 
 RUN pip install --no-cache-dir -r requirements-dev.txt

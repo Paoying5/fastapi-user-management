@@ -1,7 +1,7 @@
 # PROJECT CONTEXT
 
 **Project root:** `/home/truongp/Documents/fastapi-user-management`  
-**Total included files:** 123
+**Total included files:** 130
 
 ## Project Structure
 
@@ -102,7 +102,14 @@
 - `docs/diary/2026-09-11-current-progress.md`
 - `docs/diary/2026-09-12-current-progress.md`
 - `docs/diary/2026-09-13-current-progress.md`
+- `docs/diary/2026-09-24-current-progress.md`
+- `docs/diary/2026-09-25-current-progress.md`
+- `docs/diary/2026-09-26-current-progress.md`
+- `docs/diary/2026-09-27-current-progress.md`
+- `docs/diary/2026-09-28-future-plan.md`
 - `docs/diary/README.md`
+- `docs/mentor/DOCKER_AND_ANALYTICS_NOTES.md`
+- `docs/mentor/development-notes.md`
 - `export_project.py`
 - `htmlcov/.gitignore`
 - `pytest.ini`
@@ -263,6 +270,8 @@ htmlcov/
 FROM python:3.12-slim
 
 WORKDIR /app
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 COPY requirements.txt requirements-dev.txt ./
 
@@ -2216,28 +2225,45 @@ class PostRepository:
 ## `app/repositories/user_repository.py`
 
 ```python
-from sqlalchemy import select
+from sqlalchemy import select, asc
 from sqlalchemy.orm import Session, joinedload
-
 from app.models.user import User
 
-
 class UserRepository:
-    """Persistence operations for User entities only."""
-
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self) -> list[User]:
+    def get_all(
+        self, 
+        limit: int = 10, 
+        offset: int = 0, 
+        search: str = ""
+    ) -> list[User]:
+        # Khởi tạo câu lệnh select kèm joinedload tối ưu câu query tránh N+1 problem
         statement = (
             select(User)
             .options(joinedload(User.posts))
-            .order_by(User.id.asc())
+        )
+
+        # Nếu có tham số tìm kiếm, lọc theo cả Name hoặc Email (không phân biệt hoa thường)
+        if search:
+            statement = statement.where(
+                User.name.ilike(f"%{search}%") | 
+                User.email.ilike(f"%{search}%")
+            )
+
+        # Áp dụng sắp xếp, phân trang limit và offset
+        statement = (
+            statement
+            .order_by(asc(User.id))
+            .offset(offset)
+            .limit(limit)
         )
 
         return list(
             self.db.scalars(statement).unique().all()
         )
+
 
     def get_by_id(
         self,
@@ -2545,22 +2571,28 @@ def delete_post(
 ## `app/routers/user.py`
 
 ```python
-from app.models.user import User
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.orm import Session
 
 from app.dependencies import get_admin_user, get_user_service
-from app.schemas import APIResponse, UserCreate, UserPatch, UserResponse, UserUpdate
+from app.models.user import User
+from app.schemas import APIResponse, UserCreate, UserUpdate, UserPatch, UserResponse
+
 from app.services.user_service import UserService
 from app.utils.response import response
 
-
-
 router = APIRouter(prefix="/users", tags=["Users"])
 
-
 @router.get("/", response_model=APIResponse, summary="Get all users")
-def get_users(service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
-    users = service.get_users()
+def get_users(
+    limit: int = Query(default=10, ge=1, le=100, description="Số lượng bản ghi tối đa trả về"),
+    offset: int = Query(default=0, ge=0, description="Số lượng bản ghi bỏ qua (vị trí bắt đầu)"),
+    search: str = Query(default="", max_length=100, description="Từ khóa tìm kiếm theo tên hoặc email"),
+    service: UserService = Depends(get_user_service), 
+    admin: User = Depends(get_admin_user)
+):
+    # Truyền tham số phân trang vào service layer
+    users = service.get_users(limit=limit, offset=offset, search=search)
     data = [UserResponse.model_validate(user).model_dump() for user in users]
     return response("Users retrieved successfully", data)
 
@@ -3040,14 +3072,22 @@ from app.schemas.user import UserCreate, UserPatch, UserUpdate
 
 
 class UserService:
-    """Business rules for users. No direct SQL queries live here."""
-
     def __init__(self, db: Session):
         self.db = db
         self.repository = UserRepository(db)
 
-    def get_users(self) -> list[User]:
-        return self.repository.get_all()
+    def get_users(
+        self, 
+        limit: int = 10, 
+        offset: int = 0, 
+        search: str = ""
+    ) -> list[User]:
+        # Điều hướng xử lý dữ liệu qua repository
+        return self.repository.get_all(
+            limit=limit, 
+            offset=offset, 
+            search=search
+        )
 
     def get_user(self, user_id: int) -> User | None:
         return self.repository.get_by_id(user_id)
@@ -3196,9 +3236,12 @@ services:
   api:
     build: .
 
-    user: "${UID}:${GID}"
+    # user: "${UID}:${GID}"
 
     container_name: fastapi-api
+
+    security_opt:
+      - seccomp:unconfined
 
     ports:
       - "8000:8000"
@@ -8455,6 +8498,247 @@ Hiện tại em chưa muốn đi tiếp thêm feature vì nếu flow User → Au
 
 ---
 
+## `docs/diary/2026-09-24-current-progress.md`
+
+```markdown
+# 📅 Development Diary — 2026-09-24
+
+## Chủ đề
+**Phân tích sự phân mảnh giữa `crud/` và `repositories/` trước khi tiến hành Refactor.**
+
+---
+
+## 1. Vấn đề phát hiện
+Khi rà soát lại toàn bộ cây thư mục mã nguồn để chuẩn bị cho giai đoạn tối ưu hóa, tôi nhận thấy dự án đang rơi vào tình trạng **Split Responsibility (Phân mảnh trách nhiệm)** ở tầng truy cập dữ liệu:
+* Thư mục `app/crud/` cũ (từ giai đoạn phát triển ban đầu) và thư mục `app/repositories/` mới đang cùng tồn tại song song.
+* Một số hàm ở Router vẫn gọi gián tiếp qua cơ chế cũ, trong khi các tính năng nâng cao lại dùng cơ chế Class Injection của tầng Repository.
+* `app/main.py` vẫn giữ lệnh cấu hình thô:
+  ```python
+  Base.metadata.create_all(bind=engine)
+  ```
+  Điều này gây xung đột vùng xám với lịch sử di cư (Migration Chain) của **Alembic** (`e7d9b8aad922_initial_schema.py`).
+
+---
+
+## 2. Giải pháp kiến trúc đề xuất
+Tôi quyết định thiết lập một kế hoạch refactor nghiêm túc để ép toàn bộ luồng request chạy qua một trục duy nhất:
+```text
+Router (HTTP) ➔ Service (Business/Orchestration) ➔ Repository (Data Access) ➔ PostgreSQL
+```
+* **Hành động 1:** Chuyển dịch toàn bộ logic database còn sót lại từ `crud/` sang các hàm nghiệp vụ của `UserRepository` và `PostRepository`.
+* **Hành động 2:** Vô hiệu hóa hoàn toàn lệnh `create_all()` tại file khởi chạy để giao trọn quyền quản trị Schema cho hệ thống Migration.
+
+---
+
+## 3. Bài học rút ra
+Tách folder chỉ là hình thức bên ngoài. Để đạt được Clean Architecture thực sự, cấu trúc dữ liệu đi vào và đi ra giữa các lớp ranh giới phải có sự nhất quán và không được chồng chéo trách nhiệm lên nhau.
+```
+
+
+---
+
+## `docs/diary/2026-09-25-current-progress.md`
+
+```markdown
+# 📅 Development Diary — 2026-09-25
+
+## Chủ đề
+**Thực hiện Refactor hạ tầng dữ liệu và bàn giao toàn quyền cho Alembic.**
+
+---
+
+## 1. Các hạng mục đã thực hiện
+
+### 🔹 Cập nhật `app/main.py`
+Tôi đã mở tệp khởi chạy ứng dụng và tiến hành **xóa bỏ hoàn toàn** dòng lệnh cấu hình tự động sinh bảng:
+```python
+# ĐÃ XÓA: Base.metadata.create_all(bind=engine)
+```
+Từ thời điểm này, toàn bộ vòng đời của cơ sở dữ liệu (PostgreSQL 16) sẽ được kiểm soát nghiêm ngặt thông qua lệnh di cư:
+```bash
+docker compose exec api alembic upgrade head
+```
+
+### 🔹 Làm sạch dự án
+Để đảm bảo mã nguồn không còn tài liệu hay tàn dư gây nhiễu, tôi tiến hành xóa sổ hoàn toàn thư mục cũ bằng lệnh hệ thống trên máy host:
+```bash
+rm -rf app/crud/
+```
+
+### 🔹 Tối ưu hóa môi trường Test (`pytest.ini`)
+Trong các đợt chạy test trước, màn hình console bị tràn ngập các dòng thông báo màu vàng `DeprecationWarning` từ thư viện `starlette`. Tôi đã bổ sung cấu hình bộ lọc cảnh báo vào `pytest.ini` để làm sạch báo cáo đầu ra:
+```ini
+filterwarnings =
+    ignore::DeprecationWarning:starlette.*
+```
+
+---
+
+## 2. Kết quả đạt được
+* Kiến trúc dự án trở nên đồng nhất, gọn gàng theo chuẩn Layered Architecture.
+* Không còn rủi ro ghi đè hoặc tự động sửa đổi bảng ngoài ý muốn từ SQLAlchemy ORM khi chạy ứng dụng trên môi trường Production.
+```
+
+
+---
+
+## `docs/diary/2026-09-26-current-progress.md`
+
+```markdown
+# 📅 Development Diary — 2026-09-26
+
+## Chủ đề
+**Xử lý cảnh báo môi trường Docker Linux (UID/GID) và tối ưu hóa tốc độ Test.**
+
+---
+
+## 1. Vấn đề rào cản môi trường
+Mỗi khi tôi thực hiện các lệnh gọi kiểm thử hoặc vận hành container, hệ thống liên tục đưa ra cảnh báo:
+```text
+WARN[0000] The "UID" variable is not set. Defaulting to a blank string.
+WARN[0000] The "GID" variable is not set. Defaulting to a blank string.
+```
+Nguyên nhân do Docker Compose cố gắng map quyền sở hữu tệp tin (`user: "${UID}:${GID}"` trong `docker-compose.yml`) giữa máy Host chạy Linux Ubuntu và môi trường ảo hóa bên trong Container nhưng hai biến này chưa được khởi tạo ở môi trường cục bộ.
+
+---
+
+## 2. Giải pháp khắc phục
+Tôi đã tiến hành nạp trực tiếp mã định danh định danh User (UID) và Group (GID) của tài khoản hệ điều hành hiện tại vào tệp cấu hình ẩn `.env`:
+```bash
+echo "UID=\$(id -u)" >> .env
+echo "GID=\$(id -g)" >> .env
+```
+Sau đó tiến hành khởi động lại toàn bộ các dịch vụ để áp dụng:
+```bash
+docker compose down && docker compose up -d
+```
+
+---
+
+## 3. Bước nhảy vọt về hiệu năng kiểm thử
+Sau khi dọn sạch các cảnh báo môi trường và cấu hình ẩn Warning Starlette, tôi thực hiện chạy bộ thử nghiệm giả lập E2E trên trình duyệt Firefox:
+```bash
+docker compose exec api pytest tests/e2e -v --browser firefox
+```
+* **Kết quả:** **PASSED 100% (9/9 tests E2E thành công)**.
+* **Thời gian thực thi:** Giảm mạnh từ **95.70 giây xuống còn 20.75 giây** (Nhanh gấp 4.5 lần). Việc giải phóng các cảnh báo nghẽn luồng và làm sạch cache giúp Playwright tương tác với phần tử Swagger UI mượt mà hơn rất nhiều.
+```
+
+
+---
+
+## `docs/diary/2026-09-27-current-progress.md`
+
+```markdown
+# 📅 Development Diary — 2026-09-27
+
+## Chủ đề
+**Thiết kế và tích hợp Server-Side Pagination & Search cho bảng dữ liệu Users.**
+
+---
+
+## 1. Mục tiêu nghiệp vụ
+Hiện tại endpoint `GET /users/` đang lấy ra toàn bộ danh sách người dùng trong hệ thống mà không có sự kiểm soát về dung lượng. Nếu số lượng tài khoản lên tới hàng vạn, việc này sẽ gây nghẽn băng thông truyền tải dữ liệu và tràn bộ nhớ đệm của API. 
+
+Mục tiêu hôm nay là áp dụng bộ lọc phân trang chủ động (Pagination) và tìm kiếm không phân biệt hoa thường (Case-Insensitive Search) theo đúng mô hình 3 lớp.
+
+---
+
+## 2. Mã nguồn triển khai chi tiết
+
+### 🔹 Lớp Dữ liệu (`app/repositories/user_repository.py`)
+Nâng cấp hàm `get_all` để nhận tham số lọc, sử dụng cấu trúc toán tử logic toán tử `OR` (`|`) để tìm kiếm song song cả tên hoặc email:
+```python
+def get_all(self, limit: int = 10, offset: int = 0, search: str = "") -> list[User]:
+    statement = select(User).options(joinedload(User.posts))
+    
+    if search:
+        statement = statement.where(
+            User.name.ilike(f"%{search}%") | 
+            User.email.ilike(f"%{search}%")
+        )
+        
+    statement = statement.order_by(asc(User.id)).offset(offset).limit(limit)
+    return list(self.db.scalars(statement).unique().all())
+```
+
+### 🔹 Lớp Nghiệp vụ (`app/services/user_service.py`)
+Mở rộng hàm chuyển tiếp tham số điều phối dữ liệu từ tầng trên xuống kho lưu trữ:
+```python
+def get_users(self, limit: int = 10, offset: int = 0, search: str = "") -> list[User]:
+    return self.repository.get_all(limit=limit, offset=offset, search=search)
+```
+
+### 🔹 Lớp Giao tiếp (`app/routers/user.py`)
+Định nghĩa Query Parameter kèm điều kiện ràng buộc dữ liệu đầu vào thông qua đối tượng `Query` của FastAPI:
+```python
+@router.get("/", response_model=APIResponse, summary="Get all users")
+def get_users(
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    search: str = Query(default="", max_length=100),
+    service: UserService = Depends(get_user_service),
+    admin: User = Depends(get_admin_user)
+):
+    users = service.get_users(limit=limit, offset=offset, search=search)
+    data = [UserResponse.model_validate(user).model_dump() for user in users]
+    return response("Users retrieved successfully", data)
+```
+
+---
+
+## 3. Tình trạng cuối ngày
+Tính năng đã được tích hợp thành công lên hệ thống thực thi runtime. Kiểm tra Swagger UI cho thấy các tham số đầu vào hiển thị tường minh và chính xác. Tiến hành thực hiện lệnh lưu vết Git an toàn trước khi đăng xuất hệ thống:
+```bash
+git add .
+git commit -m "feat: add pagination and search queries to get all users endpoint"
+```
+```
+
+
+---
+
+## `docs/diary/2026-09-28-future-plan.md`
+
+```markdown
+# 📅 Development Diary — 2026-09-28
+
+## Chủ đề
+**Kế hoạch ngày làm việc tiếp theo: Viết bộ test phân trang và thiết lập Endpoint Analytics.**
+
+---
+
+## 1. Trạng thái xuất phát điểm (Baseline)
+Hệ thống hiện tại đang dừng ở trạng thái cực kỳ ổn định:
+* Tầng `crud` lai căng đã được xóa bỏ hoàn toàn.
+* Toàn bộ **31/31 kiểm thử tự động** (API + E2E Playwright Swagger) đều đạt trạng thái **PASSED 100%**.
+* Tính năng phân trang đầu cuối cho danh sách người dùng đã chạy ổn định trên môi trường thực tế nhưng **chưa có ca kiểm thử tự động (`pytest`) nào bao phủ**.
+
+---
+
+## 2. Kế hoạch hành động chi tiết cho ngày mai
+
+### 📌 Nhiệm vụ 1: Bổ sung Test Coverage cho tính năng Phân trang User
+Tôi sẽ mở file `tests/api/test_users.py` và viết thêm 3 ca kiểm thử mới:
+1. `test_get_users_pagination`: Tạo hàng loạt user giả lập bằng vòng lặp, sau đó gọi API với các cặp tham số `limit=2&offset=0` và `limit=2&offset=2` để đối chiếu tính chính xác của dữ liệu trả về dựa trên ID tăng dần.
+2. `test_get_users_search_by_name`: Kiểm tra tính năng tìm kiếm tài khoản theo từ khóa tên.
+3. `test_get_users_search_by_email`: Kiểm tra tính năng lọc tài khoản theo đuôi email.
+
+### 📌 Nhiệm vụ 2: Đưa tầng xử lý số liệu Analytics lên Web API
+Hiện tại gói phân tích dữ liệu chuyên sâu nâng cao của dự án (`analytics/charts.py`, `analytics/user_analysis.py`) mới chỉ chạy độc lập dưới dạng file kịch bản cục bộ hoặc nhúng thô ở một router đơn sơ.
+* Tôi sẽ tiến hành tích hợp toàn diện các hàm tính toán thống kê (Tính độ lệch chuẩn độ tuổi `age_std`, tìm trung vị tuổi `age_median`, đếm số lượng bài viết trung bình của từng vai trò quản trị) để tạo thành một endpoint API chính thức có đường dẫn:
+  ```text
+  GET /analytics/users/summary
+  ```
+  Endpoint này sẽ được cấu hình bảo mật cao, chỉ cho phép những tài khoản có quyền `admin` truy cập để xem báo cáo tổng quan hệ thống.
+### ⚠️ Ghi chú Debug lỗi hệ thống ngày 27/09:
+* **Hiện tượng:** Xung đột plugin `pytest-html` gây crash lỗi `pytest_sessionfinish` khi khởi tạo lại container sạch.
+* **Bài học/Giải pháp:** Phải chạy `mkdir -p tests/reports && chmod 777 tests/reports` trên máy host để cấp quyền ghi tệp báo cáo cho Docker, hoặc thêm cờ `-p no:html` khi cần quét nhanh kiểm thử.
+```
+
+
+---
+
 ## `docs/diary/README.md`
 
 ```markdown
@@ -8511,6 +8795,307 @@ E2E hiện đạt:
 ```text
 3 passed, 2 warnings
 ```
+```
+
+
+---
+
+## `docs/mentor/DOCKER_AND_ANALYTICS_NOTES.md`
+
+```markdown
+# FastAPI User Management --- Docker, Testing và Analytics Notes
+
+## 1. Trạng thái đã xác nhận
+
+-   Docker Compose khởi động được API và PostgreSQL.
+-   Firefox chạy được trong container API.
+-   Playwright E2E: **9 passed** với `tests/e2e --browser firefox`.
+-   API health endpoint trước đó trả về
+    `{"status":"healthy","api":"running","database":"connected"}`.
+-   PostgreSQL dùng named volume `postgres_data`. Không xóa volume khi
+    chỉ restart/rebuild ứng dụng.
+
+> `security_opt: - seccomp:unconfined` đã giúp Firefox tạo user
+> namespace trong môi trường local. Cấu hình này làm giảm mức cô lập bảo
+> mật; chỉ dùng cho development/E2E đáng tin cậy, không dùng làm cấu
+> hình production.
+
+## 2. Các lệnh Docker thường dùng
+
+Chạy tại thư mục gốc dự án, nơi có `docker-compose.yml`:
+
+``` bash
+docker compose ps
+docker compose up -d
+docker compose up --build -d
+docker compose logs -f api
+docker compose logs -f postgres
+curl http://localhost:8000/health
+docker compose exec api sh
+docker compose exec api id
+docker compose down
+```
+
+`docker compose down` thông thường giữ named volume. Tránh
+`docker compose down -v` nếu muốn giữ dữ liệu PostgreSQL.
+
+## 3. Kiểm tra Firefox / Playwright
+
+``` bash
+docker compose exec api playwright --version
+docker compose exec api python -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); b=p.firefox.launch(headless=True); print('Firefox launch OK'); b.close(); p.stop()"
+docker compose exec api sh -c 'unshare -Ur true; echo exit_code=$?'
+```
+
+Nếu Firefox báo `Firefox launch OK`, browser khởi chạy được. Nếu gặp
+`CanCreateUserNamespace() clone() failure: EPERM`, kiểm tra Docker
+security trước khi cài lại browser hoặc sửa code.
+
+## 4. Chạy kiểm thử
+
+### API tests
+
+``` bash
+docker compose exec -e PYTHONPATH=/app api pytest -q tests/api
+```
+
+### E2E tests với Firefox
+
+``` bash
+docker compose exec \
+  -e PYTHONPATH=/app \
+  api pytest -q tests/e2e \
+  --browser firefox
+```
+
+### Toàn bộ API + E2E và coverage
+
+``` bash
+docker compose exec \
+  -e PYTHONPATH=/app \
+  api pytest -q \
+  tests/api tests/e2e \
+  --browser firefox \
+  --cov=app \
+  --cov-report=term-missing \
+  --cov-report=html
+```
+
+Đọc số test pass/fail và coverage ở terminal. Báo cáo HTML được tạo tại
+`htmlcov/`; với bind mount `.:/app`, thư mục này cũng xuất hiện trên máy
+host.
+
+Nếu test lỗi: 1. Đọc lỗi đầu tiên có ý nghĩa. 2. Nếu lỗi tại browser
+fixture, kiểm tra Firefox launch độc lập. 3. Nếu lỗi DB, kiểm tra
+`docker compose ps` và log PostgreSQL. 4. Nếu lỗi import, xác nhận có
+`PYTHONPATH=/app`. 5. Chạy lại test liên quan trước, rồi chạy toàn bộ
+suite.
+
+## 5. Lộ trình NumPy, Pandas và Matplotlib
+
+Thực hành trước trong notebook hoặc script riêng với dữ liệu dự án. Khi
+đã hiểu kết quả, mới chuyển hàm ổn định vào `analytics/` và tích hợp API
+nếu hữu ích.
+
+### Bước 1 --- Pandas: khám phá dữ liệu
+
+-   Dùng `head()`, `shape`, `columns`, `dtypes`, `info()`.
+-   Kiểm tra thiếu dữ liệu bằng `isna().sum()`.
+-   Lọc/sắp xếp bằng `loc`, boolean filtering và `sort_values()`.
+-   Đếm bằng `value_counts()` và `groupby()`.
+
+Câu hỏi: có bao nhiêu user; số user theo role/gender; bao nhiêu bài viết
+mỗi user; ai có nhiều bài viết nhất?
+
+### Bước 2 --- NumPy: thống kê
+
+Thực hành `np.mean()`, `np.median()`, `np.min()`, `np.max()`, `np.std()`
+trên tuổi hoặc số bài viết/user. Ghi rõ xử lý giá trị thiếu và việc
+`np.std()` mặc định dùng population standard deviation (`ddof=0`);
+`ddof=1` dùng sample standard deviation.
+
+### Bước 3 --- Pandas: biến đổi và kết hợp
+
+-   Tạo cột tuổi từ `birth_year`.
+-   Phân nhóm tuổi bằng `pd.cut()` và ghi rõ biên nhóm.
+-   Kết hợp users và post counts bằng `merge()`.
+-   Tổng hợp theo role bằng `groupby()`.
+
+Kiểm tra DataFrame rỗng, birth year thiếu, user không có bài viết và
+user có nhiều bài viết.
+
+### Bước 4 --- Matplotlib: trực quan hóa
+
+-   Bar chart: user theo role/gender/age group.
+-   Histogram: phân phối tuổi.
+-   Bar chart: top users theo số bài viết.
+
+Thêm tiêu đề, nhãn trục, đơn vị nếu có, và ghi chú cách xử lý dữ liệu
+thiếu.
+
+### Bước 5 --- Tổ chức và tích hợp
+
+-   Giữ bài thử trong `notebook/` hoặc script học riêng.
+-   Chuyển hàm đã hiểu và kiểm tra vào `analytics/`.
+-   Giữ router mỏng; tránh đặt toàn bộ logic phân tích trong router.
+-   Chỉ tạo endpoint analytics khi có mục đích cụ thể.
+
+## 6. Nhật ký mỗi buổi học
+
+``` text
+Ngày:
+Mục tiêu:
+Dữ liệu sử dụng:
+Câu hỏi cần trả lời:
+Các hàm/thao tác đã học:
+Kết quả:
+Điều đã hiểu:
+Lỗi gặp phải và cách xử lý:
+Việc tiếp theo:
+```
+
+## 7. Quy trình làm việc gợi ý
+
+1.  `docker compose up -d`
+2.  `docker compose ps` và `curl http://localhost:8000/health`
+3.  Thực hành Pandas/NumPy/Matplotlib.
+4.  Chạy test liên quan sau khi sửa code.
+5.  Lưu ghi chú và trạng thái test/coverage.
+6.  Dừng bằng `docker compose down` nếu cần, không thêm `-v` khi cần giữ
+    DB.
+```
+
+
+---
+
+## `docs/mentor/development-notes.md`
+
+```markdown
+# Development Notes — FastAPI User Management
+
+## 1. Mục đích
+
+Tài liệu này ghi lại các lệnh thường dùng để chạy dự án FastAPI bằng Docker Compose, kiểm tra PostgreSQL, chạy test và xử lý lỗi Firefox khi chạy E2E test.
+
+## 2. Khởi động dự án
+
+Mở Terminal tại thư mục gốc `fastapi-user-management`.
+
+Khởi động container:
+
+`docker compose up -d`
+
+Nếu vừa thay đổi Dockerfile hoặc cấu hình cần build lại:
+
+`docker compose up --build -d`
+
+Kiểm tra trạng thái container:
+
+`docker compose ps`
+
+Kiểm tra API:
+
+`curl http://localhost:8000/health`
+
+Kết quả mong đợi là API báo `healthy` và database báo `connected`.
+
+## 3. Các lệnh Docker thường dùng
+
+- `docker compose logs api` — xem log API.
+- `docker compose logs -f api` — theo dõi log API liên tục.
+- `docker compose logs postgres` — xem log PostgreSQL.
+- `docker compose exec api sh` — mở shell trong container API.
+- `docker compose exec api id` — xem user đang chạy trong container.
+- `docker compose down` — dừng và xóa container/network của Compose.
+- `docker compose up --build -d` — build image và chạy lại container.
+
+**Lưu ý:** Không dùng `docker compose down -v` nếu không có chủ đích xóa volume. Volume `postgres_data` chứa dữ liệu PostgreSQL của dự án.
+
+## 4. Chạy kiểm thử
+
+Chạy toàn bộ API tests:
+
+`docker compose exec -e PYTHONPATH=/app api pytest -q tests/api`
+
+Chạy E2E tests với Firefox:
+
+`docker compose exec -e PYTHONPATH=/app api pytest -q tests/e2e --browser firefox`
+
+Chạy toàn bộ API và E2E tests kèm coverage:
+
+`docker compose exec -e PYTHONPATH=/app api pytest -q tests/api tests/e2e --browser firefox --cov=app --cov-report=term-missing --cov-report=html`
+
+- `-q`: output ngắn gọn.
+- `--browser firefox`: chọn Firefox cho E2E.
+- `--cov=app`: đo coverage cho package `app`.
+- `--cov-report=term-missing`: hiển thị coverage và các dòng chưa được kiểm thử.
+- `--cov-report=html`: tạo báo cáo HTML trong `htmlcov/`.
+
+## 5. Lỗi Firefox sandbox trong Docker
+
+### Hiện tượng
+
+Firefox không khởi động khi chạy Playwright. Log có thông báo:
+
+`Sandbox: CanCreateUserNamespace() clone() failure: EPERM`
+
+Lệnh kiểm tra namespace trong container mặc định cũng trả về `Operation not permitted`.
+
+### Nguyên nhân đã xác minh
+
+Container mặc định bị chặn thao tác tạo user namespace. Khi thử một container tạm với `seccomp=unconfined`, lệnh `unshare -Ur true` chạy thành công. Sau khi cấu hình `seccomp:unconfined` cho service API trong môi trường phát triển, Firefox khởi động thành công và 9 E2E tests đã PASS.
+
+### Cấu hình hiện tại
+
+Service `api` dùng `security_opt` với `seccomp:unconfined`. Cấu hình này làm giảm mức bảo vệ seccomp của container, vì vậy chỉ nên dùng trong môi trường local development/E2E đã kiểm soát, không mặc định đưa vào production.
+
+Container API hiện chạy bằng root vì cấu hình `user: "${UID}:${GID}"` đã được bỏ để kiểm tra và xử lý lỗi. Cần xem xét lại quyền chạy container và cách tách cấu hình E2E/dev khỏi cấu hình production trước khi triển khai.
+
+### Kiểm tra Firefox
+
+`docker compose exec api python -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); b=p.firefox.launch(headless=True); print('Firefox launch OK'); b.close(); p.stop()"`
+
+Kết quả đã quan sát: `Firefox launch OK`.
+
+Kiểm tra namespace:
+
+`docker compose exec api sh -c 'unshare -Ur true; echo exit_code=$?'`
+
+Sau khi áp dụng cấu hình hiện tại, kết quả đã quan sát: `exit_code=0`.
+
+## 6. Kết quả E2E gần nhất
+
+Ngày ghi nhận: 2026-10-02
+
+Lệnh chạy:
+
+`docker compose exec -e PYTHONPATH=/app api pytest -q tests/e2e --browser firefox`
+
+Kết quả: **9 passed in 26.45s**.
+
+Đây là kết quả E2E; cần chạy lại toàn bộ API và E2E tests để xác nhận trạng thái hiện tại của toàn dự án.
+
+## 7. Quy trình sau khi thay đổi code hoặc cấu hình
+
+1. Xác định file đã thay đổi và lý do.
+2. Nếu thay đổi Dockerfile hoặc cấu hình Compose, build/chạy lại container khi cần.
+3. Kiểm tra `docker compose ps` và `/health`.
+4. Chạy test phù hợp với phần vừa thay đổi.
+5. Chạy toàn bộ test và coverage trước khi chốt một mốc hoàn thành.
+6. Cập nhật tài liệu này nếu có lệnh, cấu hình hoặc cách xử lý lỗi mới.
+
+## 8. Ghi chú học NumPy, Pandas và Matplotlib
+
+Mục tiêu tiếp theo là học và thực hành phân tích dữ liệu dựa trên dữ liệu users và posts của chính dự án.
+
+- **Pandas:** tạo DataFrame, lọc dữ liệu, `value_counts`, `groupby`, `merge`, xử lý giá trị thiếu.
+- **NumPy:** tính mean, median, min, max và standard deviation.
+- **Matplotlib:** trực quan hóa số lượng users, phân bố độ tuổi và số posts theo user/role.
+
+Nên thực hành từng chủ đề trong notebook trước, sau đó chuyển các hàm đã hiểu rõ vào thư mục `analytics/` và tích hợp vào FastAPI khi có mục đích cụ thể.
+
+Không cần tạo dữ liệu giả khổng lồ ngay từ đầu. Hãy bắt đầu với dữ liệu users/posts hiện có và kiểm tra các trường hợp DataFrame rỗng hoặc dữ liệu thiếu.
+
 ```
 
 
@@ -8712,11 +9297,12 @@ python_functions = test_*
 addopts =
     -v
     --tb=short
-    --html=tests/reports/report.html
-    --self-contained-html
 
 testpaths =
     tests
+
+filterwarnings =
+    ignore::DeprecationWarning:starlette.*
 ```
 
 
