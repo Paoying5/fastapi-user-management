@@ -1,10 +1,12 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import (
     BaseModel,
     ConfigDict,
     EmailStr,
     Field,
+    StringConstraints,
+    field_validator,
 )
 
 from app.schemas.post import PostSimple
@@ -15,12 +17,32 @@ UserRole = Literal[
     "admin",
 ]
 
-
-class UserCreate(BaseModel):
-    name: str = Field(
+UserName = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
         min_length=2,
         max_length=100,
+    ),
+]
+
+FullName = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        max_length=100,
+    ),
+]
+
+
+class StrictRequestModel(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
     )
+
+
+class UserCreate(StrictRequestModel):
+    name: UserName
 
     email: EmailStr
 
@@ -29,52 +51,51 @@ class UserCreate(BaseModel):
         max_length=128,
     )
 
-    # Client không được tự chọn role khi đăng ký.
-    # Service luôn tạo user mới với role="user".
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
-    )
+    full_name: FullName | None = None
 
 
-class UserUpdate(BaseModel):
-    name: str = Field(
-        min_length=2,
-        max_length=100,
-    )
+class UserUpdate(StrictRequestModel):
+    name: UserName
 
     email: EmailStr
 
     role: UserRole
 
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
-    )
+    full_name: FullName | None = None
 
 
-class UserPatch(BaseModel):
-    name: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=100,
-    )
+class UserPatch(StrictRequestModel):
+    name: UserName | None = None
 
     email: EmailStr | None = None
 
     role: UserRole | None = None
 
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
+    full_name: FullName | None = None
+
+    @field_validator(
+        "name",
+        "email",
+        "role",
     )
+    @classmethod
+    def non_nullable_fields_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "Field cannot be null"
+            )
+
+        return value
 
 
 class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
-    role: str
+    role: UserRole
     full_name: str | None = None
 
     posts: list[PostSimple] = Field(

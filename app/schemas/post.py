@@ -1,32 +1,59 @@
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Annotated
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+)
 
 
-class PostCreate(BaseModel):
-    title: str = Field(
+PostTitle = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
         min_length=2,
         max_length=255,
+    ),
+]
+
+
+class StrictRequestModel(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
     )
+
+
+class PostCreate(StrictRequestModel):
+    title: PostTitle
 
     content: str | None = None
 
 
-class PostUpdate(BaseModel):
-    title: str = Field(
-        min_length=2,
-        max_length=255,
-    )
+class PostUpdate(StrictRequestModel):
+    title: PostTitle
 
     content: str | None = None
 
 
-class PostPatch(BaseModel):
-    title: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=255,
-    )
+class PostPatch(StrictRequestModel):
+    title: PostTitle | None = None
 
     content: str | None = None
+
+    @field_validator("title")
+    @classmethod
+    def title_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "title cannot be null"
+            )
+
+        return value
 
 
 class PostSimple(BaseModel):

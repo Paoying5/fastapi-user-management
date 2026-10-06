@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import CheckConstraint, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -6,6 +6,13 @@ from app.database import Base
 
 class User(Base):
     __tablename__ = "users"
+
+    __table_args__ = (
+        CheckConstraint(
+            "role IN ('user', 'admin')",
+            name="ck_users_role_allowed",
+        ),
+    )
 
     id = Column(
         Integer,
@@ -27,7 +34,9 @@ class User(Base):
 
     role = Column(
         String(50),
-        nullable=True,
+        nullable=False,
+        default="user",
+        server_default="user",
     )
 
     password = Column(
@@ -35,13 +44,13 @@ class User(Base):
         nullable=False,
     )
 
+    full_name = Column(
+        String(100),
+        nullable=True,
+    )
+
     posts = relationship(
         "Post",
         back_populates="owner",
         cascade="all, delete-orphan",
     )
-
-    full_name = Column(
-    String(100),
-    nullable=True,
-)
