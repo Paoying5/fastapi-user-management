@@ -20,10 +20,11 @@ class AuthService:
         email: str,
         password: str,
     ) -> User | None:
+        normalized_email = email.strip().lower()
 
-        email = email.strip().lower()
-
-        user = self.repository.get_by_email(email)
+        user = self.repository.get_by_email(
+            normalized_email
+        )
 
         if user is None:
             return None
@@ -41,7 +42,6 @@ class AuthService:
         email: str,
         password: str,
     ) -> Token | None:
-
         user = self.authenticate_user(
             email,
             password,
@@ -50,18 +50,31 @@ class AuthService:
         if user is None:
             return None
 
+        access_token = create_access_token(
+            {
+                "sub": str(user.id),
+            }
+        )
+
         return Token(
-            access_token=create_access_token(
-                {"sub": user.email}
-            ),
+            access_token=access_token,
             token_type="bearer",
+        )
+
+    def get_user_by_id(
+        self,
+        user_id: int,
+    ) -> User | None:
+        return self.repository.get_by_id(
+            user_id
         )
 
     def get_user_by_email(
         self,
         email: str,
     ) -> User | None:
+        normalized_email = email.strip().lower()
 
         return self.repository.get_by_email(
-            email.strip().lower()
+            normalized_email
         )

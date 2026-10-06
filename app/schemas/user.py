@@ -1,6 +1,19 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import Literal
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+)
 
 from app.schemas.post import PostSimple
+
+
+UserRole = Literal[
+    "user",
+    "admin",
+]
 
 
 class UserCreate(BaseModel):
@@ -16,8 +29,8 @@ class UserCreate(BaseModel):
         max_length=128,
     )
 
-    # Không nên cho client tự tạo admin.
-    # Service sẽ quyết định role mặc định.
+    # Client không được tự chọn role khi đăng ký.
+    # Service luôn tạo user mới với role="user".
     full_name: str | None = Field(
         default=None,
         max_length=100,
@@ -32,10 +45,7 @@ class UserUpdate(BaseModel):
 
     email: EmailStr
 
-    role: str = Field(
-        min_length=2,
-        max_length=30,
-    )
+    role: UserRole
 
     full_name: str | None = Field(
         default=None,
@@ -52,11 +62,7 @@ class UserPatch(BaseModel):
 
     email: EmailStr | None = None
 
-    role: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=30,
-    )
+    role: UserRole | None = None
 
     full_name: str | None = Field(
         default=None,

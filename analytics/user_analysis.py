@@ -1,122 +1,75 @@
 import pandas as pd
-import numpy as np
 from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from app.models.user import User
-from datetime import date
 
 
-def get_users_dataframe(session):
+def get_users_dataframe(
+    session: Session,
+) -> pd.DataFrame:
+    """
+    Load the currently supported User fields into a DataFrame.
+
+    This function intentionally uses only columns that actually exist
+    in the current SQLAlchemy User model.
+    """
     users = session.scalars(
         select(User)
     ).all()
 
-    data = []
+    data = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "full_name": user.full_name,
+        }
+        for user in users
+    ]
 
-    for user in users:
-        data.append(
-            {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "gender": user.gender,
-                "birth_year": user.birth_year,
-                "role": user.role,
-                "is_active": user.is_active,
-            }
-        )
-
-    return pd.DataFrame(data)
+    return pd.DataFrame(
+        data,
+        columns=[
+            "id",
+            "name",
+            "email",
+            "role",
+            "full_name",
+        ],
+    )
 
 
-def count_users(df: pd.DataFrame):
+def count_users(
+    df: pd.DataFrame,
+) -> int:
     return len(df)
 
 
-def users_by_role(df: pd.DataFrame):
-    return (
+def users_by_role(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Count users grouped by role.
+
+    Null roles are grouped as 'unknown' so analytics does not silently
+    discard those records.
+    """
+    if df.empty:
+        return pd.DataFrame(
+            columns=[
+                "role",
+                "user_count",
+            ]
+        )
+
+    role_counts = (
         df["role"]
+        .fillna("unknown")
         .value_counts()
-        .reset_index()
-        .rename(
-            columns={
-                "role": "role",
-                "count": "user_count",
-            }
-        )
+        .rename_axis("role")
+        .reset_index(name="user_count")
     )
 
-
-def users_by_gender(df: pd.DataFrame):
-    return (
-        df["gender"]
-        .fillna("Unknown")
-        .value_counts()
-        .reset_index()
-        .rename(
-            columns={
-                "gender": "gender",
-                "count": "user_count",
-            }
-        )
-    )
-
-
-def add_age_column(df: pd.DataFrame):
-    current_year = date.today().year
-
-    df = df.copy()
-
-    df["age"] = current_year - df["birth_year"]
-
-    return df
-
-
-def add_age_group(df: pd.DataFrame):
-    df = df.copy()
-
-    df["age_group"] = pd.cut(
-        df["age"],
-        bins=[0, 18, 25, 35, 50, 100],
-        labels=[
-            "Under 18",
-            "18-25",
-            "26-35",
-            "36-50",
-            "50+",
-        ],
-        right=True,
-    )
-
-    return df
-
-
-def users_by_age_group(df: pd.DataFrame):
-    return (
-        df["age_group"]
-        .value_counts()
-        .sort_index()
-        .reset_index()
-    )
-
-
-def calculate_age_statistics(df: pd.DataFrame):
-    ages = df["age"].dropna().to_numpy()
-
-    if len(ages) == 0:
-        return {
-            "count": 0,
-            "mean": None,
-            "median": None,
-            "min": None,
-            "max": None,
-            "std": None,
-        }
-
-    return {
-        "count": len(ages),
-        "mean": float(np.mean(ages)),
-        "median": float(np.median(ages)),
-        "min": float(np.min(ages)),
-        "max": float(np.max(ages)),
-        "std": float(np.std(ages)),
-    }
+    return role_counts

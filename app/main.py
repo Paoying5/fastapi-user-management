@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 
-from app.routers import auth, health, post, user
+from app.routers import (
+    analytics,
+    auth,
+    health,
+    post,
+    user,
+)
 
 
 app = FastAPI(
@@ -13,15 +19,18 @@ app = FastAPI(
 )
 
 
-# Register routers
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(post.router)
+app.include_router(analytics.router)
 
 
-@app.get("/", tags=["Default"])
-def root():
+@app.get(
+    "/",
+    tags=["Default"],
+)
+def root() -> dict[str, str]:
     return {
         "message": "FastAPI User Management is running",
         "docs": "/docs",

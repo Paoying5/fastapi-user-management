@@ -1,13 +1,19 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.database import get_db
 from analytics.user_analysis import (
+    count_users,
     get_users_dataframe,
     users_by_role,
-    add_age_column,
-    calculate_age_statistics,
 )
+from app.dependencies import (
+    get_admin_user,
+    get_db,
+)
+from app.models import User
+from app.schemas import APIResponse
+from app.utils.response import response
+
 
 router = APIRouter(
     prefix="/analytics",
@@ -15,46 +21,36 @@ router = APIRouter(
 )
 
 
-@router.get("/users/summary")
+@router.get(
+    "/users/summary",
+    response_model=APIResponse,
+    summary="Get user analytics summary",
+)
 def user_summary(
     db: Session = Depends(get_db),
-):
-    df = get_users_dataframe(db)
+    admin: User = Depends(get_admin_user),
+) -> dict:
+    """
+    Return basic user statistics.
 
-    df = add_age_column(df)
+    Access is restricted to admin users.
+    """
+    users_df = get_users_dataframe(db)
 
-    role_counts = users_by_role(df)
+    role_counts = users_by_role(
+        users_df
+    )
 
-    age_statistics = calculate_age_statistics(df)
-
-    return {
-        "total_users": len(df),
-        "users_by_role": (
-            role_counts
-            .to_dict(orient="records")
+    data = {
+        "total_users": count_users(
+            users_df
         ),
-        "age_statistics": age_statistics,
+        "users_by_role": role_counts.to_dict(
+            orient="records"
+        ),
     }
 
-
-{
-    "total_users": 69,
-    "users_by_role": [
-        {
-            "role": "user",
-            "user_count": 65
-        },
-        {
-            "role": "admin",
-            "user_count": 4
-        }
-    ],
-    "age_statistics": {
-        "count": 60,
-        "mean": 25.8,
-        "median": 25.0,
-        "min": 20,
-        "max": 39,
-        "std": 4.2
-    }
-}
+    return response(
+        "User analytics retrieved successfully",
+        data,
+    )
