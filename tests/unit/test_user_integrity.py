@@ -1,7 +1,7 @@
 import pytest
-from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
+from app.core.exceptions import ConflictError
 from app.core.security import hash_password
 from app.models import User
 from app.schemas.user import UserCreate
@@ -14,7 +14,9 @@ def test_user_default_role_is_user(
     user = User(
         name="Default Role User",
         email="default-role@example.com",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="Default Role User",
     )
 
@@ -32,13 +34,17 @@ def test_database_rejects_invalid_role(
         name="Invalid Role User",
         email="invalid-role-db@example.com",
         role="superadmin",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="Invalid Role User",
     )
 
     db_session.add(user)
 
-    with pytest.raises(IntegrityError):
+    with pytest.raises(
+        IntegrityError
+    ):
         db_session.commit()
 
     db_session.rollback()
@@ -51,7 +57,9 @@ def test_database_unique_constraint_rejects_duplicate_email(
         name="First User",
         email="duplicate-db@example.com",
         role="user",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="First User",
     )
 
@@ -59,7 +67,9 @@ def test_database_unique_constraint_rejects_duplicate_email(
         name="Second User",
         email="duplicate-db@example.com",
         role="user",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="Second User",
     )
 
@@ -68,13 +78,15 @@ def test_database_unique_constraint_rejects_duplicate_email(
 
     db_session.add(second_user)
 
-    with pytest.raises(IntegrityError):
+    with pytest.raises(
+        IntegrityError
+    ):
         db_session.commit()
 
     db_session.rollback()
 
 
-def test_service_converts_unique_race_to_409(
+def test_service_converts_unique_race_to_conflict(
     db_session,
     monkeypatch,
 ):
@@ -82,7 +94,9 @@ def test_service_converts_unique_race_to_409(
         name="Existing User",
         email="race@example.com",
         role="user",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="Existing User",
     )
 
@@ -93,11 +107,6 @@ def test_service_converts_unique_race_to_409(
         db_session
     )
 
-    # Simulate a race:
-    #
-    # The application-level SELECT believes
-    # the email is still available,
-    # but the database already contains it.
     monkeypatch.setattr(
         service.repository,
         "get_by_email",
@@ -112,18 +121,13 @@ def test_service_converts_unique_race_to_409(
     )
 
     with pytest.raises(
-        HTTPException
+        ConflictError
     ) as exc_info:
         service.create_user(
             user_data
         )
 
     assert (
-        exc_info.value.status_code
-        == 409
-    )
-
-    assert (
-        exc_info.value.detail
+        exc_info.value.message
         == "Email already exists"
     )

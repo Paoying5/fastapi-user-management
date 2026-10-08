@@ -1,13 +1,20 @@
 from typing import NoReturn
 
-from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import (
+    ConflictError,
+    ResourceNotFoundError,
+)
 from app.core.security import hash_password
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserCreate, UserPatch, UserUpdate
+from app.schemas.user import (
+    UserCreate,
+    UserPatch,
+    UserUpdate,
+)
 
 
 class UserService:
@@ -30,10 +37,17 @@ class UserService:
     def get_user(
         self,
         user_id: int,
-    ) -> User | None:
-        return self.repository.get_by_id(
+    ) -> User:
+        user = self.repository.get_by_id(
             user_id
         )
+
+        if user is None:
+            raise ResourceNotFoundError(
+                "User not found"
+            )
+
+        return user
 
     def create_user(
         self,
@@ -43,16 +57,12 @@ class UserService:
             str(user_data.email)
         )
 
-        # Friendly early check.
-        # This is useful, but it is NOT the final protection
-        # against concurrent requests.
         if (
             self.repository.get_by_email(email)
             is not None
         ):
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
+            raise ConflictError(
+                "Email already exists"
             )
 
         user = User(
@@ -84,13 +94,15 @@ class UserService:
         self,
         user_id: int,
         user_data: UserUpdate,
-    ) -> User | None:
+    ) -> User:
         user = self.repository.get_by_id(
             user_id
         )
 
         if user is None:
-            return None
+            raise ResourceNotFoundError(
+                "User not found"
+            )
 
         email = self._normalize_email(
             str(user_data.email)
@@ -101,9 +113,8 @@ class UserService:
             and self.repository.get_by_email(email)
             is not None
         ):
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
+            raise ConflictError(
+                "Email already exists"
             )
 
         user.name = user_data.name
@@ -117,13 +128,15 @@ class UserService:
         self,
         user_id: int,
         user_data: UserPatch,
-    ) -> User | None:
+    ) -> User:
         user = self.repository.get_by_id(
             user_id
         )
 
         if user is None:
-            return None
+            raise ResourceNotFoundError(
+                "User not found"
+            )
 
         update_data = user_data.model_dump(
             exclude_unset=True
@@ -144,9 +157,8 @@ class UserService:
                 )
                 is not None
             ):
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail="Email already exists",
+                raise ConflictError(
+                    "Email already exists"
                 )
 
             update_data["email"] = email
@@ -163,19 +175,19 @@ class UserService:
     def delete_user(
         self,
         user_id: int,
-    ) -> bool:
+    ) -> None:
         user = self.repository.get_by_id(
             user_id
         )
 
         if user is None:
-            return False
+            raise ResourceNotFoundError(
+                "User not found"
+            )
 
         try:
             self.repository.delete(user)
             self.db.commit()
-
-            return True
 
         except Exception:
             self.db.rollback()
@@ -234,24 +246,19 @@ class UserService:
         }
 
         is_email_conflict = (
-            constraint_name
-            in email_constraints
+            constraint_name in email_constraints
             or (
-                "users.email"
-                in original_error
+                "users.email" in original_error
                 and (
-                    "unique"
-                    in original_error
-                    or "duplicate"
-                    in original_error
+                    "unique" in original_error
+                    or "duplicate" in original_error
                 )
             )
         )
 
         if is_email_conflict:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
+            raise ConflictError(
+                "Email already exists"
             ) from exc
 
         raise exc
