@@ -1,12 +1,18 @@
-from typing import Any
+from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel
 
 
-class APIResponse(BaseModel):
-    status: str
+T = TypeVar("T")
+
+
+class APIResponse(
+    BaseModel,
+    Generic[T],
+):
+    status: Literal["success"] = "success"
     message: str
-    data: Any | None = None
+    data: T | None = None
 
 
 class MessageResponse(BaseModel):

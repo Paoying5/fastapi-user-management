@@ -1,4 +1,13 @@
-from sqlalchemy import CheckConstraint, Column, Integer, String
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Integer,
+    String,
+    func,
+    text,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -36,7 +45,7 @@ class User(Base):
         String(50),
         nullable=False,
         default="user",
-        server_default="user",
+        server_default=text("'user'"),
     )
 
     password = Column(
@@ -46,6 +55,31 @@ class User(Base):
 
     full_name = Column(
         String(100),
+        nullable=True,
+    )
+
+    is_active = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+        server_default=text("true"),
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    last_login_at = Column(
+        DateTime(timezone=True),
         nullable=True,
     )
 

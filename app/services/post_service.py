@@ -56,13 +56,23 @@ class PostService:
         limit: int = 10,
         offset: int = 0,
         search: str = "",
-    ) -> list[Post]:
-        return self.repository.get_all(
-            limit=limit,
-            offset=offset,
-            search=search,
+    ) -> tuple[list[Post], int]:
+        posts = (
+            self.repository.get_all(
+                limit=limit,
+                offset=offset,
+                search=search,
+            )
         )
 
+        total = (
+            self.repository.count(
+                search=search
+            )
+        )
+
+        return posts, total
+    
     def get_my_posts(
         self,
         user_id: int,

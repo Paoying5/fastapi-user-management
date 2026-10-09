@@ -27,13 +27,23 @@ class UserService:
         limit: int = 10,
         offset: int = 0,
         search: str = "",
-    ) -> list[User]:
-        return self.repository.get_all(
-            limit=limit,
-            offset=offset,
-            search=search,
+    ) -> tuple[list[User], int]:
+        users = (
+            self.repository.get_all(
+                limit=limit,
+                offset=offset,
+                search=search,
+            )
         )
 
+        total = (
+            self.repository.count(
+                search=search
+            )
+        )
+
+        return users, total
+    
     def get_user(
         self,
         user_id: int,

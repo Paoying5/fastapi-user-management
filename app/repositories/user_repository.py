@@ -1,4 +1,9 @@
-from sqlalchemy import asc, select
+from sqlalchemy import (
+    asc,
+    func,
+    or_,
+    select,
+)
 from sqlalchemy.orm import (
     Session,
     joinedload,
@@ -9,7 +14,10 @@ from app.models.user import User
 
 
 class UserRepository:
-    def __init__(self, db: Session):
+    def __init__(
+        self,
+        db: Session,
+    ):
         self.db = db
 
     def get_all(
@@ -18,23 +26,38 @@ class UserRepository:
         offset: int = 0,
         search: str = "",
     ) -> list[User]:
-        statement = select(User).options(
-            selectinload(User.posts)
+        statement = (
+            select(User)
+            .options(
+                selectinload(
+                    User.posts
+                )
+            )
         )
 
         if search:
-            statement = statement.where(
-                User.name.ilike(
-                    f"%{search}%"
-                )
-                | User.email.ilike(
-                    f"%{search}%"
+            pattern = (
+                f"%{search}%"
+            )
+
+            statement = (
+                statement.where(
+                    or_(
+                        User.name.ilike(
+                            pattern
+                        ),
+                        User.email.ilike(
+                            pattern
+                        ),
+                    )
                 )
             )
 
         statement = (
             statement
-            .order_by(asc(User.id))
+            .order_by(
+                asc(User.id)
+            )
             .offset(offset)
             .limit(limit)
         )
@@ -45,6 +68,43 @@ class UserRepository:
             ).all()
         )
 
+    def count(
+        self,
+        search: str = "",
+    ) -> int:
+        statement = (
+            select(
+                func.count()
+            )
+            .select_from(User)
+        )
+
+        if search:
+            pattern = (
+                f"%{search}%"
+            )
+
+            statement = (
+                statement.where(
+                    or_(
+                        User.name.ilike(
+                            pattern
+                        ),
+                        User.email.ilike(
+                            pattern
+                        ),
+                    )
+                )
+            )
+
+        result = self.db.scalar(
+            statement
+        )
+
+        return int(
+            result or 0
+        )
+
     def get_by_id(
         self,
         user_id: int,
@@ -52,15 +112,19 @@ class UserRepository:
         statement = (
             select(User)
             .options(
-                joinedload(User.posts)
+                joinedload(
+                    User.posts
+                )
             )
             .where(
-                User.id == user_id
+                User.id
+                == user_id
             )
         )
 
         return (
-            self.db.scalars(statement)
+            self.db
+            .scalars(statement)
             .unique()
             .first()
         )
@@ -69,13 +133,19 @@ class UserRepository:
         self,
         email: str,
     ) -> User | None:
-        statement = select(User).where(
-            User.email == email
+        statement = (
+            select(User)
+            .where(
+                User.email
+                == email
+            )
         )
 
-        return self.db.scalars(
-            statement
-        ).first()
+        return (
+            self.db
+            .scalars(statement)
+            .first()
+        )
 
     def add(
         self,

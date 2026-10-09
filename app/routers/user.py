@@ -2,6 +2,7 @@ from fastapi import (
     APIRouter,
     Depends,
     Query,
+    Response,
     status,
 )
 
@@ -18,6 +19,10 @@ from app.schemas import (
     UserUpdate,
 )
 from app.services.user_service import UserService
+from app.utils.pagination import (
+    PAGINATION_HEADERS_OPENAPI,
+    build_pagination_headers,
+)
 from app.utils.response import response
 
 
@@ -29,25 +34,43 @@ router = APIRouter(
 
 @router.get(
     "/",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        list[UserResponse]
+    ],
     summary="Get all users",
+    responses={
+        200: {
+            "description": (
+                "Users retrieved successfully"
+            ),
+            "headers":
+                PAGINATION_HEADERS_OPENAPI,
+        },
+    },
 )
 def get_users(
+    http_response: Response,
     limit: int = Query(
         default=10,
         ge=1,
         le=100,
-        description="Số lượng bản ghi tối đa trả về",
+        description=(
+            "Số lượng bản ghi tối đa trả về"
+        ),
     ),
     offset: int = Query(
         default=0,
         ge=0,
-        description="Số lượng bản ghi bỏ qua",
+        description=(
+            "Số lượng bản ghi bỏ qua"
+        ),
     ),
     search: str = Query(
         default="",
         max_length=100,
-        description="Tìm kiếm theo tên hoặc email",
+        description=(
+            "Tìm kiếm theo tên hoặc email"
+        ),
     ),
     service: UserService = Depends(
         get_user_service
@@ -56,16 +79,26 @@ def get_users(
         get_admin_user
     ),
 ):
-    users = service.get_users(
-        limit=limit,
-        offset=offset,
-        search=search,
+    users, total = (
+        service.get_users(
+            limit=limit,
+            offset=offset,
+            search=search,
+        )
+    )
+
+    http_response.headers.update(
+        build_pagination_headers(
+            total=total,
+            limit=limit,
+            offset=offset,
+        )
     )
 
     data = [
-        UserResponse.model_validate(
-            user
-        ).model_dump()
+        UserResponse
+        .model_validate(user)
+        .model_dump()
         for user in users
     ]
 
@@ -77,7 +110,9 @@ def get_users(
 
 @router.get(
     "/{user_id}",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        UserResponse
+    ],
     summary="Get user by ID",
 )
 def get_user(
@@ -107,7 +142,9 @@ def get_user(
 
 @router.post(
     "/",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        UserResponse
+    ],
     status_code=status.HTTP_201_CREATED,
     summary="Create user",
 )
@@ -135,7 +172,9 @@ def create_user(
 
 @router.put(
     "/{user_id}",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        UserResponse
+    ],
     summary="Replace user",
 )
 def update_user(
@@ -148,14 +187,18 @@ def update_user(
         get_admin_user
     ),
 ):
-    updated_user = service.update_user(
-        user_id,
-        user,
+    updated_user = (
+        service.update_user(
+            user_id,
+            user,
+        )
     )
 
     data = (
         UserResponse
-        .model_validate(updated_user)
+        .model_validate(
+            updated_user
+        )
         .model_dump()
     )
 
@@ -167,7 +210,9 @@ def update_user(
 
 @router.patch(
     "/{user_id}",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        UserResponse
+    ],
     summary="Partially update user",
 )
 def patch_user(
@@ -180,14 +225,18 @@ def patch_user(
         get_admin_user
     ),
 ):
-    updated_user = service.patch_user(
-        user_id,
-        user_data,
+    updated_user = (
+        service.patch_user(
+            user_id,
+            user_data,
+        )
     )
 
     data = (
         UserResponse
-        .model_validate(updated_user)
+        .model_validate(
+            updated_user
+        )
         .model_dump()
     )
 
@@ -199,7 +248,9 @@ def patch_user(
 
 @router.delete(
     "/{user_id}",
-    response_model=APIResponse,
+    response_model=APIResponse[
+        None
+    ],
     summary="Delete user",
 )
 def delete_user(

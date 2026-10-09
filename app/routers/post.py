@@ -1,6 +1,7 @@
 from fastapi import (
     APIRouter,
     Depends,
+    Response,
     Query,
     status,
 )
@@ -18,6 +19,10 @@ from app.schemas import (
     PostUpdate,
 )
 from app.services.post_service import PostService
+from app.utils.pagination import (
+    PAGINATION_HEADERS_OPENAPI,
+    build_pagination_headers,
+)
 
 
 router = APIRouter(
@@ -45,12 +50,21 @@ def create_post(
         current_user.id,
     )
 
-
 @router.get(
     "/",
     response_model=list[PostResponse],
+    responses={
+        200: {
+            "description": (
+                "Posts retrieved successfully"
+            ),
+            "headers":
+                PAGINATION_HEADERS_OPENAPI,
+        },
+    },
 )
 def get_posts(
+    http_response: Response,
     limit: int = Query(
         default=10,
         ge=1,
@@ -68,12 +82,23 @@ def get_posts(
         get_post_service
     ),
 ):
-    return service.get_posts(
-        limit=limit,
-        offset=offset,
-        search=search,
+    posts, total = (
+        service.get_posts(
+            limit=limit,
+            offset=offset,
+            search=search,
+        )
     )
 
+    http_response.headers.update(
+        build_pagination_headers(
+            total=total,
+            limit=limit,
+            offset=offset,
+        )
+    )
+
+    return posts
 
 @router.get(
     "/me",
