@@ -135,3 +135,102 @@ def test_user_role_schema_constraints(
 
     assert "user" in sql_text
     assert "admin" in sql_text
+
+def test_user_lifecycle_columns_exist(
+    pg_engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    columns = {
+        column["name"]: column
+        for column
+        in inspector.get_columns(
+            "users"
+        )
+    }
+
+    assert "is_active" in columns
+    assert "created_at" in columns
+    assert "updated_at" in columns
+    assert "last_login_at" in columns
+
+    assert (
+        columns["is_active"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["created_at"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["updated_at"]["nullable"]
+        is False
+    )
+
+
+def test_post_lifecycle_schema_exists(
+    pg_engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    columns = {
+        column["name"]: column
+        for column
+        in inspector.get_columns(
+            "posts"
+        )
+    }
+
+    assert "status" in columns
+    assert "created_at" in columns
+    assert "updated_at" in columns
+
+    assert (
+        columns["status"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["created_at"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["updated_at"]["nullable"]
+        is False
+    )
+
+    constraints = (
+        inspector.get_check_constraints(
+            "posts"
+        )
+    )
+
+    status_constraint = next(
+        (
+            constraint
+            for constraint
+            in constraints
+            if (
+                constraint["name"]
+                == "ck_posts_status_allowed"
+            )
+        ),
+        None,
+    )
+
+    assert status_constraint is not None
+
+    sql_text = str(
+        status_constraint["sqltext"]
+    ).lower()
+
+    assert "draft" in sql_text
+    assert "published" in sql_text
+    assert "archived" in sql_text
