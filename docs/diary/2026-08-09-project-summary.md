@@ -136,7 +136,7 @@ Tiếp tục với:
 
 Tôi bắt đầu nhận ra rằng refactor architecture không chỉ là “tách file”. Import, dependency và request flow cũng phải được kiểm tra lại.
 
-📓 [Development Log — 01/08](./2026-08-1-current-progress.md)
+📓 [Development Log — 01/08](./2026-08-01-current-progress.md)
 
 ---
 
@@ -921,7 +921,7 @@ Các screenshot API được README tham chiếu:
 | [29/07](./2026-07-29-current-progress.md) | SQLAlchemy query và filtering |
 | [30/07](./2026-07-30-current-progress.md) | Docker + Alembic |
 | [31/07](./2026-07-31-current-progress.md) | Repository Pattern |
-| [01/08](./2026-08-1-current-progress.md) | Repository thực hành sâu hơn |
+| [01/08](./2026-08-01-current-progress.md) | Repository thực hành sâu hơn |
 | [02/08](./2026-08-02-current-progress.md) | Architecture và responsibility |
 | [03/08](./2026-08-03-current-progress.md) | Service Layer |
 | [04/08](./2026-08-04-current-progress.md) | Models & Schemas |

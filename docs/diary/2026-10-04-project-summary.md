@@ -1,56 +1,215 @@
-# Value Counts, xử lý dữ liệu và tổng kết tuần
+# FastAPI User Management — Weekly Project Summary
 
-## 📊 Kỹ thuật Value Counts
+**Period:** 2026-09-29 → 2026-10-04
 
-Hôm nay tôi tiếp tục học cách đếm tần suất xuất hiện của dữ liệu bằng phương thức:
-```python
-df["role"].value_counts()
-```
+## 1. Main focus
 
-**Kết quả trả về:**
+This period focused on stabilizing the FastAPI learning environment and beginning the transition from backend development toward data analysis.
+
+The work covered four connected areas:
+
+- authentication and password security;
+- Docker / Playwright E2E stability;
+- regression testing and coverage;
+- introductory NumPy and Pandas practice using project data.
+
+---
+
+## 2. Authentication and security review
+
+The authentication flow was reviewed around:
+
 ```text
-user    93
-Name: role, dtype: int64
+password
+   ↓
+Argon2 hashing / verification
+   ↓
+JWT access token
 ```
 
-💡 **Bài học rút ra:** Hàm `value_counts()` cực kỳ phù hợp khi mục tiêu duy nhất là đếm nhanh số lần xuất hiện của từng giá trị trong một cột cụ thể. So với `groupby().size()`, phương thức này ngắn gọn và tiện lợi hơn rất nhiều khi không cần thực hiện thêm các phép tính tổng hợp phức tạp khác.
+The project uses `pwdlib` with Argon2 for password hashing and `python-jose` for JWT creation.
+
+The password flow was verified directly inside the container:
+
+- correct password → accepted;
+- incorrect password → rejected;
+- stored password → hashed instead of plain text.
+
+UTC-aware datetime handling was also reviewed for token-related time values.
 
 ---
 
-## 🔤 Xử lý dữ liệu chữ hoa và chữ thường
+## 3. Docker and Playwright Firefox
 
-Tôi thực hành trích xuất chữ cái đầu tiên trong tên của User bằng cú pháp `df["name"].str[0]`.
+A Playwright/Firefox issue appeared inside Docker:
 
-* **Hiện tượng ban đầu:** Kết quả trả về chứa cả chữ hoa và chữ thường riêng biệt (`A`, `S`, `a`) do dữ liệu gốc chưa đồng nhất:
-  * `Admin Test` → `A`
-  * `Swagger ...` → `S`
-  * `admin` → `a`
-* **Giải pháp chuẩn hóa:** Tôi sử dụng `.str.upper()` để chuyển toàn bộ ký tự về dạng chữ in hoa trước khi đếm:
-  ```python
-  df["name"].str[0].str.upper().value_counts()
-  ```
-* **Kết quả sau khi xử lý:** Dữ liệu đã được gộp nhóm chính xác:
-  ```text
-  S    91
-  A     2
-  ```
+```text
+Sandbox: CanCreateUserNamespace() clone() failure: EPERM
+```
 
-> 📌 **Nhận xét:** Đây là một ví dụ thực tế điển hình về tầm quan trọng của việc **làm sạch và chuẩn hóa dữ liệu** (Data Cleaning) trước khi tiến hành các bước phân tích hay thống kê chuyên sâu.
+The root cause was related to the container security profile rather than missing Python packages.
+
+For the local development / E2E environment, the API service was tested with:
+
+```yaml
+security_opt:
+  - seccomp:unconfined
+```
+
+This allowed Firefox to launch successfully in the controlled development environment.
+
+> This setting reduces container isolation and is not treated as a production default.
 
 ---
 
-## 🔍 Kiểm tra và xử lý dữ liệu thiếu (Missing Values)
+## 4. Regression testing
 
-Tôi bắt đầu tiếp cận các phương thức kiểm tra dữ liệu khuyết thiếu trong DataFrame:
+After stabilizing Firefox, the API and E2E tests were run again.
 
-* **Kiểm tra tổng số giá trị thiếu trên từng cột:**
-  ```python
-  df.isna().sum()
-  ```
-  *(Hiện tại, tập dữ liệu User đang sử dụng rất sạch và không có missing value nào).*
+Verified result at this milestone:
 
-* **Phương pháp xử lý dữ liệu thiếu bằng `fillna()`:**
-  Tôi học được cách điền giá trị thay thế cho các ô trống để tránh lỗi tính toán về sau. Ví dụ, nếu trường `full_name` bị khuyết thiếu, tôi có thể thay thế bằng chuỗi `"Unknown"` để chuẩn hóa luồng dữ liệu:
-  ```python
-  df["full_name"] = df["full_name"].fillna("Unknown")
-  ```
+```text
+31 passed
+```
+
+including:
+
+```text
+22 API tests
+9 E2E tests
+```
+
+Coverage was approximately:
+
+```text
+79%
+```
+
+The key lesson was that coverage is useful for locating untested code, but a high coverage percentage does not prove that the application is bug-free.
+
+---
+
+## 5. PostgreSQL and Alembic
+
+The database remained managed through PostgreSQL and Alembic.
+
+At this milestone:
+
+```text
+Alembic head:
+e7d9b8aad922
+```
+
+The project no longer depended on `Base.metadata.create_all()` in application startup as the main schema-management mechanism.
+
+The intended flow remained:
+
+```text
+SQLAlchemy Model
+      ↓
+Alembic Migration
+      ↓
+PostgreSQL Schema
+```
+
+---
+
+## 6. Beginning the Data Analysis track
+
+After the backend/testing environment became more stable, a separate practice area was used for:
+
+- NumPy;
+- Pandas;
+- Matplotlib preparation.
+
+Project user data was loaded from PostgreSQL into a Pandas DataFrame.
+
+The password field was intentionally excluded from analytical output.
+
+Early Pandas practice included:
+
+```text
+column selection
+filtering
+sorting
+groupby
+value_counts
+missing-value checks
+```
+
+---
+
+## 7. Data-analysis lessons
+
+Several important lessons appeared early:
+
+### Identifier is not a business metric
+
+Using `id` to practice NumPy functions is technically possible, but statistics such as mean or standard deviation on an identifier normally have no business meaning.
+
+### Inspect schema before assuming columns
+
+An early attempt referenced a non-existent `username` attribute.
+
+The fix was to verify the actual `User` model and use the real fields instead.
+
+### Clean text before grouping
+
+Name initials showed separate values such as:
+
+```text
+A
+S
+a
+```
+
+Normalizing case before counting produced a more meaningful grouping.
+
+### SQL and Pandas have strong conceptual parallels
+
+```text
+SQL WHERE       ↔ Pandas boolean filtering
+SQL ORDER BY    ↔ sort_values()
+SQL GROUP BY    ↔ groupby()
+SQL COUNT       ↔ size() / count()
+```
+
+This connection made the transition from backend database work to data analysis easier to understand.
+
+---
+
+## 8. Status at the end of the period
+
+```text
+FastAPI backend              ✅ working
+PostgreSQL                   ✅ working
+Alembic                      ✅ working
+API automated tests          ✅
+Playwright Firefox E2E       ✅
+Coverage review              ✅
+NumPy basics                 ✅ started
+Pandas basics                ✅ started
+Matplotlib                   ⏭ next
+```
+
+---
+
+## 9. Next direction
+
+The next phase should avoid adding unrelated backend complexity.
+
+Priority:
+
+```text
+Backend stability
+      ↓
+Database correctness
+      ↓
+SQL / Pandas analysis
+      ↓
+Visualization
+      ↓
+Meaningful analytical questions
+```
+
+The aim is to reuse the same project as both a backend engineering exercise and a practical source of data for the next learning phase.
