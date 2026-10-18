@@ -1,4 +1,14 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    func,
+    text,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -6,6 +16,14 @@ from app.database import Base
 
 class Post(Base):
     __tablename__ = "posts"
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN "
+            "('draft', 'published', 'archived')",
+            name="ck_posts_status_allowed",
+        ),
+    )
 
     id = Column(
         Integer,
@@ -28,6 +46,26 @@ class Post(Base):
         ForeignKey("users.id"),
         nullable=False,
         index=True,
+    )
+
+    status = Column(
+        String(20),
+        nullable=False,
+        default="published",
+        server_default=text("'published'"),
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
     )
 
     owner = relationship(

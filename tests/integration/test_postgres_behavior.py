@@ -166,3 +166,29 @@ def test_ilike_is_case_insensitive(
         result[0].email
         == "mixed-case@example.com"
     )
+
+def test_invalid_post_status_constraint(
+    pg_session: Session,
+):
+    user = make_user(
+        email="post-status-pg@example.com",
+    )
+
+    pg_session.add(user)
+    pg_session.flush()
+
+    post = Post(
+        title="Invalid Status",
+        content="Content",
+        user_id=user.id,
+        status="deleted",
+    )
+
+    pg_session.add(post)
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.flush()
+
+    pg_session.rollback()

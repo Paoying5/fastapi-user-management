@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.database import get_db
-from app.models import User
+from app.models import User, user
 from app.services.auth_service import AuthService
 from app.services.post_service import PostService
 from app.services.user_service import UserService
@@ -77,6 +77,12 @@ def get_current_user(
 
     if user is None:
         raise credentials_exception
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive user",
+        )
 
     return user
 

@@ -28,6 +28,7 @@ class PostService:
         post = Post(
             title=post_data.title,
             content=post_data.content,
+            status=post_data.status,
             user_id=user_id,
         )
 

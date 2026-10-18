@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.core.security import (
@@ -5,25 +7,33 @@ from app.core.security import (
     verify_password,
 )
 from app.models.user import User
-from app.repositories.user_repository import UserRepository
+from app.repositories.user_repository import (
+    UserRepository,
+)
 from app.schemas.auth import Token
 
 
 class AuthService:
     """Authentication business rules."""
 
-    def __init__(self, db: Session):
-        self.repository = UserRepository(db)
+    def __init__(
+        self,
+        db: Session,
+    ):
+        self.db = db
+        self.repository = UserRepository(
+            db
+        )
 
     def authenticate_user(
         self,
         email: str,
         password: str,
     ) -> User | None:
-        normalized_email = email.strip().lower()
+        email = email.strip().lower()
 
         user = self.repository.get_by_email(
-            normalized_email
+            email
         )
 
         if user is None:
@@ -33,6 +43,9 @@ class AuthService:
             password,
             user.password,
         ):
+            return None
+
+        if not user.is_active:
             return None
 
         return user
@@ -50,15 +63,33 @@ class AuthService:
         if user is None:
             return None
 
-        access_token = create_access_token(
-            {
-                "sub": str(user.id),
-            }
-        )
+        try:
+            user.last_login_at = datetime.now(
+                timezone.utc
+            )
+
+            self.db.commit()
+            self.db.refresh(user)
+
+        except Exception:
+            self.db.rollback()
+            raise
 
         return Token(
-            access_token=access_token,
+            access_token=create_access_token(
+                {
+                    "sub": str(user.id),
+                }
+            ),
             token_type="bearer",
+        )
+
+    def get_user_by_email(
+        self,
+        email: str,
+    ) -> User | None:
+        return self.repository.get_by_email(
+            email.strip().lower()
         )
 
     def get_user_by_id(
@@ -67,14 +98,4 @@ class AuthService:
     ) -> User | None:
         return self.repository.get_by_id(
             user_id
-        )
-
-    def get_user_by_email(
-        self,
-        email: str,
-    ) -> User | None:
-        normalized_email = email.strip().lower()
-
-        return self.repository.get_by_email(
-            normalized_email
         )

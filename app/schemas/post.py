@@ -1,9 +1,9 @@
-from typing import Annotated
+from datetime import datetime
+from typing import Annotated, Literal
 
 from pydantic import (
     BaseModel,
     ConfigDict,
-    Field,
     StringConstraints,
     field_validator,
 )
@@ -19,6 +19,13 @@ PostTitle = Annotated[
 ]
 
 
+PostStatus = Literal[
+    "draft",
+    "published",
+    "archived",
+]
+
+
 class StrictRequestModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -27,20 +34,19 @@ class StrictRequestModel(BaseModel):
 
 class PostCreate(StrictRequestModel):
     title: PostTitle
-
     content: str | None = None
+    status: PostStatus = "published"
 
 
 class PostUpdate(StrictRequestModel):
     title: PostTitle
-
     content: str | None = None
 
 
 class PostPatch(StrictRequestModel):
     title: PostTitle | None = None
-
     content: str | None = None
+    status: PostStatus | None = None
 
     @field_validator("title")
     @classmethod
@@ -51,6 +57,19 @@ class PostPatch(StrictRequestModel):
         if value is None:
             raise ValueError(
                 "title cannot be null"
+            )
+
+        return value
+
+    @field_validator("status")
+    @classmethod
+    def status_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "status cannot be null"
             )
 
         return value
@@ -80,6 +99,11 @@ class PostResponse(BaseModel):
     title: str
     content: str | None
     user_id: int
+
+    status: PostStatus
+    created_at: datetime
+    updated_at: datetime
+
     owner: UserSimple
 
     model_config = ConfigDict(

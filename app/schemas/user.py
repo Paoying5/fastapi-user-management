@@ -1,5 +1,5 @@
 from typing import Annotated, Literal
-
+from datetime import datetime
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -73,6 +73,8 @@ class UserPatch(StrictRequestModel):
 
     full_name: FullName | None = None
 
+    is_active: bool | None = None
+
     @field_validator(
         "name",
         "email",
@@ -97,6 +99,11 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: UserRole
     full_name: str | None = None
+
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    last_login_at: datetime | None = None
 
     posts: list[PostSimple] = Field(
         default_factory=list,
