@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
+  "sync-progress": "node scripts/sync-progress.mjs",
+  "predev": "npm run sync-progress",
+  "dev": "next dev",
+  "prebuild": "npm run sync-progress",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint"
+},
   "dependencies": {
     "lucide-react": "^1.59.0",
     "motion": "^14.4.0",

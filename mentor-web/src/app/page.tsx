@@ -13,28 +13,29 @@ import {
 } from "lucide-react";
 
 import { motion } from "motion/react";
+import progress from "@/data/progress.generated.json";
 
 const stats = [
   {
-    value: "79",
+    value: progress.stats.tests.toString(),
     label: "Tests Passed",
     description: "Full regression",
     icon: TestTube2,
   },
   {
-    value: "600",
+    value: progress.stats.analyticsUsers.toLocaleString("en-US"),
     label: "Analytics Users",
     description: "Synthetic dataset",
     icon: Database,
   },
   {
-    value: "2,250",
+    value: progress.stats.analyticsPosts.toLocaleString("en-US"),
     label: "Analytics Posts",
     description: "Ready for analysis",
     icon: Code2,
   },
   {
-    value: "80%",
+    value: `${progress.stats.postingRate}%`,
     label: "Posting Rate",
     description: "Exploratory KPI",
     icon: TrendingUp,
@@ -54,13 +55,18 @@ const roadmap = [
     title: "Testing & E2E",
     status: "completed",
   },
-  {
-    title: "SQL Analytics",
-    status: "current",
-  },
+
+  ...progress.analyticsStages.map((stage) => ({
+    title: stage.title,
+    status: stage.completed ? "completed" : "planned",
+  })),
+
   {
     title: "Pandas & EDA",
-    status: "next",
+    status:
+      progress.currentFocus === "Pandas & EDA"
+        ? "current"
+        : "planned",
   },
   {
     title: "Visualization",
@@ -72,16 +78,7 @@ const roadmap = [
   },
 ];
 
-const weekHighlights = [
-  "Completed User and Post lifecycle",
-  "Verified authentication lifecycle",
-  "Applied PostgreSQL lifecycle migration",
-  "Reached 79 passing automated tests",
-  "Created 600-user analytics dataset",
-  "Analyzed 2,250 synthetic posts",
-  "Completed SQL KPI analysis",
-  "Practiced business questions and window functions",
-];
+const weekHighlights = progress.latest.highlights;
 
 const container = {
   hidden: {},
@@ -186,7 +183,7 @@ export default function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-50" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
               </span>
-              Currently learning SQL Analytics
+              Currently learning {progress.currentFocus}
             </motion.div>
 
             <motion.p
@@ -249,8 +246,11 @@ export default function Home() {
           {[
             ["Backend", "Completed"],
             ["Database", "Stable"],
-            ["Regression", "79 / 79 Passed"],
-            ["Analytics", "In Progress"],
+            [
+              "Regression",
+              `${progress.stats.tests} / ${progress.stats.tests} Passed`,
+            ],
+            ["Current Focus", progress.currentFocus],
           ].map(([label, value], index) => (
             <div
               key={label}
@@ -327,8 +327,37 @@ export default function Home() {
                   </div>
                 </motion.div>
               );
+            
             })}
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mt-4 flex flex-col justify-between gap-5 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:flex-row sm:items-center"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Content concentration
+              </p>
+
+              <p className="mt-2 text-lg font-semibold text-slate-900">
+                Top 10% of creators produced{" "}
+                {progress.stats.topCreatorShare}% of all content.
+              </p>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Based on the current synthetic analytics dataset.
+              </p>
+            </div>
+
+            <div className="shrink-0 text-4xl font-semibold tracking-[-0.04em] text-indigo-600">
+              {progress.stats.topCreatorShare}%
+            </div>
+          </motion.div>
+
         </section>
 
         {/* Latest Week */}
@@ -344,7 +373,7 @@ export default function Home() {
               <div className="border-b border-white/10 p-8 sm:p-10 lg:border-b-0 lg:border-r lg:p-12">
                 <div className="mb-12 flex items-center justify-between">
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70">
-                    W25
+                    {progress.latest.week}
                   </span>
 
                   <span className="flex items-center gap-2 text-xs font-medium text-emerald-300">
@@ -354,13 +383,15 @@ export default function Home() {
                 </div>
 
                 <p className="text-xs uppercase tracking-[0.18em] text-white/40">
-                  12 Oct — 18 Oct 2026
+                  {progress.latest.period}
                 </p>
 
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Backend lifecycle
+                  Latest learning milestone
                   <br />
-                  <span className="text-indigo-300">→ Data Analytics</span>
+                  <span className="text-indigo-300">
+                    → {progress.currentFocus}
+                  </span>
                 </h2>
 
                 <p className="mt-6 max-w-md text-sm leading-7 text-white/55">
