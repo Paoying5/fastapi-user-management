@@ -194,6 +194,32 @@ function buildAnalyticsRoadmap() {
   }));
 }
 
+const monthlyPosts = JSON.parse(
+  readText(
+    path.join(
+      webRoot,
+      "src",
+      "data",
+      "monthly-posts.snapshot.json"
+    )
+  )
+);
+
+if (
+  !Array.isArray(monthlyPosts) ||
+  monthlyPosts.some(
+    (row) =>
+      typeof row.month !== "string" ||
+      !/^\d{4}-\d{2}$/.test(row.month) ||
+      !Number.isInteger(row.posts) ||
+      row.posts < 0
+  )
+) {
+  throw new Error(
+    "Invalid monthly posts snapshot."
+  );
+}
+
 const { latestProgress, latestSummary } = findLatestDiary();
 
 if (!latestProgress) {
@@ -254,6 +280,18 @@ const analyticsPosts = findLastNumber(
   2250
 );
 
+const monthlyPostsTotal = monthlyPosts.reduce(
+  (sum, row) => sum + row.posts,
+  0
+);
+
+if (monthlyPostsTotal !== analyticsPosts) {
+  throw new Error(
+    `Monthly posts snapshot total (${monthlyPostsTotal}) ` +
+    `does not match analyticsPosts (${analyticsPosts}).`
+  );
+}
+
 const highlights = buildHighlights(
   combinedText,
   {
@@ -312,6 +350,8 @@ const data = {
   },
 
   currentFocus,
+
+  monthlyPosts,
 
   analyticsStages,
 };
