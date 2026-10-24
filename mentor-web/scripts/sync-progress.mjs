@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-
 const webRoot = process.cwd();
 const repoRoot = path.resolve(webRoot, "..");
 
@@ -355,6 +354,11 @@ const data = {
 
   analyticsStages,
 };
+
+// Ensure the output directory exists before writing the generated file.
+fs.mkdirSync(path.dirname(outputFile), {
+  recursive: true,
+});
 
 fs.writeFileSync(
   outputFile,
