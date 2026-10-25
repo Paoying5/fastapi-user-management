@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="fastapi-user-management-dashboard-three.vercel.app">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
     <img src="https://img.shields.io/badge/Live%20Dashboard-Vercel-black?style=for-the-badge&logo=vercel" alt="Live Dashboard on Vercel">
   </a>
   <a href="https://github.com/Paoying5/fastapi-user-management">
@@ -57,7 +57,7 @@ The project combines a FastAPI backend with PostgreSQL and a Next.js dashboard. 
 The dashboard is deployed on Vercel and can be accessed online:
 
 <p align="center">
-  <a href="fastapi-user-management-dashboard-three.vercel.app">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
     <strong>🚀 Open the Live Dashboard</strong>
   </a>
 </p>
@@ -459,12 +459,12 @@ The snapshot values should be refreshed and reverified whenever the underlying a
 The Next.js dashboard is deployed online on Vercel.
 
 <p align="center">
-  <a href="fastapi-user-management-dashboard-three.vercel.app">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
     <img src="https://img.shields.io/badge/Visit%20Dashboard-paoying--data.vercel.app-black?style=for-the-badge&logo=vercel" alt="Visit the online dashboard">
   </a>
 </p>
 
-**Live URL:** [https://paoying-data.vercel.app](fastapi-user-management-dashboard-three.vercel.app)
+**Live URL:** [https://fastapi-user-management-dashboard-three.vercel.app](https://fastapi-user-management-dashboard-three.vercel.app)
 
 The dashboard source code is located in the `mentor-web/` directory.
 
@@ -530,7 +530,7 @@ The project can be extended in the future to connect the dashboard to a deployed
 
 - GitHub: [@Paoying5](https://github.com/Paoying5)
 - Repository: [fastapi-user-management](https://github.com/Paoying5/fastapi-user-management)
-- Live Dashboard: [paoying-data.vercel.app](fastapi-user-management-dashboard-three.vercel.app)
+- Live Dashboard: [fastapi-user-management-dashboard-three.vercel.app](https://fastapi-user-management-dashboard-three.vercel.app)
 
 ---
 
