@@ -100,12 +100,6 @@ const translations = {
     finding2Limit:
       "Limitation: this metric alone does not establish why those users create more content.",
     finding3Title: "Publishing activity changes over time",
-    finding3:
-      "September recorded 590 posts, the highest monthly count among the complete months shown.",
-    finding3Meaning:
-      "Interpretation: September is a useful period for further investigation of content activity.",
-    finding3Limit:
-      "Limitation: October is incomplete, so its current count must not be compared as a full month.",
     questionsTitle: "Business questions to investigate",
     questionsSubtitle:
       "A practical analysis workflow starts with a question, evidence, and a next step.",
@@ -119,7 +113,6 @@ const translations = {
     e2: "The top 10% of creators produce 38.67% of posts.",
     n2: "Calculate creator percentiles and compare posting frequency groups.",
     q3: "When is publishing activity highest?",
-    e3: "September has 590 posts among the complete months shown.",
     n3: "Compare complete months and investigate seasonality before drawing conclusions.",
     q4: "What happens between draft and published status?",
     e4: "Current status shares are 70% published, 20% draft, and 10% archived.",
@@ -130,12 +123,10 @@ const translations = {
     source: "Data source",
     sourceValue: "Generated synthetic analytics dataset",
     scope: "Dataset scope",
-    scopeValue: "600 users · 2,250 posts",
     completeness: "Time coverage",
-    completenessValue: "January–October 2026",
     caveat: "Important caveat",
     caveatValue:
-      "October is incomplete. Monthly comparisons should use complete months only.",
+      "The latest month may be incomplete. Monthly comparisons should use complete months only.",
     limitation: "Analysis limitation",
     limitationValue:
       "Current status shares do not reveal the transition from draft to published without lifecycle timestamps.",
@@ -204,12 +195,6 @@ const translations = {
     finding2Limit:
       "Giới hạn: chỉ số này chưa giải thích được nguyên nhân nhóm đó đăng nhiều hơn.",
     finding3Title: "Hoạt động đăng bài thay đổi theo thời gian",
-    finding3:
-      "Tháng 9 ghi nhận 590 bài đăng, cao nhất trong các tháng đầy đủ được hiển thị.",
-    finding3Meaning:
-      "Diễn giải: tháng 9 là giai đoạn phù hợp để tìm hiểu sâu hơn về hoạt động nội dung.",
-    finding3Limit:
-      "Giới hạn: tháng 10 chưa kết thúc, vì vậy không thể so sánh như một tháng đầy đủ.",
     questionsTitle: "Các câu hỏi kinh doanh cần phân tích",
     questionsSubtitle:
       "Quy trình phân tích thực tế bắt đầu từ câu hỏi, bằng chứng và bước tiếp theo.",
@@ -223,7 +208,6 @@ const translations = {
     e2: "Nhóm 10% người tạo nhiều nhất đóng góp 38,67% số bài.",
     n2: "Tính các phân vị người tạo nội dung và so sánh nhóm tần suất đăng bài.",
     q3: "Thời điểm nào có hoạt động đăng bài cao nhất?",
-    e3: "Tháng 9 có 590 bài trong số các tháng đầy đủ được hiển thị.",
     n3: "So sánh các tháng đầy đủ và kiểm tra tính mùa vụ trước khi kết luận.",
     q4: "Điều gì xảy ra khi bản nháp chuyển thành bài xuất bản?",
     e4: "Tỷ trọng trạng thái hiện tại là 70% đã xuất bản, 20% bản nháp và 10% lưu trữ.",
@@ -234,12 +218,10 @@ const translations = {
     source: "Nguồn dữ liệu",
     sourceValue: "Bộ dữ liệu phân tích mô phỏng được tạo tự động",
     scope: "Phạm vi dữ liệu",
-    scopeValue: "600 người dùng · 2.250 bài đăng",
     completeness: "Khoảng thời gian",
-    completenessValue: "Tháng 1–10 năm 2026",
     caveat: "Lưu ý quan trọng",
     caveatValue:
-      "Tháng 10 chưa đầy đủ. Khi so sánh theo tháng, chỉ nên dùng các tháng đã hoàn tất.",
+      "Tháng mới nhất có thể chưa hoàn tất. Khi so sánh theo tháng, chỉ nên dùng các tháng đã hoàn tất.",
     limitation: "Giới hạn phân tích",
     limitationValue:
       "Tỷ trọng trạng thái hiện tại không cho biết quá trình chuyển từ bản nháp sang xuất bản nếu thiếu thời điểm thay đổi trạng thái.",
@@ -282,24 +264,70 @@ export default function Home() {
   const formatNumber = (value: number) =>
     new Intl.NumberFormat(language === "en" ? "en-US" : "vi-VN").format(value);
 
-  const formatPercent = (value: number) =>
+  const formatPercent = (
+    value: number,
+    maximumFractionDigits = 1
+  ) =>
     new Intl.NumberFormat(language === "en" ? "en-US" : "vi-VN", {
-      maximumFractionDigits: 1,
+      maximumFractionDigits,
     }).format(value) + "%";
 
-  const totalUsers = 600;
-  const usersWhoPosted = 480;
-  const participationRate = (usersWhoPosted / totalUsers) * 100;
+  const totalUsers = progress.stats.analyticsUsers;
+  const participationRate = progress.stats.postingRate;
+  const usersWhoPosted = Math.round(
+    (totalUsers * participationRate) / 100
+  );
 
   const statusData = [
-    { name: t.published, value: 70 },
-    { name: t.draft, value: 20 },
-    { name: t.archived, value: 10 },
+    {
+      name: t.published,
+      value: progress.stats.statusShares.published,
+    },
+    {
+      name: t.draft,
+      value: progress.stats.statusShares.draft,
+    },
+    {
+      name: t.archived,
+      value: progress.stats.statusShares.archived,
+    },
   ];
 
-  const surface = isDark
-    ? "border-slate-800 bg-slate-900"
-    : "border-slate-200 bg-white";
+
+  const monthlyData = progress.monthlyPosts;
+  const latestMonth = monthlyData[monthlyData.length - 1];
+
+  // Tháng cuối cùng là tháng chưa hoàn tất nên không dùng để tìm đỉnh.
+  const completedMonthlyData = latestMonth
+    ? monthlyData.filter((row) => row.month < latestMonth.month)
+    : monthlyData;
+
+  const peakMonth = completedMonthlyData.length
+    ? completedMonthlyData.reduce((best, row) =>
+        row.posts > best.posts ? row : best
+      )
+    : undefined;
+
+  const formatMonthLabel = (month: string) =>
+    new Intl.DateTimeFormat(
+      language === "en" ? "en-US" : "vi-VN",
+      {
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC",
+      }
+    ).format(new Date(`${month}-01T00:00:00Z`));
+
+  const datasetScope =
+    language === "en"
+      ? `${formatNumber(totalUsers)} users · ${formatNumber(progress.stats.analyticsPosts)} posts`
+      : `${formatNumber(totalUsers)} người dùng · ${formatNumber(progress.stats.analyticsPosts)} bài đăng`;
+
+  const coverageRange = monthlyData.length
+    ? language === "en"
+      ? `${formatMonthLabel(monthlyData[0].month)}–${formatMonthLabel(monthlyData[monthlyData.length - 1].month)}`
+      : `Tháng ${Number(monthlyData[0].month.slice(5, 7))}/${monthlyData[0].month.slice(0, 4)}–tháng ${Number(monthlyData[monthlyData.length - 1].month.slice(5, 7))}/${monthlyData[monthlyData.length - 1].month.slice(0, 4)}`
+    : "—";
 
   const primaryText = isDark ? "text-slate-100" : "text-slate-900";
   const secondaryText = isDark ? "text-slate-400" : "text-slate-500";
@@ -353,7 +381,10 @@ export default function Home() {
     {
       number: "01",
       title: t.finding1Title,
-      description: t.finding1,
+      description:
+        language === "en"
+          ? `${formatNumber(usersWhoPosted)} of ${formatNumber(totalUsers)} users have created at least one post, giving the dataset a ${formatPercent(participationRate)} posting-user rate.`
+          : `${formatNumber(usersWhoPosted)} trong số ${formatNumber(totalUsers)} người dùng đã tạo ít nhất một bài đăng, tương đương tỷ lệ ${formatPercent(participationRate)}.`,
       meaning: t.finding1Meaning,
       limitation: t.finding1Limit,
       icon: Users,
@@ -362,7 +393,10 @@ export default function Home() {
     {
       number: "02",
       title: t.finding2Title,
-      description: t.finding2,
+      description:
+        language === "en"
+          ? `The top 10% of creators account for ${formatPercent(progress.stats.topCreatorShare, 2)} of all posts in the dataset.`
+          : `Nhóm 10% người tạo nội dung nhiều nhất đóng góp ${formatPercent(progress.stats.topCreatorShare, 2)} tổng số bài đăng.`,
       meaning: t.finding2Meaning,
       limitation: t.finding2Limit,
       icon: Target,
@@ -371,19 +405,72 @@ export default function Home() {
     {
       number: "03",
       title: t.finding3Title,
-      description: t.finding3,
-      meaning: t.finding3Meaning,
-      limitation: t.finding3Limit,
+      description: peakMonth
+        ? language === "en"
+          ? `${formatMonthLabel(peakMonth.month)} recorded ${formatNumber(peakMonth.posts)} posts, the highest monthly count among the completed months shown.`
+          : `${formatMonthLabel(peakMonth.month)} ghi nhận ${formatNumber(peakMonth.posts)} bài đăng, cao nhất trong các tháng đã hoàn tất.`
+        : language === "en"
+          ? "No completed monthly data is available yet."
+          : "Chưa có dữ liệu tháng đã hoàn tất.",
+      meaning: peakMonth
+        ? language === "en"
+          ? `${formatMonthLabel(peakMonth.month)} is a useful period for further investigation of content activity.`
+          : `${formatMonthLabel(peakMonth.month)} là giai đoạn phù hợp để tìm hiểu sâu hơn về hoạt động nội dung.`
+        : language === "en"
+          ? "Review the monthly data after a complete month becomes available."
+          : "Hãy xem xét dữ liệu khi có tháng đã hoàn tất.",
+      limitation: latestMonth
+        ? language === "en"
+          ? `${formatMonthLabel(latestMonth.month)} may be incomplete and should not be compared as a full month.`
+          : `${formatMonthLabel(latestMonth.month)} có thể chưa hoàn tất, vì vậy không nên so sánh như một tháng đầy đủ.`
+        : language === "en"
+          ? "Check the completeness of the monthly data before comparing periods."
+          : "Cần kiểm tra độ đầy đủ của dữ liệu tháng trước khi so sánh.",
       icon: TrendingUp,
       color: "text-emerald-500",
     },
   ];
 
   const businessQuestions = [
-    { number: "01", q: t.q1, evidence: t.e1, next: t.n1 },
-    { number: "02", q: t.q2, evidence: t.e2, next: t.n2 },
-    { number: "03", q: t.q3, evidence: t.e3, next: t.n3 },
-    { number: "04", q: t.q4, evidence: t.e4, next: t.n4 },
+    {
+      number: "01",
+      q: t.q1,
+      evidence:
+        language === "en"
+          ? `${formatNumber(usersWhoPosted)} of ${formatNumber(totalUsers)} users have posted at least once.`
+          : `${formatNumber(usersWhoPosted)} trong số ${formatNumber(totalUsers)} người dùng đã đăng ít nhất một bài.`,
+      next: t.n1,
+    },
+    {
+      number: "02",
+      q: t.q2,
+      evidence:
+        language === "en"
+          ? `The top 10% of creators produce ${formatPercent(progress.stats.topCreatorShare, 2)} of posts.`
+          : `Nhóm 10% người tạo nhiều nhất đóng góp ${formatPercent(progress.stats.topCreatorShare, 2)} số bài đăng.`,
+      next: t.n2,
+    },
+    {
+      number: "03",
+      q: t.q3,
+      evidence: peakMonth
+        ? language === "en"
+          ? `${formatMonthLabel(peakMonth.month)} has ${formatNumber(peakMonth.posts)} posts, the highest among completed months.`
+          : `${formatMonthLabel(peakMonth.month)} có ${formatNumber(peakMonth.posts)} bài đăng, cao nhất trong các tháng đã hoàn tất.`
+        : language === "en"
+          ? "No completed monthly data is available yet."
+          : "Chưa có dữ liệu tháng đã hoàn tất.",
+      next: t.n3,
+    },
+    {
+      number: "04",
+      q: t.q4,
+      evidence:
+        language === "en"
+          ? `Current status shares are ${formatPercent(progress.stats.statusShares.published, 0)} published, ${formatPercent(progress.stats.statusShares.draft, 0)} draft, and ${formatPercent(progress.stats.statusShares.archived, 0)} archived.`
+          : `Tỷ trọng trạng thái hiện tại là ${formatPercent(progress.stats.statusShares.published, 0)} đã xuất bản, ${formatPercent(progress.stats.statusShares.draft, 0)} bản nháp và ${formatPercent(progress.stats.statusShares.archived, 0)} đã lưu trữ.`,
+      next: t.n4,
+    },
   ];
 
   const workflowSteps = [t.step1, t.step2, t.step3, t.step4, t.step5];
@@ -444,7 +531,7 @@ export default function Home() {
                 <span className={`text-sm font-semibold ${primaryText}`}>{t.sample}</span>
               </div>
               <p className={`text-xs leading-5 ${secondaryText}`}>
-                {t.scopeValue}
+                {datasetScope}
               </p>
               <div className="mt-3 flex items-center gap-2 text-xs text-emerald-500">
                 <CheckCircle2 size={14} />
@@ -897,8 +984,8 @@ export default function Home() {
                   <div className="space-y-5">
                     {[
                       { label: t.source, value: t.sourceValue, icon: Database },
-                      { label: t.scope, value: t.scopeValue, icon: Users },
-                      { label: t.completeness, value: t.completenessValue, icon: Activity },
+                      { label: t.scope, value: datasetScope, icon: Users },
+                      { label: t.completeness, value: coverageRange, icon: Activity },
                     ].map((item) => {
                       const Icon = item.icon;
                       return (

@@ -1,0 +1,7 @@
+{
+  "totalUsers": 600,
+  "allPosts": 2250,
+  "top10PercentPosts": 870,
+  "sourceSql": "sql/analytics/03_kpi_analysis.sql - KPI 7",
+  "verifiedAt": "2026-10-25"
+}

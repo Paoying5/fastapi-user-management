@@ -13,6 +13,13 @@ const outputFile = path.join(
   "progress.generated.json"
 );
 
+const analyticsKpiFile = path.join(
+  webRoot,
+  "src",
+  "data",
+  "analytics-kpi.snapshot.json"
+);
+
 function readText(filePath) {
   return fs.readFileSync(filePath, "utf8");
 }
@@ -279,6 +286,52 @@ const analyticsPosts = findLastNumber(
   2250
 );
 
+const postingRate = findLastNumber(
+  latestProgress,
+  [/Posting rate:\s*([\d.]+)\s*%/i],
+  80
+);
+
+const publishedPosts = findLastNumber(
+  latestProgress,
+  [/([\d,]+)\s+published\b/i],
+  1575
+);
+
+const draftPosts = findLastNumber(
+  latestProgress,
+  [/([\d,]+)\s+draft\b/i],
+  450
+);
+
+const archivedPosts = findLastNumber(
+  latestProgress,
+  [/([\d,]+)\s+archived\b/i],
+  225
+);
+
+const statusTotal =
+  publishedPosts + draftPosts + archivedPosts;
+
+if (statusTotal !== analyticsPosts) {
+  throw new Error(
+    `Post status total (${statusTotal}) does not match ` +
+    `analyticsPosts (${analyticsPosts}).`
+  );
+}
+
+const statusShares = {
+  published: Number(
+    ((publishedPosts / statusTotal) * 100).toFixed(2)
+  ),
+  draft: Number(
+    ((draftPosts / statusTotal) * 100).toFixed(2)
+  ),
+  archived: Number(
+    ((archivedPosts / statusTotal) * 100).toFixed(2)
+  ),
+};
+
 const monthlyPostsTotal = monthlyPosts.reduce(
   (sum, row) => sum + row.posts,
   0
@@ -316,6 +369,38 @@ if (
   currentFocus = "Pandas & EDA";
 }
 
+const analyticsKpi = JSON.parse(readText(analyticsKpiFile));
+
+if (
+  !Number.isInteger(analyticsKpi.totalUsers) ||
+  !Number.isInteger(analyticsKpi.allPosts) ||
+  !Number.isInteger(analyticsKpi.top10PercentPosts) ||
+  analyticsKpi.totalUsers <= 0 ||
+  analyticsKpi.allPosts <= 0 ||
+  analyticsKpi.top10PercentPosts < 0 ||
+  analyticsKpi.top10PercentPosts > analyticsKpi.allPosts
+) {
+  throw new Error("Invalid analytics KPI snapshot.");
+}
+
+if (analyticsKpi.totalUsers !== analyticsUsers) {
+  throw new Error(
+    `KPI snapshot has ${analyticsKpi.totalUsers} users, ` +
+    `but progress data has ${analyticsUsers}. Refresh the KPI snapshot.`
+  );
+}
+
+if (analyticsKpi.allPosts !== analyticsPosts) {
+  throw new Error(
+    `KPI snapshot has ${analyticsKpi.allPosts} posts, ` +
+    `but progress data has ${analyticsPosts}. Refresh the KPI snapshot.`
+  );
+}
+
+const topCreatorShare = Number(
+  ((analyticsKpi.top10PercentPosts / analyticsKpi.allPosts) * 100).toFixed(2)
+);
+
 const data = {
   generatedAt: new Date().toISOString(),
 
@@ -343,9 +428,17 @@ const data = {
     analyticsUsers,
     analyticsPosts,
 
-    postingRate: 80,
+    postingRate,
 
-    topCreatorShare: 38.67,
+    topCreatorShare,
+
+    postStatuses: {
+      published: publishedPosts,
+      draft: draftPosts,
+      archived: archivedPosts,
+    },
+
+    statusShares,
   },
 
   currentFocus,
