@@ -1,7 +1,7 @@
 # PROJECT CONTEXT
 
 **Project root:** `/home/truongp/Documents/fastapi-user-management`  
-**Total included files:** 130
+**Total included files:** 139
 
 ## Project Structure
 
@@ -12,6 +12,8 @@
 - `README.md`
 - `alembic.ini`
 - `alembic/env.py`
+- `alembic/versions/b31f9c2a6d10_enforce_user_role_constraints.py`
+- `alembic/versions/c42a7f91d8e3_add_lifecycle_fields.py`
 - `alembic/versions/e7d9b8aad922_initial_schema.py`
 - `analytics/__init__.py`
 - `analytics/charts.py`
@@ -56,6 +58,7 @@
 - `docs/diary/2026-07-29-current-progress.md`
 - `docs/diary/2026-07-30-current-progress.md`
 - `docs/diary/2026-07-31-current-progress.md`
+- `docs/diary/2026-08-01-current-progress.md`
 - `docs/diary/2026-08-02-current-progress.md`
 - `docs/diary/2026-08-03-current-progress.md`
 - `docs/diary/2026-08-04-current-progress.md`
@@ -63,29 +66,8 @@
 - `docs/diary/2026-08-06-current-progress.md`
 - `docs/diary/2026-08-07-current-progress.md`
 - `docs/diary/2026-08-08-current-progress.md`
-- `docs/diary/2026-08-09-current-progress.md`
 - `docs/diary/2026-08-09-project-summary.md`
-- `docs/diary/2026-08-1-current-progress.md`
-- `docs/diary/2026-08-10-current-progress.md`
 - `docs/diary/2026-08-10-to-2026-08-28-retrospective-gap.md`
-- `docs/diary/2026-08-11-current-progress.md`
-- `docs/diary/2026-08-12-current-progress.md`
-- `docs/diary/2026-08-13-current-progress.md`
-- `docs/diary/2026-08-14-current-progress.md`
-- `docs/diary/2026-08-15-current-progress.md`
-- `docs/diary/2026-08-16-current-progress.md`
-- `docs/diary/2026-08-17-current-progress.md`
-- `docs/diary/2026-08-18-current-progress.md`
-- `docs/diary/2026-08-19-current-progress.md`
-- `docs/diary/2026-08-20-current-progress.md`
-- `docs/diary/2026-08-21-current-progress.md`
-- `docs/diary/2026-08-22-current-progress.md`
-- `docs/diary/2026-08-23-current-progress.md`
-- `docs/diary/2026-08-24-current-progress.md`
-- `docs/diary/2026-08-25-current-progress.md`
-- `docs/diary/2026-08-26-current-progress.md`
-- `docs/diary/2026-08-27-current-progress.md`
-- `docs/diary/2026-08-28-current-progress.md`
 - `docs/diary/2026-08-29-current-progress.md`
 - `docs/diary/2026-08-30-current-progress.md`
 - `docs/diary/2026-08-31-current-progress.md`
@@ -107,22 +89,42 @@
 - `docs/diary/2026-09-26-current-progress.md`
 - `docs/diary/2026-09-27-current-progress.md`
 - `docs/diary/2026-09-28-future-plan.md`
+- `docs/diary/2026-09-29-current-progress.md`
+- `docs/diary/2026-09-30-current-progress.md`
+- `docs/diary/2026-10-01-current-progress.md`
+- `docs/diary/2026-10-02-current-progress.md`
+- `docs/diary/2026-10-03-current-progress.md`
+- `docs/diary/2026-10-04-project-summary.md`
+- `docs/diary/2026-10-05-to-2026-10-11-retrospective-gap.md`
+- `docs/diary/2026-10-12-to-2026-10-18-current-progress.md`
+- `docs/diary/2026-10-18-project-summary.md`
 - `docs/diary/README.md`
 - `docs/mentor/DOCKER_AND_ANALYTICS_NOTES.md`
 - `docs/mentor/development-notes.md`
 - `export_project.py`
 - `htmlcov/.gitignore`
+- `mentor-web/.gitignore`
+- `mentor-web/AGENTS.md`
+- `mentor-web/README.md`
+- `practice/pandas_lesson2.py`
+- `practice/pandas_numpy_lesson1.py`
 - `pytest.ini`
 - `requirements-dev.txt`
 - `requirements.txt`
 - `scripts/menu.sh`
 - `test_connection.py`
 - `tests/__init__.py`
+- `tests/api/test_analytics.py`
 - `tests/api/test_auth.py`
 - `tests/api/test_create_user.py`
 - `tests/api/test_health.py`
+- `tests/api/test_lifecycle.py`
+- `tests/api/test_openapi_contract.py`
+- `tests/api/test_pagination.py`
 - `tests/api/test_posts.py`
+- `tests/api/test_user_filters.py`
 - `tests/api/test_users.py`
+- `tests/api/test_validation.py`
 - `tests/conftest.py`
 - `tests/e2e/__init__.py`
 - `tests/e2e/test_swagger_auth.py`
@@ -131,10 +133,17 @@
 - `tests/e2e/test_swagger_posts.py`
 - `tests/e2e/test_swagger_users.py`
 - `tests/e2e/utils.py`
+- `tests/integration/__init__.py`
+- `tests/integration/conftest.py`
+- `tests/integration/test_migrations.py`
+- `tests/integration/test_postgres_behavior.py`
 - `tests/swagger/test_auth_swagger.py`
 - `tests/swagger/test_posts_swagger.py`
 - `tests/swagger/test_users_swagger.py`
 - `tests/swagger/utils.py`
+- `tests/unit/test_query_efficiency.py`
+- `tests/unit/test_service_exceptions.py`
+- `tests/unit/test_user_integrity.py`
 
 ## File Contents
 
@@ -326,570 +335,545 @@ SOFTWARE.
 ## `README.md`
 
 ```markdown
-<h1 align="center">
-🚀 FastAPI User Management
-</h1>
+ <h1 align="center">FastAPI User Management & Analytics Dashboard</h1>
 
 <p align="center">
-A backend learning project built with <strong>FastAPI</strong>, <strong>SQLAlchemy ORM</strong>, <strong>PostgreSQL</strong>, <strong>Docker</strong>, and <strong>JWT Authentication</strong>.
+  A backend development project built with FastAPI and PostgreSQL, featuring SQL analytics and an online dashboard built with Next.js.
 </p>
 
 <p align="center">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
+    <img src="https://img.shields.io/badge/Live%20Dashboard-Vercel-black?style=for-the-badge&logo=vercel" alt="Live Dashboard on Vercel">
+  </a>
+  <a href="https://github.com/Paoying5/fastapi-user-management">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub Repository">
+  </a>
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?logo=fastapi)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
-![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
-![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker)
-![JWT](https://img.shields.io/badge/JWT-Authentication-black)
-![Linux](https://img.shields.io/badge/Linux-Bash-orange?logo=linux)
-![License](https://img.shields.io/badge/License-MIT-green)
-
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Frontend-Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/Styling-Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Deployment-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" alt="Vercel">
 </p>
 
 ---
 
-# 📖 Project Overview
+## 📌 Table of Contents
 
-FastAPI User Management is a backend learning project focused on building a practical REST API system.
+<details open>
+  <summary><strong>Click to expand</strong></summary>
 
-The project was created to understand how a modern backend application is structured, including:
+- [📖 Overview](#-overview)
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🏗️ Architecture](#️-architecture)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Getting Started](#-getting-started)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Set Up PostgreSQL](#2-set-up-postgresql)
+  - [3. Run the FastAPI Backend](#3-run-the-fastapi-backend)
+  - [4. Run the Dashboard Locally](#4-run-the-dashboard-locally)
+- [📊 Analytics and Data Pipeline](#-analytics-and-data-pipeline)
+- [🌐 Deployment](#-deployment)
+- [🔒 Security Notes](#-security-notes)
+- [🎯 Project Goals](#-project-goals)
+- [👤 Author](#-author)
 
-* API design
-* Database modeling
-* Authentication and authorization
-* ORM communication
-* Containerized development workflow
-* Linux automation scripts
-
-The project continues to evolve toward a more production-oriented backend architecture.
-
----
-
-# ✨ Features
-
-## 👤 User Management
-
-Implemented:
-
-* Create User
-* Get All Users
-* Get User By ID
-* Update User
-* Delete User
+</details>
 
 ---
 
-## 📝 Post Management
+## 📖 Overview
 
-Implemented:
+**FastAPI User Management & Analytics Dashboard** is a project focused on backend development, database management, SQL analytics, and data visualization.
 
-* Create Post
-* Get All Posts
-* Get Post By ID
-* Get Current User Posts
-* Update Own Post
-* User - Post Relationship
+The project combines a FastAPI backend with PostgreSQL and a Next.js dashboard. The backend and SQL analytics support data processing and analysis, while the dashboard presents project progress and analytics metrics through a web interface.
 
-Database relationship:
+The dashboard is deployed on Vercel and can be accessed online:
 
-```
-User (1) -------- (*) Post
-```
+<p align="center">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
+    <strong>🚀 Open the Live Dashboard</strong>
+  </a>
+</p>
 
----
+The project currently has two distinct parts:
 
-# 🔐 Authentication & Security
+- **Backend:** FastAPI and PostgreSQL, used for backend development and database operations.
+- **Dashboard:** Next.js, used to present project progress and analytics information.
 
-Implemented:
-
-* JWT Authentication
-* OAuth2 Password Flow
-* Login API
-* Current User API
-* Protected Routes
-* Password Hashing with BCrypt
-
-Authentication flow:
-
-```
-User
- |
- | Login
- v
-FastAPI
- |
- | Generate JWT
- v
-Access Token
- |
- | Bearer Token
- v
-Protected Endpoint
-```
+> **Important:** The dashboard is deployed online, but its analytics are generated from project files and JSON snapshots. It is not currently a live dashboard directly querying the FastAPI backend or PostgreSQL database. The displayed figures represent the available snapshot data, not guaranteed real-time database values.
 
 ---
 
-# 🗄 Database
+## ✨ Features
 
-Database:
+### 🔹 Backend Development
 
-* PostgreSQL 16
-* SQLAlchemy ORM
+- Build REST API functionality using FastAPI.
+- Work with PostgreSQL for relational data storage.
+- Run the database locally with Docker Compose.
+- Access interactive API documentation through Swagger UI when the backend is running.
+- Organize SQL analytics queries for data exploration and reporting.
 
-Implemented concepts:
+### 🔹 SQL Analytics
 
-* Table Modeling
-* Primary Key
-* Foreign Key
-* One-to-Many Relationship
-* Query Filtering
-* Ordering
-* Pagination preparation
-* Joined Loading
+- Analyze user and post data using SQL.
+- Calculate overall data metrics.
+- Evaluate the contribution of top creators to total post volume.
+- Store verified KPI values in a dedicated JSON snapshot.
+- Validate snapshot values against the analytics totals during dashboard data generation.
 
-Example:
+### 🔹 Analytics Dashboard
 
-```
-users
+- Present project progress and summary statistics.
+- Display user and post metrics.
+- Visualize analytics data with charts.
+- Generate progress data from project diaries, SQL analytics files, and JSON snapshots.
+- Calculate the top-creator post share from verified KPI snapshot values.
+- Build the dashboard automatically through the Next.js build process.
 
-id
-name
-email
-role
-password
+### 🔹 Online Deployment
 
-
-posts
-
-id
-title
-content
-user_id
-```
+- Deploy the Next.js dashboard to Vercel.
+- Access the dashboard through a public URL.
+- Maintain the backend and dashboard as separate components.
+- Build and validate the dashboard locally before deployment.
 
 ---
 
-# 🏗 Project Architecture
+## 🛠️ Tech Stack
 
-```
-Client
-
-   |
-   |
-   v
-
-FastAPI Router
-
-   |
-   |
-   v
-
-CRUD Layer
-
-   |
-   |
-   v
-
-SQLAlchemy ORM
-
-   |
-   |
-   v
-
-PostgreSQL Database
-```
-
-Application layers:
-
-```
-app/
-
-├── routers
-│   API endpoints
-
-├── schemas
-│   Request / Response validation
-
-├── models
-│   Database models
-
-├── crud
-│   Database operations
-
-├── core
-│   Configuration and security
-
-└── utils
-    Helper functions
-```
+| Category | Technology |
+|---|---|
+| Backend | Python, FastAPI |
+| Database | PostgreSQL |
+| Database Environment | Docker Compose |
+| Query Language | SQL |
+| Frontend Framework | Next.js |
+| UI Library | React |
+| Styling | Tailwind CSS v4 |
+| Charts | Recharts |
+| Data Pipeline | Node.js scripts and JSON snapshots |
+| Frontend Deployment | Vercel |
+| Version Control | Git and GitHub |
 
 ---
 
-# 📂 Project Structure
+## 🏗️ Architecture
 
+The project separates backend services, analytics resources, and dashboard presentation.
+
+```text
+                         ┌──────────────────────────┐
+                         │        GitHub Repo       │
+                         │  Source Code & SQL Files │
+                         └────────────┬─────────────┘
+                                      │
+                 ┌────────────────────┴────────────────────┐
+                 │                                         │
+                 ▼                                         ▼
+       ┌───────────────────┐                    ┌────────────────────┐
+       │   FastAPI Backend │                    │   Analytics Files  │
+       │                   │                    │                    │
+       │   REST API        │                    │   SQL Queries      │
+       │   Python          │                    │   Project Diaries  │
+       └─────────┬─────────┘                    │   JSON Snapshots   │
+                 │                              └─────────┬──────────┘
+                 ▼                                        │
+       ┌───────────────────┐                              ▼
+       │    PostgreSQL     │                    ┌────────────────────┐
+       │                   │                    │  Data Sync Script  │
+       │    Database       │                    │ sync-progress.mjs  │
+       └───────────────────┘                    └─────────┬──────────┘
+                                                          │
+                                                          ▼
+                                                ┌────────────────────┐
+                                                │    Next.js Build   │
+                                                │                    │
+                                                │ Generated Progress │
+                                                │ Analytics Dashboard│
+                                                └─────────┬──────────┘
+                                                          │
+                                                          ▼
+                                                ┌────────────────────┐
+                                                │       Vercel       │
+                                                │   Online Dashboard │
+                                                └────────────────────┘
 ```
+
+### How the data flow works
+
+1. The backend uses PostgreSQL for database operations.
+2. SQL files contain queries used for analytics.
+3. Project diaries and JSON snapshots provide the source data for the dashboard's progress and KPI summaries.
+4. The `sync-progress.mjs` script reads and validates the available sources.
+5. The script generates `progress.generated.json` for the dashboard.
+6. The Next.js build process generates the production dashboard.
+7. Vercel hosts the deployed frontend.
+
+The current data pipeline generates dashboard data from project files. It does not automatically execute SQL against the production database or establish a live connection between Vercel and PostgreSQL.
+
+---
+
+## 📁 Project Structure
+
+The repository contains the backend, database configuration, analytics resources, and the dashboard application.
+
+```text
 fastapi-user-management/
-
-├── app/
-│   ├── core/
-│   │   ├── config.py
-│   │   └── security.py
+│
+├── docs/
+│   └── diary/
+│       └── ...                         # Project progress and development notes
+│
+├── sql/
+│   └── analytics/
+│       ├── 03_kpi_analysis.sql         # KPI analysis queries
+│       └── ...                         # Other analytics SQL files
+│
+├── mentor-web/
+│   ├── scripts/
+│   │   └── sync-progress.mjs           # Generates and validates dashboard data
 │   │
-│   ├── routers/
-│   │   ├── auth.py
-│   │   ├── user.py
-│   │   └── post.py
+│   ├── src/
+│   │   ├── app/
+│   │   │   └── page.tsx                # Dashboard page
+│   │   │
+│   │   └── data/
+│   │       ├── analytics-kpi.snapshot.json
+│   │       ├── monthly-posts.snapshot.json
+│   │       └── progress.generated.json # Generated file; not committed
 │   │
-│   ├── utils/
-│   │   └── response.py
-│   │
-│   ├── crud.py
-│   ├── database.py
-│   ├── models.py
-│   ├── schemas.py
-│   └── main.py
+│   ├── package.json
+│   └── ...
 │
-├── scripts/
-│   └── menu.sh
-│
-├── tests/
-│   └── screenshots/
-│
-├── notebook/
-│
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-├── .env
-└── README.md
+├── docker-compose.yml                  # Local service configuration
+├── README.md
+└── ...                                 # Existing backend source and configuration
 ```
+
+**Notes:**
+
+- `mentor-web/` contains the Next.js dashboard.
+- `sql/analytics/` contains the SQL analytics queries.
+- `docs/diary/` contains project development notes used by the progress pipeline.
+- `analytics-kpi.snapshot.json` stores verified analytics values used by the dashboard.
+- `progress.generated.json` is generated by the sync script and is intentionally excluded from Git.
+- Sensitive configuration files, such as `.env`, should remain local and must not be committed.
 
 ---
 
-# ⚙️ Tech Stack
+## 🚀 Getting Started
 
-| Technology     | Purpose                    |
-| -------------- | -------------------------- |
-| Python 3.12    | Programming Language       |
-| FastAPI        | Backend Framework          |
-| PostgreSQL 16  | Relational Database        |
-| SQLAlchemy     | ORM                        |
-| Pydantic v2    | Data Validation            |
-| Docker         | Containerization           |
-| Docker Compose | Multi-container Management |
-| JWT            | Authentication             |
-| Uvicorn        | ASGI Server                |
-| Bash Script    | Development Automation     |
-
----
-
-# 🐳 Docker Development Workflow
-
-This project uses Docker Compose to simplify environment setup.
-
-Instead of manually running:
-
-```bash
-pip install -r requirements.txt
-
-uvicorn app.main:app --reload
-```
-
-the application can run through containers.
-
-Services:
-
-```
-docker-compose.yml
-
-
-api
-
-|
-|
-FastAPI Container
-
-
-postgres
-
-|
-|
-PostgreSQL Container
-```
-
----
-
-# 🚀 Getting Started
-
-## Clone Repository
-
-### HTTPS
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Paoying5/fastapi-user-management.git
-```
-
-### SSH
-
-```bash
-git clone git@github.com:Paoying5/fastapi-user-management.git
-```
-
----
-
-## Enter Project
-
-```bash
 cd fastapi-user-management
 ```
 
----
+### 2. Set Up PostgreSQL
 
-# Option 1: Using Automation Menu (Recommended)
+The project uses Docker Compose to run PostgreSQL locally.
 
-Give permission:
-
-```bash
-chmod +x scripts/menu.sh
-```
-
-Run:
+Start the PostgreSQL service:
 
 ```bash
-./scripts/menu.sh
+docker compose up -d postgres
 ```
 
-The menu provides shortcuts for:
-
-```
-1. Start Containers
-2. Stop Containers
-3. Restart Containers
-4. Rebuild Containers
-
-5. Application Shell
-6. PostgreSQL Shell
-7. View Logs
-
-8. Reset Database
-
-9. Alembic Migration
-
-10. Docker Utilities
-
-0. Exit
-```
-
----
-
-# Option 2: Using Docker Compose
-
-Build and start:
-
-```bash
-docker compose up --build -d
-```
-
-Check containers:
+Check the running services:
 
 ```bash
 docker compose ps
 ```
 
----
-
-# 🌐 API Documentation
-
-After starting the application:
-
-Swagger UI:
-
-```
-http://127.0.0.1:8000/docs
-```
-
-OpenAPI:
-
-```
-http://127.0.0.1:8000/openapi.json
-```
-
----
-
-# 🐘 PostgreSQL Access
-
-Open PostgreSQL shell:
+Connect to the database:
 
 ```bash
 docker compose exec postgres psql -U admin -d fastapi_db
 ```
 
-Database information:
+To exit the PostgreSQL command-line interface:
 
+```sql
+\q
 ```
-Database:
-fastapi_db
 
-User:
-admin
+The database container is configured to expose PostgreSQL on host port `5433`, mapped to container port `5432`.
 
-Port:
-5433
+Use the connection settings defined by your local Docker Compose and environment configuration when connecting from a local application.
+
+### 3. Run the FastAPI Backend
+
+Create a Python virtual environment from the repository root:
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Activate it on macOS or Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+Install the backend dependencies using the dependency file provided by the project:
+
+```bash
+pip install -r requirements.txt
+```
+
+Start the FastAPI application using the entry point configured in the backend. For example, if the FastAPI instance is named `app` in the root-level `main.py` file:
+
+```bash
+uvicorn main:app --reload
+```
+
+Once the backend is running, open the interactive API documentation:
+
+- **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+> If your FastAPI entry point or dependency file is located elsewhere, use the path and command defined by the existing backend structure.
+
+### 4. Run the Dashboard Locally
+
+Open a new terminal and move to the dashboard directory:
+
+```bash
+cd mentor-web
+```
+
+Install the frontend dependencies:
+
+```bash
+npm install
+```
+
+Run the data synchronization script:
+
+```bash
+npm run sync-progress
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the dashboard in your browser:
+
+[http://localhost:3000](http://localhost:3000)
+
+#### Validate the Dashboard
+
+Run the linter:
+
+```bash
+npm run lint
+```
+
+Build the production version:
+
+```bash
+npm run build
+```
+
+The build process runs the configured prebuild step, which synchronizes the dashboard data before compiling the Next.js application.
+
+You can also check for whitespace errors in Git changes from the repository root:
+
+```bash
+git diff --check
 ```
 
 ---
 
-# 📜 Automation Scripts
+## 📊 Analytics and Data Pipeline
 
-The project contains Bash scripts to simplify repetitive development commands.
+The dashboard uses a data synchronization process to combine project progress information and verified analytics values.
 
-Location:
+### Data Sources
 
+| Source | Purpose |
+|---|---|
+| `docs/diary/` | Project progress and development records |
+| `sql/analytics/` | SQL analytics queries |
+| `monthly-posts.snapshot.json` | Monthly post data used by the dashboard |
+| `analytics-kpi.snapshot.json` | Verified KPI values used for analytics calculations |
+| `sync-progress.mjs` | Reads, validates, and generates dashboard data |
+| `progress.generated.json` | Generated dashboard progress data |
+
+### KPI Snapshot
+
+The file `mentor-web/src/data/analytics-kpi.snapshot.json` stores the verified values used for the top-creator KPI.
+
+Current snapshot:
+
+| Metric | Value |
+|---|---:|
+| Total users | 600 |
+| Total posts | 2,250 |
+| Posts attributed to the top 10% creator group | 870 |
+| Post share of the top 10% creator group | 38.67% |
+
+The KPI snapshot identifies its source as:
+
+```text
+sql/analytics/03_kpi_analysis.sql - KPI 7
 ```
-scripts/
+
+The snapshot's verification date is `2026-10-25`.
+
+### How the KPI Is Calculated
+
+The dashboard calculates the top-creator post share from the snapshot values:
+
+\[
+\text{Top Creator Share}
+=
+\frac{\text{Top 10\% Posts}}{\text{All Posts}}
+\times 100
+\]
+
+Using the current snapshot:
+
+\[
+\frac{870}{2250}\times 100 = 38.67\%
+\]
+
+The calculation is performed by the synchronization script rather than relying on a separately hardcoded percentage.
+
+### Data Validation
+
+The `sync-progress.mjs` script validates the KPI snapshot before generating dashboard data.
+
+The validation process checks that:
+
+- Required KPI fields are available.
+- The snapshot's user total matches the extracted analytics user total.
+- The snapshot's post total matches the extracted analytics post total.
+- The top-creator share is calculated from the validated post counts.
+
+If a required value or consistency check fails, the synchronization process should report the problem rather than silently generating a misleading KPI.
+
+### Regenerate the Dashboard Data
+
+From the `mentor-web/` directory, run:
+
+```bash
+npm run sync-progress
 ```
 
-Current:
+Then validate and build the dashboard:
 
+```bash
+npm run lint
+npm run build
 ```
-scripts/
 
-└── menu.sh
-```
+**Important:** The generated file `progress.generated.json` should not be edited manually. Update the relevant source data or snapshot, then run the synchronization script again.
 
-Purpose:
-
-* Reduce repetitive Docker commands
-* Provide developer-friendly workflow
-* Simplify project operation
-
-Future scripts:
-
-* Git automation
-* Database migration helper
-* Backup scripts
-* Deployment scripts
+The snapshot values should be refreshed and reverified whenever the underlying analytics data changes. The dashboard does not automatically retrieve updated PostgreSQL records simply because the site is deployed on Vercel.
 
 ---
 
-# 📷 API Testing Screenshots
+## 🌐 Deployment
 
-Swagger API testing results:
+### Dashboard Deployment — Vercel
 
-```
-tests/screenshots/
-```
+The Next.js dashboard is deployed online on Vercel.
 
-Examples:
+<p align="center">
+  <a href="https://fastapi-user-management-dashboard-three.vercel.app">
+    <img src="https://img.shields.io/badge/Visit%20Dashboard-paoying--data.vercel.app-black?style=for-the-badge&logo=vercel" alt="Visit the online dashboard">
+  </a>
+</p>
 
-## Authentication
+**Live URL:** [https://fastapi-user-management-dashboard-three.vercel.app](https://fastapi-user-management-dashboard-three.vercel.app)
 
-![Authentication](tests/screenshots/Authentication/Authentication%20Post%20Auth%20Login.png)
+The dashboard source code is located in the `mentor-web/` directory.
 
-## Users
+For a Vercel project connected to this repository, use the following configuration:
 
-![Users](tests/screenshots/User/Test%20Get%20User.png)
+| Setting | Value |
+|---|---|
+| Framework Preset | Next.js |
+| Root Directory | `mentor-web` |
+| Install Command | `npm install` |
+| Build Command | `npm run build` |
 
-## Posts
+The build process uses the configured prebuild script to synchronize the progress data before creating the production build.
 
-![Posts](tests/screenshots/Post/Get%20Posts.png)
+After deployment, open the live URL to verify that the dashboard loads and displays its available analytics data correctly.
 
----
+### Backend Deployment
 
-# 📚 SQL Practice
+The online dashboard and FastAPI backend are separate components.
 
-During development, SQL concepts were practiced through SQLAlchemy:
+The dashboard's Vercel URL is **not** a public FastAPI API URL. A public backend endpoint should only be documented here after the FastAPI service has been deployed and its URL verified.
 
-* SELECT
-* INSERT
-* UPDATE
-* DELETE
-* WHERE
-* ORDER BY
-* LIMIT
-* Foreign Key
-* Relationship Query
-* JOIN preparation
+For local backend development, use the setup instructions in the [Getting Started](#-getting-started) section.
 
 ---
 
-# 📈 Learning Progress
+## 🔒 Security Notes
 
-Completed:
+Follow these practices when developing or deploying the project:
 
-* ✅ FastAPI Fundamentals
-* ✅ APIRouter
-* ✅ Dependency Injection
-* ✅ Pydantic Schema
-* ✅ CRUD Operations
-* ✅ SQLAlchemy ORM
-* ✅ PostgreSQL
-* ✅ Docker
-* ✅ Docker Compose
-* ✅ JWT Authentication
-* ✅ Password Hashing
-* ✅ Authorization
-* ✅ One-to-Many Relationship
-* ✅ Git & GitHub
-* ✅ Linux Terminal Workflow
-* ✅ Bash Automation Script
+- Do not commit `.env` files, passwords, database URLs, API keys, or other secrets.
+- Keep local database credentials separate from frontend configuration.
+- Do not expose PostgreSQL credentials to browser-side code.
+- Do not place private database credentials in `NEXT_PUBLIC_*` environment variables.
+- Do not assume that a static analytics snapshot represents real-time database data.
+- Validate and refresh snapshots before publishing updated analytics.
+- Use environment variables and the deployment platform's secret-management features for sensitive configuration.
 
-Currently Learning:
-
-* 🔄 Pagination
-* 🔄 Search
-* 🔄 Advanced SQLAlchemy Query
-* 🔄 JOIN
-* 🔄 Aggregate Functions
-* 🔄 Alembic Migration
-* 🔄 Unit Testing
-
-Future Goals:
-
-* Redis
-* Celery
-* CI/CD
-* Nginx
-* Deployment
-* Clean Architecture
-* Enterprise Backend Design
+The frontend should consume only data that is appropriate for public display.
 
 ---
 
-# 🎯 Learning Objectives
+## 🎯 Project Goals
 
-This project focuses on:
+This project supports practical learning and development in several areas:
 
-* Backend API Development
-* Database Design
-* Authentication System
-* RESTful API Design
-* Docker Workflow
-* Linux Development Environment
-* Software Project Organization
+- **Backend development:** Building and running a FastAPI application.
+- **Database management:** Working with PostgreSQL and Docker Compose.
+- **SQL analytics:** Writing and validating queries for user and post metrics.
+- **Data processing:** Transforming source files and snapshots into dashboard-ready data.
+- **Frontend development:** Building a Next.js dashboard with React, Tailwind CSS, and Recharts.
+- **Data visualization:** Presenting metrics and project progress in a web interface.
+- **Deployment:** Publishing the dashboard to Vercel.
+- **Code quality:** Validating data, running lint checks, and testing production builds.
 
----
-
-# 👨‍💻 Author
-
-**Phạm Nguyễn Nhật Trường**
-
-Final-year Information Technology Student
-
-GitHub:
-
-https://github.com/Paoying5
+The project can be extended in the future to connect the dashboard to a deployed backend API, enabling analytics to be retrieved dynamically rather than from static snapshots.
 
 ---
 
-# ⭐ Notes
+## 👤 Author
 
-This project is built for learning purposes.
+**Paoying5**
 
-The repository documents my backend development journey, including daily learning notes, implementation experiments, and improvements toward a more practical backend system.
+- GitHub: [@Paoying5](https://github.com/Paoying5)
+- Repository: [fastapi-user-management](https://github.com/Paoying5/fastapi-user-management)
+- Live Dashboard: [fastapi-user-management-dashboard-three.vercel.app](https://fastapi-user-management-dashboard-three.vercel.app)
 
-The goal is to gradually transform this project into a production-oriented backend application following real-world engineering practices.
+---
+
+<p align="center">
+  <strong>Built with FastAPI, PostgreSQL, Next.js, and a focus on practical backend and analytics development.</strong>
+</p>
 ```
 
 
@@ -1156,6 +1140,266 @@ else:
 
 ---
 
+## `alembic/versions/b31f9c2a6d10_enforce_user_role_constraints.py`
+
+```python
+"""enforce user role constraints
+
+Revision ID: b31f9c2a6d10
+Revises: e7d9b8aad922
+Create Date: 2026-10-07
+"""
+
+from typing import Sequence, Union
+
+import sqlalchemy as sa
+from alembic import op
+
+
+revision: str = "b31f9c2a6d10"
+down_revision: Union[str, Sequence[str], None] = "e7d9b8aad922"
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+    connection = op.get_bind()
+
+    invalid_role_count = connection.execute(
+        sa.text(
+            """
+            SELECT COUNT(*)
+            FROM users
+            WHERE role IS NOT NULL
+              AND role NOT IN ('user', 'admin')
+            """
+        )
+    ).scalar_one()
+
+    if invalid_role_count > 0:
+        raise RuntimeError(
+            "Migration stopped because users table contains "
+            "roles other than 'user' or 'admin'. "
+            "Fix invalid role data before running this migration."
+        )
+
+    connection.execute(
+        sa.text(
+            """
+            UPDATE users
+            SET role = 'user'
+            WHERE role IS NULL
+            """
+        )
+    )
+
+    op.alter_column(
+        "users",
+        "role",
+        existing_type=sa.String(length=50),
+        nullable=False,
+        server_default="user",
+    )
+
+    op.create_check_constraint(
+        "ck_users_role_allowed",
+        "users",
+        "role IN ('user', 'admin')",
+    )
+
+
+def downgrade() -> None:
+    op.drop_constraint(
+        "ck_users_role_allowed",
+        "users",
+        type_="check",
+    )
+
+    op.alter_column(
+        "users",
+        "role",
+        existing_type=sa.String(length=50),
+        nullable=True,
+        server_default=None,
+    )
+```
+
+
+---
+
+## `alembic/versions/c42a7f91d8e3_add_lifecycle_fields.py`
+
+```python
+"""add lifecycle fields
+
+Revision ID: c42a7f91d8e3
+Revises: b31f9c2a6d10
+Create Date: 2026-10-14
+"""
+
+from typing import Sequence, Union
+
+import sqlalchemy as sa
+from alembic import op
+
+
+revision: str = "c42a7f91d8e3"
+
+down_revision: Union[
+    str,
+    Sequence[str],
+    None,
+] = "b31f9c2a6d10"
+
+branch_labels: Union[
+    str,
+    Sequence[str],
+    None,
+] = None
+
+depends_on: Union[
+    str,
+    Sequence[str],
+    None,
+] = None
+
+
+def upgrade() -> None:
+    op.add_column(
+        "users",
+        sa.Column(
+            "is_active",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.true(),
+        ),
+    )
+
+    op.add_column(
+        "users",
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text(
+                "CURRENT_TIMESTAMP"
+            ),
+        ),
+    )
+
+    op.add_column(
+        "users",
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text(
+                "CURRENT_TIMESTAMP"
+            ),
+        ),
+    )
+
+    op.add_column(
+        "users",
+        sa.Column(
+            "last_login_at",
+            sa.DateTime(timezone=True),
+            nullable=True,
+        ),
+    )
+
+    op.add_column(
+        "posts",
+        sa.Column(
+            "status",
+            sa.String(length=20),
+            nullable=False,
+            server_default=sa.text(
+                "'published'"
+            ),
+        ),
+    )
+
+    op.add_column(
+        "posts",
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text(
+                "CURRENT_TIMESTAMP"
+            ),
+        ),
+    )
+
+    op.add_column(
+        "posts",
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text(
+                "CURRENT_TIMESTAMP"
+            ),
+        ),
+    )
+
+    op.create_check_constraint(
+        "ck_posts_status_allowed",
+        "posts",
+        (
+            "status IN "
+            "('draft', 'published', 'archived')"
+        ),
+    )
+
+
+def downgrade() -> None:
+    op.drop_constraint(
+        "ck_posts_status_allowed",
+        "posts",
+        type_="check",
+    )
+
+    op.drop_column(
+        "posts",
+        "updated_at",
+    )
+
+    op.drop_column(
+        "posts",
+        "created_at",
+    )
+
+    op.drop_column(
+        "posts",
+        "status",
+    )
+
+    op.drop_column(
+        "users",
+        "last_login_at",
+    )
+
+    op.drop_column(
+        "users",
+        "updated_at",
+    )
+
+    op.drop_column(
+        "users",
+        "created_at",
+    )
+
+    op.drop_column(
+        "users",
+        "is_active",
+    )
+```
+
+
+---
+
 ## `alembic/versions/e7d9b8aad922_initial_schema.py`
 
 ```python
@@ -1233,29 +1477,38 @@ def downgrade() -> None:
 ## `analytics/charts.py`
 
 ```python
-# biểu đồ User theo Role
 import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.figure import Figure
 
 from analytics.post_analysis import top_users_by_posts
 
 
-def plot_users_by_role(df):
+def plot_users_by_role(
+    df: pd.DataFrame,
+) -> Figure:
+    """
+    Create a bar chart showing the number of users for each role.
+    """
+    if "role" not in df.columns:
+        raise ValueError(
+            "DataFrame must contain a 'role' column"
+        )
+
     counts = (
         df["role"]
+        .fillna("unknown")
         .value_counts()
     )
 
     fig, ax = plt.subplots()
 
-    counts.plot(
-        kind="bar",
-        ax=ax,
+    ax.bar(
+        counts.index,
+        counts.values,
     )
 
-    ax.set_title(
-        "Number of Users by Role"
-    )
-
+    ax.set_title("Number of Users by Role")
     ax.set_xlabel("Role")
     ax.set_ylabel("Number of Users")
 
@@ -1264,183 +1517,79 @@ def plot_users_by_role(df):
     return fig
 
 
-# biểu đồ User theo độ tuổi
-def plot_age_distribution(df): 
-    ages = df["age"].dropna() 
+def plot_age_distribution(
+    df: pd.DataFrame,
+) -> Figure:
+    """
+    Create an age histogram from a DataFrame that already contains
+    an 'age' column.
+
+    The current User database model does not provide age data,
+    so this helper is not used by the FastAPI analytics endpoint.
+    """
+    if "age" not in df.columns:
+        raise ValueError(
+            "DataFrame must contain an 'age' column"
+        )
+
+    ages = df["age"].dropna()
+
     fig, ax = plt.subplots()
-    ax.hist( ages, bins=10, )
-    ax.set_title( "User Age Distribution" )
+
+    ax.hist(
+        ages,
+        bins=10,
+    )
+
+    ax.set_title("User Age Distribution")
     ax.set_xlabel("Age")
     ax.set_ylabel("Number of Users")
-    fig.tight_layout() 
+
+    fig.tight_layout()
+
     return fig
 
-# Top User có nhiều Post
-def plot_top_users_by_posts( 
-        users_df, 
-        posts_df,
-        limit=10,
-):
-        top_users = ( 
-        top_users_by_posts( 
-        users_df, 
-        posts_df, 
-        limit, 
+
+def plot_top_users_by_posts(
+    users_df: pd.DataFrame,
+    posts_df: pd.DataFrame,
+    limit: int = 10,
+) -> Figure:
+    """
+    Create a bar chart of users with the highest number of posts.
+    """
+    if limit < 1:
+        raise ValueError(
+            "limit must be greater than or equal to 1"
         )
-    ) 
-        fig, ax = plt.subplots()
-        ax.bar( top_users["username"],
-                top_users["post_count"], 
-        ) 
-        ax.set_title( "Top Users by Number of Posts" ) 
-        ax.set_xlabel("Username")
-        ax.set_ylabel("Number of Posts")
-        plt.xticks( 
-                rotation=45, 
-                ha="right", 
-        ) 
-        fig.tight_layout()
-        return fig
 
+    top_users = top_users_by_posts(
+        users_df=users_df,
+        posts_df=posts_df,
+        limit=limit,
+    )
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+    fig, ax = plt.subplots()
 
-# ==========================================
-# 0. KHỞI TẠO DỮ LIỆU GIẢ LẬP (MOCK DATA)
-# ==========================================
-# Dữ liệu Users
-users_data = {
-    "user_id":,
-    "username": [
-        "An",
-        "Bình",
-        "Cường",
-        "Dũng",
-        "Hoa",
-        "Lan",
-        "Minh",
-        "Nam",
-        "Oanh",
-        "Phúc",
-        "Quang",
-        "Sơn",
-    ],
-    "age":,
-    "role_id":,
-}
-df_users = pd.DataFrame(users_data)
+    ax.bar(
+        top_users["name"],
+        top_users["post_count"],
+    )
 
-# Dữ liệu Roles
-roles_data = {
-    "role_id":,
-    "role_name": ["Admin", "Editor", "Viewer"],
-}
-df_roles = pd.DataFrame(roles_data)
+    ax.set_title(
+        "Top Users by Number of Posts"
+    )
+    ax.set_xlabel("User")
+    ax.set_ylabel("Number of Posts")
 
-# Dữ liệu Posts (Số lượng post của từng user)
-posts_data = {
-    "user_id":,
-    "post_count":,
-}
-df_posts = pd.DataFrame(posts_data)
+    ax.tick_params(
+        axis="x",
+        labelrotation=45,
+    )
 
+    fig.tight_layout()
 
-# ==========================================
-# BÀI 1: Thống kê tuổi của User
-# ==========================================
-print("--- BÀI 1: Thống kê tuổi ---")
-# Chuyển cột tuổi thành mảng numpy để tính toán
-ages = df_users["age"].to_numpy()
-
-age_max = np.max(ages)
-age_min = np.min(ages)
-age_mean = np.mean(ages)
-age_median = np.median(ages)
-age_std = np.std(ages)
-
-print(f"User lớn tuổi nhất: {age_max}")
-print(f"User trẻ tuổi nhất: {age_min}")
-print(f"Tuổi trung bình: {age_mean:.2f}")
-print(f"Median tuổi: {age_median}")
-print(f"Độ lệch chuẩn tuổi: {age_std:.2f}\n")
-
-
-# ==========================================
-# BÀI 2: Tìm 5 user có nhiều post nhất
-# ==========================================
-print("--- BÀI 2: Top 5 users có nhiều post nhất ---")
-# Gộp bảng users và posts để lấy tên user kèm số post
-df_user_posts = pd.merge(df_users, df_posts, on="user_id")
-
-# Sắp xếp giảm dần theo số post và lấy 5 dòng đầu
-top_5_users = df_user_posts.sort_values(by="post_count", ascending=False).head(5)
-print(top_5_users[["username", "post_count"]].to_string(index=False), "\n")
-
-
-# ==========================================
-# BÀI 3: Tính số post trung bình của mỗi role
-# ==========================================
-print("--- BÀI 3: Số post trung bình của mỗi role ---")
-# Merge bảng user_posts với bảng roles
-df_merged = pd.merge(df_user_posts, df_roles, on="role_id")
-
-# Groupby theo role_name và tính mean của post_count
-role_post_mean = (
-    df_merged.groupby("role_name")["post_count"].mean().reset_index()
-)
-print(role_post_mean.to_string(index=False), "\n")
-
-
-# ==========================================
-# BÀI 4: Vẽ biểu đồ - User theo role
-# ==========================================
-# Đếm số lượng user thuộc mỗi role
-role_counts = df_merged["role_name"].value_counts()
-
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.bar(role_counts.index, role_counts.values, color="skyblue", edgecolor="black")
-ax.set_title("Số lượng User theo Role")
-ax.set_xlabel("Tên Role")
-ax.set_ylabel("Số lượng User")
-fig.tight_layout()
-
-
-# ==========================================
-# BÀI 5: Vẽ histogram - Phân bố tuổi của User
-# ==========================================
-fig2, ax2 = plt.subplots(figsize=(6, 4))
-# Sử dụng plt.hist() thông qua ax (hướng đối tượng) hoặc trực tiếp plt.hist()
-ax2.hist(df_users["age"], bins=5, color="lightgreen", edgecolor="black")
-ax2.set_title("Biểu đồ phân bố tuổi của User (Histogram)")
-ax2.set_xlabel("Độ tuổi")
-ax2.set_ylabel("Tần suất (Số user)")
-fig2.tight_layout()
-
-
-# ==========================================
-# BÀI 6: Vẽ Top 10 user có nhiều post nhất
-# ==========================================
-# Lấy top 10 user nhiều post nhất
-top_10_users = df_user_posts.sort_values(by="post_count", ascending=False).head(
-    10
-)
-
-fig3, ax3 = plt.subplots(figsize=(10, 5))
-ax3.bar(
-    top_10_users["username"],
-    top_10_users["post_count"],
-    color="salmon",
-    edgecolor="black",
-)
-ax3.set_title("Top 10 User có nhiều bài Post nhất")
-ax3.set_xlabel("Tên User")
-ax3.set_ylabel("Số lượng Post")
-fig3.tight_layout()
-
-# Hiển thị tất cả các biểu đồ đã vẽ
-plt.show()
+    return fig
 ```
 
 
@@ -1588,127 +1737,80 @@ def posts_by_role(
 
 ```python
 import pandas as pd
-import numpy as np
 from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from app.models.user import User
-from datetime import date
 
 
-def get_users_dataframe(session):
+def get_users_dataframe(
+    session: Session,
+) -> pd.DataFrame:
+    """
+    Load the currently supported User fields into a DataFrame.
+
+    This function intentionally uses only columns that actually exist
+    in the current SQLAlchemy User model.
+    """
     users = session.scalars(
         select(User)
     ).all()
 
-    data = []
+    data = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "full_name": user.full_name,
+        }
+        for user in users
+    ]
 
-    for user in users:
-        data.append(
-            {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "gender": user.gender,
-                "birth_year": user.birth_year,
-                "role": user.role,
-                "is_active": user.is_active,
-            }
-        )
-
-    return pd.DataFrame(data)
+    return pd.DataFrame(
+        data,
+        columns=[
+            "id",
+            "name",
+            "email",
+            "role",
+            "full_name",
+        ],
+    )
 
 
-def count_users(df: pd.DataFrame):
+def count_users(
+    df: pd.DataFrame,
+) -> int:
     return len(df)
 
 
-def users_by_role(df: pd.DataFrame):
-    return (
+def users_by_role(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Count users grouped by role.
+
+    Null roles are grouped as 'unknown' so analytics does not silently
+    discard those records.
+    """
+    if df.empty:
+        return pd.DataFrame(
+            columns=[
+                "role",
+                "user_count",
+            ]
+        )
+
+    role_counts = (
         df["role"]
+        .fillna("unknown")
         .value_counts()
-        .reset_index()
-        .rename(
-            columns={
-                "role": "role",
-                "count": "user_count",
-            }
-        )
+        .rename_axis("role")
+        .reset_index(name="user_count")
     )
 
-
-def users_by_gender(df: pd.DataFrame):
-    return (
-        df["gender"]
-        .fillna("Unknown")
-        .value_counts()
-        .reset_index()
-        .rename(
-            columns={
-                "gender": "gender",
-                "count": "user_count",
-            }
-        )
-    )
-
-
-def add_age_column(df: pd.DataFrame):
-    current_year = date.today().year
-
-    df = df.copy()
-
-    df["age"] = current_year - df["birth_year"]
-
-    return df
-
-
-def add_age_group(df: pd.DataFrame):
-    df = df.copy()
-
-    df["age_group"] = pd.cut(
-        df["age"],
-        bins=[0, 18, 25, 35, 50, 100],
-        labels=[
-            "Under 18",
-            "18-25",
-            "26-35",
-            "36-50",
-            "50+",
-        ],
-        right=True,
-    )
-
-    return df
-
-
-def users_by_age_group(df: pd.DataFrame):
-    return (
-        df["age_group"]
-        .value_counts()
-        .sort_index()
-        .reset_index()
-    )
-
-
-def calculate_age_statistics(df: pd.DataFrame):
-    ages = df["age"].dropna().to_numpy()
-
-    if len(ages) == 0:
-        return {
-            "count": 0,
-            "mean": None,
-            "median": None,
-            "min": None,
-            "max": None,
-            "std": None,
-        }
-
-    return {
-        "count": len(ages),
-        "mean": float(np.mean(ages)),
-        "median": float(np.median(ages)),
-        "min": float(np.min(ages)),
-        "max": float(np.max(ages)),
-        "std": float(np.std(ages)),
-    }
+    return role_counts
 ```
 
 
@@ -1774,7 +1876,24 @@ settings = Settings()
 ## `app/core/exceptions.py`
 
 ```python
+class ApplicationError(Exception):
+    """Base exception for application/business errors."""
 
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
+
+
+class ResourceNotFoundError(ApplicationError):
+    """Requested resource does not exist."""
+
+
+class PermissionDeniedError(ApplicationError):
+    """Authenticated user is not allowed to perform the action."""
+
+
+class ConflictError(ApplicationError):
+    """Operation conflicts with the current resource state."""
 ```
 
 
@@ -1845,14 +1964,17 @@ def create_access_token(data: dict) -> str:
 ## `app/database.py`
 
 ```python
+from collections.abc import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 from app.core.config import settings
 
 
 engine = create_engine(
     settings.DATABASE_URL,
+    pool_pre_ping=True,
 )
 
 SessionLocal = sessionmaker(
@@ -1864,7 +1986,13 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
+    """
+    Create one SQLAlchemy Session for one request.
+
+    The session is always closed after the request finishes,
+    including when an exception occurs.
+    """
     db = SessionLocal()
 
     try:
@@ -1879,41 +2007,39 @@ def get_db():
 ## `app/dependencies.py`
 
 ```python
-from collections.abc import Generator
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.database import SessionLocal
-from app.models import User
+from app.database import get_db
+from app.models import User, user
 from app.services.auth_service import AuthService
 from app.services.post_service import PostService
 from app.services.user_service import UserService
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/login",
+)
 
 
-def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-def get_user_service(db: Session = Depends(get_db)) -> UserService:
+def get_user_service(
+    db: Session = Depends(get_db),
+) -> UserService:
     return UserService(db)
 
 
-def get_post_service(db: Session = Depends(get_db)) -> PostService:
+def get_post_service(
+    db: Session = Depends(get_db),
+) -> PostService:
     return PostService(db)
 
 
-def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
+def get_auth_service(
+    db: Session = Depends(get_db),
+) -> AuthService:
     return AuthService(db)
 
 
@@ -1921,7 +2047,6 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     service: AuthService = Depends(get_auth_service),
 ) -> User:
-
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -1937,20 +2062,39 @@ def get_current_user(
             algorithms=[settings.ALGORITHM],
         )
 
-        email = payload.get("sub")
+        subject = payload.get("sub")
 
-        if not isinstance(email, str):
+        if not isinstance(subject, str) or not subject:
             raise credentials_exception
 
     except JWTError as exc:
         raise credentials_exception from exc
 
-    user = service.get_user_by_email(email)
+    # New token format:
+    # sub = string representation of user.id
+    if subject.isdigit():
+        user = service.get_user_by_id(
+            int(subject)
+        )
+
+    # Backward compatibility:
+    # old tokens used email as the JWT subject.
+    else:
+        user = service.get_user_by_email(
+            subject
+        )
 
     if user is None:
         raise credentials_exception
 
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive user",
+        )
+
     return user
+
 
 def get_admin_user(
     current_user: User = Depends(get_current_user),
@@ -1970,9 +2114,25 @@ def get_admin_user(
 ## `app/main.py`
 
 ```python
-from fastapi import FastAPI
+from fastapi import (
+    FastAPI,
+    Request,
+    status,
+)
+from fastapi.responses import JSONResponse
 
-from app.routers import auth, health, post, user
+from app.core.exceptions import (
+    ConflictError,
+    PermissionDeniedError,
+    ResourceNotFoundError,
+)
+from app.routers import (
+    analytics,
+    auth,
+    health,
+    post,
+    user,
+)
 
 
 app = FastAPI(
@@ -1985,17 +2145,81 @@ app = FastAPI(
 )
 
 
-# Register routers
-app.include_router(health.router)
-app.include_router(auth.router)
-app.include_router(user.router)
-app.include_router(post.router)
+@app.exception_handler(
+    ResourceNotFoundError
+)
+async def resource_not_found_handler(
+    request: Request,
+    exc: ResourceNotFoundError,
+):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={
+            "detail": exc.message,
+        },
+    )
 
 
-@app.get("/", tags=["Default"])
+@app.exception_handler(
+    PermissionDeniedError
+)
+async def permission_denied_handler(
+    request: Request,
+    exc: PermissionDeniedError,
+):
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={
+            "detail": exc.message,
+        },
+    )
+
+
+@app.exception_handler(
+    ConflictError
+)
+async def conflict_handler(
+    request: Request,
+    exc: ConflictError,
+):
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={
+            "detail": exc.message,
+        },
+    )
+
+
+app.include_router(
+    health.router
+)
+
+app.include_router(
+    auth.router
+)
+
+app.include_router(
+    user.router
+)
+
+app.include_router(
+    post.router
+)
+
+app.include_router(
+    analytics.router
+)
+
+
+@app.get(
+    "/",
+    tags=["Default"],
+)
 def root():
     return {
-        "message": "FastAPI User Management is running",
+        "message": (
+            "FastAPI User Management is running"
+        ),
         "docs": "/docs",
         "health": "/health",
     }
@@ -2022,7 +2246,17 @@ __all__ = [
 ## `app/models/post.py`
 
 ```python
-from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    func,
+    text,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -2030,6 +2264,14 @@ from app.database import Base
 
 class Post(Base):
     __tablename__ = "posts"
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN "
+            "('draft', 'published', 'archived')",
+            name="ck_posts_status_allowed",
+        ),
+    )
 
     id = Column(
         Integer,
@@ -2054,6 +2296,26 @@ class Post(Base):
         index=True,
     )
 
+    status = Column(
+        String(20),
+        nullable=False,
+        default="published",
+        server_default=text("'published'"),
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
     owner = relationship(
         "User",
         back_populates="posts",
@@ -2066,7 +2328,16 @@ class Post(Base):
 ## `app/models/user.py`
 
 ```python
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Integer,
+    String,
+    func,
+    text,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -2074,6 +2345,13 @@ from app.database import Base
 
 class User(Base):
     __tablename__ = "users"
+
+    __table_args__ = (
+        CheckConstraint(
+            "role IN ('user', 'admin')",
+            name="ck_users_role_allowed",
+        ),
+    )
 
     id = Column(
         Integer,
@@ -2095,7 +2373,9 @@ class User(Base):
 
     role = Column(
         String(50),
-        nullable=True,
+        nullable=False,
+        default="user",
+        server_default=text("'user'"),
     )
 
     password = Column(
@@ -2103,16 +2383,41 @@ class User(Base):
         nullable=False,
     )
 
+    full_name = Column(
+        String(100),
+        nullable=True,
+    )
+
+    is_active = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+        server_default=text("true"),
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    last_login_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
     posts = relationship(
         "Post",
         back_populates="owner",
         cascade="all, delete-orphan",
     )
-
-    full_name = Column(
-    String(100),
-    nullable=True,
-)
 ```
 
 
@@ -2130,16 +2435,26 @@ class User(Base):
 ## `app/repositories/post_repository.py`
 
 ```python
-from sqlalchemy import desc, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import (
+    desc,
+    func,
+    select,
+)
+from sqlalchemy.orm import (
+    Session,
+    joinedload,
+)
 
 from app.models.post import Post
 
 
 class PostRepository:
-    """Persistence operations for Post entities only."""
+    """Persistence operations for Post entities."""
 
-    def __init__(self, db: Session):
+    def __init__(
+        self,
+        db: Session,
+    ):
         self.db = db
 
     def get_all(
@@ -2148,73 +2463,139 @@ class PostRepository:
         offset: int = 0,
         search: str = "",
     ) -> list[Post]:
-
         statement = (
             select(Post)
-            .options(joinedload(Post.owner))
+            .options(
+                joinedload(
+                    Post.owner
+                )
+            )
         )
 
         if search:
-            statement = statement.where(
-                Post.title.ilike(
-                    f"%{search}%"
+            statement = (
+                statement.where(
+                    Post.title.ilike(
+                        f"%{search}%"
+                    )
                 )
             )
 
         statement = (
             statement
-            .order_by(desc(Post.id))
+            .order_by(
+                desc(Post.id)
+            )
             .offset(offset)
             .limit(limit)
         )
 
         return list(
-            self.db.scalars(statement).unique().all()
+            self.db.scalars(
+                statement
+            ).all()
+        )
+
+    def count(
+        self,
+        search: str = "",
+    ) -> int:
+        statement = (
+            select(
+                func.count()
+            )
+            .select_from(Post)
+        )
+
+        if search:
+            statement = (
+                statement.where(
+                    Post.title.ilike(
+                        f"%{search}%"
+                    )
+                )
+            )
+
+        result = self.db.scalar(
+            statement
+        )
+
+        return int(
+            result or 0
         )
 
     def get_by_id(
         self,
         post_id: int,
     ) -> Post | None:
-
         statement = (
             select(Post)
-            .options(joinedload(Post.owner))
-            .where(Post.id == post_id)
+            .options(
+                joinedload(
+                    Post.owner
+                )
+            )
+            .where(
+                Post.id
+                == post_id
+            )
         )
 
-        return self.db.scalars(
-            statement
-        ).unique().first()
+        return (
+            self.db
+            .scalars(statement)
+            .first()
+        )
 
     def get_by_user_id(
         self,
         user_id: int,
     ) -> list[Post]:
-
         statement = (
             select(Post)
-            .options(joinedload(Post.owner))
-            .where(Post.user_id == user_id)
-            .order_by(desc(Post.id))
+            .options(
+                joinedload(
+                    Post.owner
+                )
+            )
+            .where(
+                Post.user_id
+                == user_id
+            )
+            .order_by(
+                desc(Post.id)
+            )
         )
 
         return list(
-            self.db.scalars(statement).unique().all()
+            self.db.scalars(
+                statement
+            ).all()
         )
 
-    def add(self, post: Post) -> Post:
+    def add(
+        self,
+        post: Post,
+    ) -> Post:
         self.db.add(post)
         self.db.flush()
         self.db.refresh(post)
+
         return post
 
-    def update(self, post: Post) -> Post:
+    def update(
+        self,
+        post: Post,
+    ) -> Post:
         self.db.flush()
         self.db.refresh(post)
+
         return post
 
-    def delete(self, post: Post) -> None:
+    def delete(
+        self,
+        post: Post,
+    ) -> None:
         self.db.delete(post)
         self.db.flush()
 ```
@@ -2225,84 +2606,178 @@ class PostRepository:
 ## `app/repositories/user_repository.py`
 
 ```python
-from sqlalchemy import select, asc
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import (
+    asc,
+    func,
+    or_,
+    select,
+)
+from sqlalchemy.orm import (
+    Session,
+    joinedload,
+    selectinload,
+)
+
 from app.models.user import User
 
+
 class UserRepository:
-    def __init__(self, db: Session):
+    def __init__(
+        self,
+        db: Session,
+    ):
         self.db = db
 
     def get_all(
-        self, 
-        limit: int = 10, 
-        offset: int = 0, 
-        search: str = ""
+        self,
+        limit: int = 10,
+        offset: int = 0,
+        search: str = "",
     ) -> list[User]:
-        # Khởi tạo câu lệnh select kèm joinedload tối ưu câu query tránh N+1 problem
         statement = (
             select(User)
-            .options(joinedload(User.posts))
+            .options(
+                selectinload(
+                    User.posts
+                )
+            )
         )
 
-        # Nếu có tham số tìm kiếm, lọc theo cả Name hoặc Email (không phân biệt hoa thường)
         if search:
-            statement = statement.where(
-                User.name.ilike(f"%{search}%") | 
-                User.email.ilike(f"%{search}%")
+            pattern = (
+                f"%{search}%"
             )
 
-        # Áp dụng sắp xếp, phân trang limit và offset
+            statement = (
+                statement.where(
+                    or_(
+                        User.name.ilike(
+                            pattern
+                        ),
+                        User.email.ilike(
+                            pattern
+                        ),
+                    )
+                )
+            )
+
         statement = (
             statement
-            .order_by(asc(User.id))
+            .order_by(
+                asc(User.id)
+            )
             .offset(offset)
             .limit(limit)
         )
 
         return list(
-            self.db.scalars(statement).unique().all()
+            self.db.scalars(
+                statement
+            ).all()
         )
 
+    def count(
+        self,
+        search: str = "",
+    ) -> int:
+        statement = (
+            select(
+                func.count()
+            )
+            .select_from(User)
+        )
+
+        if search:
+            pattern = (
+                f"%{search}%"
+            )
+
+            statement = (
+                statement.where(
+                    or_(
+                        User.name.ilike(
+                            pattern
+                        ),
+                        User.email.ilike(
+                            pattern
+                        ),
+                    )
+                )
+            )
+
+        result = self.db.scalar(
+            statement
+        )
+
+        return int(
+            result or 0
+        )
 
     def get_by_id(
         self,
         user_id: int,
     ) -> User | None:
-
         statement = (
             select(User)
-            .options(joinedload(User.posts))
-            .where(User.id == user_id)
+            .options(
+                joinedload(
+                    User.posts
+                )
+            )
+            .where(
+                User.id
+                == user_id
+            )
         )
 
-        return self.db.scalars(
-            statement
-        ).unique().first()
+        return (
+            self.db
+            .scalars(statement)
+            .unique()
+            .first()
+        )
 
     def get_by_email(
         self,
         email: str,
     ) -> User | None:
-
-        statement = select(User).where(
-            User.email == email
+        statement = (
+            select(User)
+            .where(
+                User.email
+                == email
+            )
         )
 
-        return self.db.scalars(statement).first()
+        return (
+            self.db
+            .scalars(statement)
+            .first()
+        )
 
-    def add(self, user: User) -> User:
+    def add(
+        self,
+        user: User,
+    ) -> User:
         self.db.add(user)
         self.db.flush()
         self.db.refresh(user)
+
         return user
 
-    def update(self, user: User) -> User:
+    def update(
+        self,
+        user: User,
+    ) -> User:
         self.db.flush()
         self.db.refresh(user)
+
         return user
 
-    def delete(self, user: User) -> None:
+    def delete(
+        self,
+        user: User,
+    ) -> None:
         self.db.delete(user)
         self.db.flush()
 ```
@@ -2325,13 +2800,19 @@ class UserRepository:
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.database import get_db
 from analytics.user_analysis import (
+    count_users,
     get_users_dataframe,
     users_by_role,
-    add_age_column,
-    calculate_age_statistics,
 )
+from app.dependencies import (
+    get_admin_user,
+    get_db,
+)
+from app.models import User
+from app.schemas import APIResponse
+from app.utils.response import response
+
 
 router = APIRouter(
     prefix="/analytics",
@@ -2339,49 +2820,39 @@ router = APIRouter(
 )
 
 
-@router.get("/users/summary")
+@router.get(
+    "/users/summary",
+    response_model=APIResponse,
+    summary="Get user analytics summary",
+)
 def user_summary(
     db: Session = Depends(get_db),
-):
-    df = get_users_dataframe(db)
+    admin: User = Depends(get_admin_user),
+) -> dict:
+    """
+    Return basic user statistics.
 
-    df = add_age_column(df)
+    Access is restricted to admin users.
+    """
+    users_df = get_users_dataframe(db)
 
-    role_counts = users_by_role(df)
+    role_counts = users_by_role(
+        users_df
+    )
 
-    age_statistics = calculate_age_statistics(df)
-
-    return {
-        "total_users": len(df),
-        "users_by_role": (
-            role_counts
-            .to_dict(orient="records")
+    data = {
+        "total_users": count_users(
+            users_df
         ),
-        "age_statistics": age_statistics,
+        "users_by_role": role_counts.to_dict(
+            orient="records"
+        ),
     }
 
-
-{
-    "total_users": 69,
-    "users_by_role": [
-        {
-            "role": "user",
-            "user_count": 65
-        },
-        {
-            "role": "admin",
-            "user_count": 4
-        }
-    ],
-    "age_statistics": {
-        "count": 60,
-        "mean": 25.8,
-        "median": 25.0,
-        "min": 20,
-        "max": 39,
-        "std": 4.2
-    }
-}
+    return response(
+        "User analytics retrieved successfully",
+        data,
+    )
 ```
 
 
@@ -2488,81 +2959,203 @@ def health_check(
 ## `app/routers/post.py`
 
 ```python
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    Response,
+    Query,
+    status,
+)
 
-from app.dependencies import get_current_user, get_post_service
+from app.dependencies import (
+    get_current_user,
+    get_post_service,
+)
 from app.models import User
-from app.schemas import MessageResponse, PostCreate, PostPatch, PostResponse, PostUpdate
+from app.schemas import (
+    MessageResponse,
+    PostCreate,
+    PostPatch,
+    PostResponse,
+    PostUpdate,
+)
 from app.services.post_service import PostService
+from app.utils.pagination import (
+    PAGINATION_HEADERS_OPENAPI,
+    build_pagination_headers,
+)
 
 
-router = APIRouter(prefix="/posts", tags=["Posts"])
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"],
+)
 
 
-@router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=PostResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_post(
     post_data: PostCreate,
-    service: PostService = Depends(get_post_service),
-    current_user: User = Depends(get_current_user),
+    service: PostService = Depends(
+        get_post_service
+    ),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    return service.create_post(post_data, current_user.id)
+    return service.create_post(
+        post_data,
+        current_user.id,
+    )
 
-
-@router.get("/", response_model=list[PostResponse])
+@router.get(
+    "/",
+    response_model=list[PostResponse],
+    responses={
+        200: {
+            "description": (
+                "Posts retrieved successfully"
+            ),
+            "headers":
+                PAGINATION_HEADERS_OPENAPI,
+        },
+    },
+)
 def get_posts(
-    limit: int = Query(default=10, ge=1, le=100),
-    offset: int = Query(default=0, ge=0),
-    search: str = Query(default="", max_length=100),
-    service: PostService = Depends(get_post_service),
+    http_response: Response,
+    limit: int = Query(
+        default=10,
+        ge=1,
+        le=100,
+    ),
+    offset: int = Query(
+        default=0,
+        ge=0,
+    ),
+    search: str = Query(
+        default="",
+        max_length=100,
+    ),
+    service: PostService = Depends(
+        get_post_service
+    ),
 ):
-    return service.get_posts(limit, offset, search)
+    posts, total = (
+        service.get_posts(
+            limit=limit,
+            offset=offset,
+            search=search,
+        )
+    )
 
+    http_response.headers.update(
+        build_pagination_headers(
+            total=total,
+            limit=limit,
+            offset=offset,
+        )
+    )
 
-@router.get("/me", response_model=list[PostResponse])
+    return posts
+
+@router.get(
+    "/me",
+    response_model=list[PostResponse],
+)
 def get_my_posts(
-    service: PostService = Depends(get_post_service),
-    current_user: User = Depends(get_current_user),
+    service: PostService = Depends(
+        get_post_service
+    ),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    return service.get_my_posts(current_user.id)
+    return service.get_my_posts(
+        current_user.id
+    )
 
 
-@router.get("/{post_id}", response_model=PostResponse)
-def get_post(post_id: int, service: PostService = Depends(get_post_service)):
-    post = service.get_post(post_id)
-    if post is None:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-    return post
+@router.get(
+    "/{post_id}",
+    response_model=PostResponse,
+)
+def get_post(
+    post_id: int,
+    service: PostService = Depends(
+        get_post_service
+    ),
+):
+    return service.get_post(
+        post_id
+    )
 
 
-@router.put("/{post_id}", response_model=PostResponse)
+@router.put(
+    "/{post_id}",
+    response_model=PostResponse,
+)
 def update_post(
     post_id: int,
     post_data: PostUpdate,
-    service: PostService = Depends(get_post_service),
-    current_user: User = Depends(get_current_user),
+    service: PostService = Depends(
+        get_post_service
+    ),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    return service.update_post(post_id, post_data, current_user.id)
+    return service.update_post(
+        post_id,
+        post_data,
+        current_user.id,
+    )
 
 
-@router.patch("/{post_id}", response_model=PostResponse)
+@router.patch(
+    "/{post_id}",
+    response_model=PostResponse,
+)
 def patch_post(
     post_id: int,
     post_data: PostPatch,
-    service: PostService = Depends(get_post_service),
-    current_user: User = Depends(get_current_user),
+    service: PostService = Depends(
+        get_post_service
+    ),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    return service.patch_post(post_id, post_data, current_user.id)
+    return service.patch_post(
+        post_id,
+        post_data,
+        current_user.id,
+    )
 
 
-@router.delete("/{post_id}", response_model=MessageResponse)
+@router.delete(
+    "/{post_id}",
+    response_model=MessageResponse,
+)
 def delete_post(
     post_id: int,
-    service: PostService = Depends(get_post_service),
-    current_user: User = Depends(get_current_user),
+    service: PostService = Depends(
+        get_post_service
+    ),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    service.delete_post(post_id, current_user.id)
-    return MessageResponse(message="Post deleted successfully")
+    service.delete_post(
+        post_id,
+        current_user.id,
+    )
+
+    return MessageResponse(
+        message="Post deleted successfully"
+    )
 ```
 
 
@@ -2571,78 +3164,278 @@ def delete_post(
 ## `app/routers/user.py`
 
 ```python
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
+from fastapi import (
+    APIRouter,
+    Depends,
+    Query,
+    Response,
+    status,
+)
 
-from app.dependencies import get_admin_user, get_user_service
+from app.dependencies import (
+    get_admin_user,
+    get_user_service,
+)
 from app.models.user import User
-from app.schemas import APIResponse, UserCreate, UserUpdate, UserPatch, UserResponse
-
+from app.schemas import (
+    APIResponse,
+    UserCreate,
+    UserPatch,
+    UserResponse,
+    UserUpdate,
+)
 from app.services.user_service import UserService
+from app.utils.pagination import (
+    PAGINATION_HEADERS_OPENAPI,
+    build_pagination_headers,
+)
 from app.utils.response import response
 
-router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.get("/", response_model=APIResponse, summary="Get all users")
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"],
+)
+
+
+@router.get(
+    "/",
+    response_model=APIResponse[
+        list[UserResponse]
+    ],
+    summary="Get all users",
+    responses={
+        200: {
+            "description": (
+                "Users retrieved successfully"
+            ),
+            "headers":
+                PAGINATION_HEADERS_OPENAPI,
+        },
+    },
+)
 def get_users(
-    limit: int = Query(default=10, ge=1, le=100, description="Số lượng bản ghi tối đa trả về"),
-    offset: int = Query(default=0, ge=0, description="Số lượng bản ghi bỏ qua (vị trí bắt đầu)"),
-    search: str = Query(default="", max_length=100, description="Từ khóa tìm kiếm theo tên hoặc email"),
-    service: UserService = Depends(get_user_service), 
-    admin: User = Depends(get_admin_user)
+    http_response: Response,
+    limit: int = Query(
+        default=10,
+        ge=1,
+        le=100,
+        description=(
+            "Số lượng bản ghi tối đa trả về"
+        ),
+    ),
+    offset: int = Query(
+        default=0,
+        ge=0,
+        description=(
+            "Số lượng bản ghi bỏ qua"
+        ),
+    ),
+    search: str = Query(
+        default="",
+        max_length=100,
+        description=(
+            "Tìm kiếm theo tên hoặc email"
+        ),
+    ),
+    service: UserService = Depends(
+        get_user_service
+    ),
+    _admin: User = Depends(
+        get_admin_user
+    ),
 ):
-    # Truyền tham số phân trang vào service layer
-    users = service.get_users(limit=limit, offset=offset, search=search)
-    data = [UserResponse.model_validate(user).model_dump() for user in users]
-    return response("Users retrieved successfully", data)
+    users, total = (
+        service.get_users(
+            limit=limit,
+            offset=offset,
+            search=search,
+        )
+    )
+
+    http_response.headers.update(
+        build_pagination_headers(
+            total=total,
+            limit=limit,
+            offset=offset,
+        )
+    )
+
+    data = [
+        UserResponse
+        .model_validate(user)
+        .model_dump()
+        for user in users
+    ]
+
+    return response(
+        "Users retrieved successfully",
+        data,
+    )
 
 
-@router.get("/{user_id}", response_model=APIResponse, summary="Get user by ID")
-def get_user(user_id: int, service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
-    user = service.get_user(user_id)
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return response("User found", UserResponse.model_validate(user).model_dump())
+@router.get(
+    "/{user_id}",
+    response_model=APIResponse[
+        UserResponse
+    ],
+    summary="Get user by ID",
+)
+def get_user(
+    user_id: int,
+    service: UserService = Depends(
+        get_user_service
+    ),
+    _admin: User = Depends(
+        get_admin_user
+    ),
+):
+    user = service.get_user(
+        user_id
+    )
+
+    data = (
+        UserResponse
+        .model_validate(user)
+        .model_dump()
+    )
+
+    return response(
+        "User found",
+        data,
+    )
 
 
-@router.post("/", response_model=APIResponse, status_code=status.HTTP_201_CREATED, summary="Create user")
-def create_user(user: UserCreate, service: UserService = Depends(get_user_service)):
-    db_user = service.create_user(user)
-    return response("User created successfully", UserResponse.model_validate(db_user).model_dump())
+@router.post(
+    "/",
+    response_model=APIResponse[
+        UserResponse
+    ],
+    status_code=status.HTTP_201_CREATED,
+    summary="Create user",
+)
+def create_user(
+    user: UserCreate,
+    service: UserService = Depends(
+        get_user_service
+    ),
+):
+    db_user = service.create_user(
+        user
+    )
+
+    data = (
+        UserResponse
+        .model_validate(db_user)
+        .model_dump()
+    )
+
+    return response(
+        "User created successfully",
+        data,
+    )
 
 
-@router.put("/{user_id}", response_model=APIResponse, summary="Replace user")
+@router.put(
+    "/{user_id}",
+    response_model=APIResponse[
+        UserResponse
+    ],
+    summary="Replace user",
+)
 def update_user(
     user_id: int,
     user: UserUpdate,
-    service: UserService = Depends(get_user_service),
-    admin: User = Depends(get_admin_user)
+    service: UserService = Depends(
+        get_user_service
+    ),
+    _admin: User = Depends(
+        get_admin_user
+    ),
 ):
-    updated_user = service.update_user(user_id, user)
-    if updated_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return response("User updated successfully", UserResponse.model_validate(updated_user).model_dump())
+    updated_user = (
+        service.update_user(
+            user_id,
+            user,
+        )
+    )
+
+    data = (
+        UserResponse
+        .model_validate(
+            updated_user
+        )
+        .model_dump()
+    )
+
+    return response(
+        "User updated successfully",
+        data,
+    )
 
 
-@router.patch("/{user_id}", response_model=APIResponse, summary="Partially update user")
+@router.patch(
+    "/{user_id}",
+    response_model=APIResponse[
+        UserResponse
+    ],
+    summary="Partially update user",
+)
 def patch_user(
     user_id: int,
     user_data: UserPatch,
-    service: UserService = Depends(get_user_service),
-    admin: User = Depends(get_admin_user)
+    service: UserService = Depends(
+        get_user_service
+    ),
+    _admin: User = Depends(
+        get_admin_user
+    ),
 ):
-    updated_user = service.patch_user(user_id, user_data)
-    if updated_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return response("User partially updated successfully", UserResponse.model_validate(updated_user).model_dump())
+    updated_user = (
+        service.patch_user(
+            user_id,
+            user_data,
+        )
+    )
+
+    data = (
+        UserResponse
+        .model_validate(
+            updated_user
+        )
+        .model_dump()
+    )
+
+    return response(
+        "User partially updated successfully",
+        data,
+    )
 
 
-@router.delete("/{user_id}", response_model=APIResponse, summary="Delete user")
-def delete_user(user_id: int, service: UserService = Depends(get_user_service), admin: User = Depends(get_admin_user)):
-    deleted = service.delete_user(user_id)
-    if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return response("User deleted successfully", None)
+@router.delete(
+    "/{user_id}",
+    response_model=APIResponse[
+        None
+    ],
+    summary="Delete user",
+)
+def delete_user(
+    user_id: int,
+    service: UserService = Depends(
+        get_user_service
+    ),
+    _admin: User = Depends(
+        get_admin_user
+    ),
+):
+    service.delete_user(
+        user_id
+    )
+
+    return response(
+        "User deleted successfully",
+        None,
+    )
 ```
 
 
@@ -2711,15 +3504,21 @@ class Token(BaseModel):
 ## `app/schemas/common.py`
 
 ```python
-from typing import Any
+from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel
 
 
-class APIResponse(BaseModel):
-    status: str
+T = TypeVar("T")
+
+
+class APIResponse(
+    BaseModel,
+    Generic[T],
+):
+    status: Literal["success"] = "success"
     message: str
-    data: Any | None = None
+    data: T | None = None
 
 
 class MessageResponse(BaseModel):
@@ -2732,35 +3531,81 @@ class MessageResponse(BaseModel):
 ## `app/schemas/post.py`
 
 ```python
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime
+from typing import Annotated, Literal
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    StringConstraints,
+    field_validator,
+)
 
 
-class PostCreate(BaseModel):
-    title: str = Field(
+PostTitle = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
         min_length=2,
         max_length=255,
+    ),
+]
+
+
+PostStatus = Literal[
+    "draft",
+    "published",
+    "archived",
+]
+
+
+class StrictRequestModel(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
     )
 
+
+class PostCreate(StrictRequestModel):
+    title: PostTitle
+    content: str | None = None
+    status: PostStatus = "published"
+
+
+class PostUpdate(StrictRequestModel):
+    title: PostTitle
     content: str | None = None
 
 
-class PostUpdate(BaseModel):
-    title: str = Field(
-        min_length=2,
-        max_length=255,
-    )
-
+class PostPatch(StrictRequestModel):
+    title: PostTitle | None = None
     content: str | None = None
+    status: PostStatus | None = None
 
+    @field_validator("title")
+    @classmethod
+    def title_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "title cannot be null"
+            )
 
-class PostPatch(BaseModel):
-    title: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=255,
-    )
+        return value
 
-    content: str | None = None
+    @field_validator("status")
+    @classmethod
+    def status_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "status cannot be null"
+            )
+
+        return value
 
 
 class PostSimple(BaseModel):
@@ -2787,6 +3632,11 @@ class PostResponse(BaseModel):
     title: str
     content: str | None
     user_id: int
+
+    status: PostStatus
+    created_at: datetime
+    updated_at: datetime
+
     owner: UserSimple
 
     model_config = ConfigDict(
@@ -2800,16 +3650,51 @@ class PostResponse(BaseModel):
 ## `app/schemas/user.py`
 
 ```python
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import Annotated, Literal
+from datetime import datetime
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    StringConstraints,
+    field_validator,
+)
 
 from app.schemas.post import PostSimple
 
 
-class UserCreate(BaseModel):
-    name: str = Field(
+UserRole = Literal[
+    "user",
+    "admin",
+]
+
+UserName = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
         min_length=2,
         max_length=100,
+    ),
+]
+
+FullName = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        max_length=100,
+    ),
+]
+
+
+class StrictRequestModel(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
     )
+
+
+class UserCreate(StrictRequestModel):
+    name: UserName
 
     email: EmailStr
 
@@ -2818,60 +3703,59 @@ class UserCreate(BaseModel):
         max_length=128,
     )
 
-    # Không nên cho client tự tạo admin.
-    # Service sẽ quyết định role mặc định.
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
-    )
+    full_name: FullName | None = None
 
 
-class UserUpdate(BaseModel):
-    name: str = Field(
-        min_length=2,
-        max_length=100,
-    )
+class UserUpdate(StrictRequestModel):
+    name: UserName
 
     email: EmailStr
 
-    role: str = Field(
-        min_length=2,
-        max_length=30,
-    )
+    role: UserRole
 
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
-    )
+    full_name: FullName | None = None
 
 
-class UserPatch(BaseModel):
-    name: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=100,
-    )
+class UserPatch(StrictRequestModel):
+    name: UserName | None = None
 
     email: EmailStr | None = None
 
-    role: str | None = Field(
-        default=None,
-        min_length=2,
-        max_length=30,
-    )
+    role: UserRole | None = None
 
-    full_name: str | None = Field(
-        default=None,
-        max_length=100,
+    full_name: FullName | None = None
+
+    is_active: bool | None = None
+
+    @field_validator(
+        "name",
+        "email",
+        "role",
     )
+    @classmethod
+    def non_nullable_fields_cannot_be_null(
+        cls,
+        value,
+    ):
+        if value is None:
+            raise ValueError(
+                "Field cannot be null"
+            )
+
+        return value
 
 
 class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
-    role: str
+    role: UserRole
     full_name: str | None = None
+
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    last_login_at: datetime | None = None
 
     posts: list[PostSimple] = Field(
         default_factory=list,
@@ -2897,6 +3781,8 @@ class UserResponse(BaseModel):
 ## `app/services/auth_service.py`
 
 ```python
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.core.security import (
@@ -2904,25 +3790,34 @@ from app.core.security import (
     verify_password,
 )
 from app.models.user import User
-from app.repositories.user_repository import UserRepository
+from app.repositories.user_repository import (
+    UserRepository,
+)
 from app.schemas.auth import Token
 
 
 class AuthService:
     """Authentication business rules."""
 
-    def __init__(self, db: Session):
-        self.repository = UserRepository(db)
+    def __init__(
+        self,
+        db: Session,
+    ):
+        self.db = db
+        self.repository = UserRepository(
+            db
+        )
 
     def authenticate_user(
         self,
         email: str,
         password: str,
     ) -> User | None:
-
         email = email.strip().lower()
 
-        user = self.repository.get_by_email(email)
+        user = self.repository.get_by_email(
+            email
+        )
 
         if user is None:
             return None
@@ -2933,6 +3828,9 @@ class AuthService:
         ):
             return None
 
+        if not user.is_active:
+            return None
+
         return user
 
     def login(
@@ -2940,7 +3838,6 @@ class AuthService:
         email: str,
         password: str,
     ) -> Token | None:
-
         user = self.authenticate_user(
             email,
             password,
@@ -2949,9 +3846,23 @@ class AuthService:
         if user is None:
             return None
 
+        try:
+            user.last_login_at = datetime.now(
+                timezone.utc
+            )
+
+            self.db.commit()
+            self.db.refresh(user)
+
+        except Exception:
+            self.db.rollback()
+            raise
+
         return Token(
             access_token=create_access_token(
-                {"sub": user.email}
+                {
+                    "sub": str(user.id),
+                }
             ),
             token_type="bearer",
         )
@@ -2960,9 +3871,16 @@ class AuthService:
         self,
         email: str,
     ) -> User | None:
-
         return self.repository.get_by_email(
             email.strip().lower()
+        )
+
+    def get_user_by_id(
+        self,
+        user_id: int,
+    ) -> User | None:
+        return self.repository.get_by_id(
+            user_id
         )
 ```
 
@@ -2972,85 +3890,196 @@ class AuthService:
 ## `app/services/post_service.py`
 
 ```python
-from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import (
+    PermissionDeniedError,
+    ResourceNotFoundError,
+)
 from app.models.post import Post
 from app.repositories.post_repository import PostRepository
-from app.schemas.post import PostCreate, PostPatch, PostUpdate
+from app.schemas.post import (
+    PostCreate,
+    PostPatch,
+    PostUpdate,
+)
 
 
 class PostService:
-    """Business rules for posts, including ownership checks and transactions."""
+    """Business rules for posts, ownership and transactions."""
 
     def __init__(self, db: Session):
         self.db = db
         self.repository = PostRepository(db)
 
-    def create_post(self, post_data: PostCreate, user_id: int) -> Post:
+    def create_post(
+        self,
+        post_data: PostCreate,
+        user_id: int,
+    ) -> Post:
         post = Post(
             title=post_data.title,
             content=post_data.content,
+            status=post_data.status,
             user_id=user_id,
         )
+
         try:
             post = self.repository.add(post)
+
             self.db.commit()
-            return self.repository.get_by_id(post.id)
+
+            created_post = self.repository.get_by_id(
+                post.id
+            )
+
+            if created_post is None:
+                raise ResourceNotFoundError(
+                    "Post not found after creation"
+                )
+
+            return created_post
+
         except Exception:
             self.db.rollback()
             raise
 
-    def get_posts(self, limit: int = 10, offset: int = 0, search: str = "") -> list[Post]:
-        return self.repository.get_all(limit, offset, search)
+    def get_posts(
+        self,
+        limit: int = 10,
+        offset: int = 0,
+        search: str = "",
+    ) -> tuple[list[Post], int]:
+        posts = (
+            self.repository.get_all(
+                limit=limit,
+                offset=offset,
+                search=search,
+            )
+        )
 
-    def get_my_posts(self, user_id: int) -> list[Post]:
-        return self.repository.get_by_user_id(user_id)
+        total = (
+            self.repository.count(
+                search=search
+            )
+        )
 
-    def get_post(self, post_id: int) -> Post | None:
-        return self.repository.get_by_id(post_id)
+        return posts, total
+    
+    def get_my_posts(
+        self,
+        user_id: int,
+    ) -> list[Post]:
+        return self.repository.get_by_user_id(
+            user_id
+        )
 
-    def update_post(self, post_id: int, post_data: PostUpdate, user_id: int) -> Post:
-        post = self._get_owned_post(post_id, user_id)
+    def get_post(
+        self,
+        post_id: int,
+    ) -> Post:
+        post = self.repository.get_by_id(
+            post_id
+        )
+
+        if post is None:
+            raise ResourceNotFoundError(
+                "Post not found"
+            )
+
+        return post
+
+    def update_post(
+        self,
+        post_id: int,
+        post_data: PostUpdate,
+        user_id: int,
+    ) -> Post:
+        post = self._get_owned_post(
+            post_id,
+            user_id,
+        )
+
         post.title = post_data.title
         post.content = post_data.content
+
         return self._commit_update(post)
 
-    def patch_post(self, post_id: int, post_data: PostPatch, user_id: int) -> Post:
-        post = self._get_owned_post(post_id, user_id)
-        for field_name, value in post_data.model_dump(exclude_unset=True).items():
-            setattr(post, field_name, value)
+    def patch_post(
+        self,
+        post_id: int,
+        post_data: PostPatch,
+        user_id: int,
+    ) -> Post:
+        post = self._get_owned_post(
+            post_id,
+            user_id,
+        )
+
+        update_data = post_data.model_dump(
+            exclude_unset=True
+        )
+
+        for field_name, value in update_data.items():
+            setattr(
+                post,
+                field_name,
+                value,
+            )
+
         return self._commit_update(post)
 
-    def delete_post(self, post_id: int, user_id: int) -> None:
-        post = self._get_owned_post(post_id, user_id)
+    def delete_post(
+        self,
+        post_id: int,
+        user_id: int,
+    ) -> None:
+        post = self._get_owned_post(
+            post_id,
+            user_id,
+        )
+
         try:
             self.repository.delete(post)
             self.db.commit()
+
         except Exception:
             self.db.rollback()
             raise
 
-    def _get_owned_post(self, post_id: int, user_id: int) -> Post:
-        post = self.repository.get_by_id(post_id)
+    def _get_owned_post(
+        self,
+        post_id: int,
+        user_id: int,
+    ) -> Post:
+        post = self.repository.get_by_id(
+            post_id
+        )
+
         if post is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Post not found",
+            raise ResourceNotFoundError(
+                "Post not found"
             )
+
         if post.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="You do not own this post",
+            raise PermissionDeniedError(
+                "You do not own this post"
             )
+
         return post
 
-    def _commit_update(self, post: Post) -> Post:
+    def _commit_update(
+        self,
+        post: Post,
+    ) -> Post:
         try:
             post = self.repository.update(post)
+
             self.db.commit()
             self.db.refresh(post)
+
             return post
+
         except Exception:
             self.db.rollback()
             raise
@@ -3062,13 +4091,23 @@ class PostService:
 ## `app/services/user_service.py`
 
 ```python
-from fastapi import HTTPException, status
+from typing import NoReturn
+
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import (
+    ConflictError,
+    ResourceNotFoundError,
+)
 from app.core.security import hash_password
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserCreate, UserPatch, UserUpdate
+from app.schemas.user import (
+    UserCreate,
+    UserPatch,
+    UserUpdate,
+)
 
 
 class UserService:
@@ -3077,103 +4116,255 @@ class UserService:
         self.repository = UserRepository(db)
 
     def get_users(
-        self, 
-        limit: int = 10, 
-        offset: int = 0, 
-        search: str = ""
-    ) -> list[User]:
-        # Điều hướng xử lý dữ liệu qua repository
-        return self.repository.get_all(
-            limit=limit, 
-            offset=offset, 
-            search=search
+        self,
+        limit: int = 10,
+        offset: int = 0,
+        search: str = "",
+    ) -> tuple[list[User], int]:
+        users = (
+            self.repository.get_all(
+                limit=limit,
+                offset=offset,
+                search=search,
+            )
         )
 
-    def get_user(self, user_id: int) -> User | None:
-        return self.repository.get_by_id(user_id)
+        total = (
+            self.repository.count(
+                search=search
+            )
+        )
 
-    def create_user(self, user_data: UserCreate) -> User:
-        email = str(user_data.email).strip().lower()
-        if self.repository.get_by_email(email) is not None:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
+        return users, total
+    
+    def get_user(
+        self,
+        user_id: int,
+    ) -> User:
+        user = self.repository.get_by_id(
+            user_id
+        )
+
+        if user is None:
+            raise ResourceNotFoundError(
+                "User not found"
+            )
+
+        return user
+
+    def create_user(
+        self,
+        user_data: UserCreate,
+    ) -> User:
+        email = self._normalize_email(
+            str(user_data.email)
+        )
+
+        if (
+            self.repository.get_by_email(email)
+            is not None
+        ):
+            raise ConflictError(
+                "Email already exists"
             )
 
         user = User(
             name=user_data.name,
             email=email,
             role="user",
-            password=hash_password(user_data.password),
+            password=hash_password(
+                user_data.password
+            ),
             full_name=user_data.full_name,
         )
+
         try:
             user = self.repository.add(user)
+
             self.db.commit()
             self.db.refresh(user)
+
             return user
+
+        except IntegrityError as exc:
+            self._handle_integrity_error(exc)
+
         except Exception:
             self.db.rollback()
             raise
 
-    def update_user(self, user_id: int, user_data: UserUpdate) -> User | None:
-        user = self.repository.get_by_id(user_id)
-        if user is None:
-            return None
+    def update_user(
+        self,
+        user_id: int,
+        user_data: UserUpdate,
+    ) -> User:
+        user = self.repository.get_by_id(
+            user_id
+        )
 
-        email = str(user_data.email).strip().lower()
-        if user.email != email and self.repository.get_by_email(email) is not None:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
+        if user is None:
+            raise ResourceNotFoundError(
+                "User not found"
+            )
+
+        email = self._normalize_email(
+            str(user_data.email)
+        )
+
+        if (
+            user.email != email
+            and self.repository.get_by_email(email)
+            is not None
+        ):
+            raise ConflictError(
+                "Email already exists"
             )
 
         user.name = user_data.name
         user.email = email
         user.role = user_data.role
         user.full_name = user_data.full_name
+
         return self._commit_update(user)
 
-    def patch_user(self, user_id: int, user_data: UserPatch) -> User | None:
-        user = self.repository.get_by_id(user_id)
-        if user is None:
-            return None
+    def patch_user(
+        self,
+        user_id: int,
+        user_data: UserPatch,
+    ) -> User:
+        user = self.repository.get_by_id(
+            user_id
+        )
 
-        update_data = user_data.model_dump(exclude_unset=True)
-        if "email" in update_data and update_data["email"] is not None:
-            email = str(update_data["email"]).strip().lower()
-            if user.email != email and self.repository.get_by_email(email) is not None:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail="Email already exists",
+        if user is None:
+            raise ResourceNotFoundError(
+                "User not found"
+            )
+
+        update_data = user_data.model_dump(
+            exclude_unset=True
+        )
+
+        if (
+            "email" in update_data
+            and update_data["email"] is not None
+        ):
+            email = self._normalize_email(
+                str(update_data["email"])
+            )
+
+            if (
+                user.email != email
+                and self.repository.get_by_email(
+                    email
                 )
+                is not None
+            ):
+                raise ConflictError(
+                    "Email already exists"
+                )
+
             update_data["email"] = email
 
         for field_name, value in update_data.items():
-            setattr(user, field_name, value)
+            setattr(
+                user,
+                field_name,
+                value,
+            )
+
         return self._commit_update(user)
 
-    def delete_user(self, user_id: int) -> bool:
-        user = self.repository.get_by_id(user_id)
+    def delete_user(
+        self,
+        user_id: int,
+    ) -> None:
+        user = self.repository.get_by_id(
+            user_id
+        )
+
         if user is None:
-            return False
+            raise ResourceNotFoundError(
+                "User not found"
+            )
+
         try:
             self.repository.delete(user)
             self.db.commit()
-            return True
+
         except Exception:
             self.db.rollback()
             raise
 
-    def _commit_update(self, user: User) -> User:
+    def _commit_update(
+        self,
+        user: User,
+    ) -> User:
         try:
             user = self.repository.update(user)
+
             self.db.commit()
             self.db.refresh(user)
+
             return user
+
+        except IntegrityError as exc:
+            self._handle_integrity_error(exc)
+
         except Exception:
             self.db.rollback()
             raise
+
+    @staticmethod
+    def _normalize_email(
+        email: str,
+    ) -> str:
+        return email.strip().lower()
+
+    def _handle_integrity_error(
+        self,
+        exc: IntegrityError,
+    ) -> NoReturn:
+        self.db.rollback()
+
+        original_error = str(
+            exc.orig
+        ).lower()
+
+        diagnostic = getattr(
+            exc.orig,
+            "diag",
+            None,
+        )
+
+        constraint_name = getattr(
+            diagnostic,
+            "constraint_name",
+            None,
+        )
+
+        email_constraints = {
+            "ix_users_email",
+            "users_email_key",
+        }
+
+        is_email_conflict = (
+            constraint_name in email_constraints
+            or (
+                "users.email" in original_error
+                and (
+                    "unique" in original_error
+                    or "duplicate" in original_error
+                )
+            )
+        )
+
+        if is_email_conflict:
+            raise ConflictError(
+                "Email already exists"
+            ) from exc
+
+        raise exc
 ```
 
 
@@ -3191,7 +4382,67 @@ class UserService:
 ## `app/utils/pagination.py`
 
 ```python
+PAGINATION_HEADERS_OPENAPI = {
+    "X-Total-Count": {
+        "description": (
+            "Total number of records matching "
+            "the current filters."
+        ),
+        "schema": {
+            "type": "integer",
+        },
+    },
+    "X-Limit": {
+        "description": (
+            "Maximum number of records "
+            "requested for this page."
+        ),
+        "schema": {
+            "type": "integer",
+        },
+    },
+    "X-Offset": {
+        "description": (
+            "Number of records skipped "
+            "before this page."
+        ),
+        "schema": {
+            "type": "integer",
+        },
+    },
+    "X-Has-More": {
+        "description": (
+            "Whether more matching records "
+            "exist after this page."
+        ),
+        "schema": {
+            "type": "boolean",
+        },
+    },
+}
 
+
+def build_pagination_headers(
+    *,
+    total: int,
+    limit: int,
+    offset: int,
+) -> dict[str, str]:
+    has_more = (
+        offset + limit
+        < total
+    )
+
+    return {
+        "X-Total-Count": str(total),
+        "X-Limit": str(limit),
+        "X-Offset": str(offset),
+        "X-Has-More": (
+            "true"
+            if has_more
+            else "false"
+        ),
+    }
 ```
 
 
@@ -4817,6 +6068,33 @@ Completed
 
 ---
 
+## `docs/diary/2026-08-01-current-progress.md`
+
+```markdown
+# 📅 2026-08-01 Current Progress
+
+---
+
+# 🇻🇳 Tiếng Việt
+
+## Chủ đề hôm nay
+
+Thực hành **Repository Pattern** hoàn chỉnh trong dự án FastAPI.
+
+Mục tiêu của buổi học không phải thêm tính năng mới mà là học cách tổ chức code theo chuẩn mà các dự án lớn sử dụng.
+
+---
+
+# 1. Hiểu vấn đề trước khi Refactor
+
+Ban đầu Router gọi trực tiếp SQLAlchemy.
+
+Ví dụ
+```
+
+
+---
+
 ## `docs/diary/2026-08-02-current-progress.md`
 
 ```markdown
@@ -5414,29 +6692,6 @@ Refactor kiến trúc giúp code dễ tổ chức hơn, nhưng cũng làm tôi n
 
 ---
 
-## `docs/diary/2026-08-09-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-09
-
-## Chủ đề
-**Project Summary và nhìn lại toàn bộ hệ thống.**
-
-Hôm nay tôi tạm dừng việc thêm feature để nhìn project như một hệ thống hoàn chỉnh.
-
-Tôi tổng hợp lại request flow, architecture, database, Alembic, testing, Docker và những vấn đề còn tồn tại. Một nhận thức quan trọng là clean architecture không nằm ở số lượng folder; điều quan trọng là responsibility và dependency giữa các layer phải rõ ràng.
-
-Tôi cũng giữ lại các lỗi đã gặp thay vì che chúng đi, vì debugging là một phần của quá trình học.
-
-### Insight
-
-> Một API “chạy được” chưa đồng nghĩa với một hệ thống mà tôi thực sự hiểu.
-
-```
-
-
----
-
 ## `docs/diary/2026-08-09-project-summary.md`
 
 ```markdown
@@ -5578,7 +6833,7 @@ Tiếp tục với:
 
 Tôi bắt đầu nhận ra rằng refactor architecture không chỉ là “tách file”. Import, dependency và request flow cũng phải được kiểm tra lại.
 
-📓 [Development Log — 01/08](./2026-08-1-current-progress.md)
+📓 [Development Log — 01/08](./2026-08-01-current-progress.md)
 
 ---
 
@@ -6363,7 +7618,7 @@ Các screenshot API được README tham chiếu:
 | [29/07](./2026-07-29-current-progress.md) | SQLAlchemy query và filtering |
 | [30/07](./2026-07-30-current-progress.md) | Docker + Alembic |
 | [31/07](./2026-07-31-current-progress.md) | Repository Pattern |
-| [01/08](./2026-08-1-current-progress.md) | Repository thực hành sâu hơn |
+| [01/08](./2026-08-01-current-progress.md) | Repository thực hành sâu hơn |
 | [02/08](./2026-08-02-current-progress.md) | Architecture và responsibility |
 | [03/08](./2026-08-03-current-progress.md) | Service Layer |
 | [04/08](./2026-08-04-current-progress.md) | Models & Schemas |
@@ -6404,494 +7659,6 @@ Một trong những bài học rõ nhất là:
 > **Tách code chỉ là bước đầu. Điều khó hơn là giữ toàn bộ hệ thống đồng bộ: source code, dependency, migration, database schema, test và runtime environment.**
 
 Đó chính là phần giá trị nhất tôi nhận được từ project FastAPI này.
-```
-
-
----
-
-## `docs/diary/2026-08-1-current-progress.md`
-
-```markdown
-# 📅 2026-08-01 Current Progress
-
----
-
-# 🇻🇳 Tiếng Việt
-
-## Chủ đề hôm nay
-
-Thực hành **Repository Pattern** hoàn chỉnh trong dự án FastAPI.
-
-Mục tiêu của buổi học không phải thêm tính năng mới mà là học cách tổ chức code theo chuẩn mà các dự án lớn sử dụng.
-
----
-
-# 1. Hiểu vấn đề trước khi Refactor
-
-Ban đầu Router gọi trực tiếp SQLAlchemy.
-
-Ví dụ
-
-```python
-@router.get("/{user_id}")
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
-```
-
-Điều này hoạt động nhưng Router đang làm quá nhiều việc.
-
-Router vừa:
-
-- nhận HTTP Request
-- truy vấn Database
-- xử lý business logic
-- trả Response
-
-Khi project lớn lên thì Router sẽ rất dài và khó bảo trì.
-
----
-
-# 2. Repository Pattern
-
-Đã chuyển toàn bộ code thao tác Database sang
-
-```
-app/crud/user.py
-```
-
-Router chỉ còn nhiệm vụ:
-
-- nhận Request
-- gọi Repository
-- trả Response
-
-Ví dụ
-
-```python
-user = user_crud.get_user(db, user_id)
-```
-
-thay vì
-
-```python
-db.query(User)
-```
-
----
-
-# 3. CRUD đã được tách hoàn toàn
-
-Đã thực hành:
-
-### get_users()
-
-```python
-def get_users(...)
-```
-
----
-
-### get_user()
-
-```python
-def get_user(...)
-```
-
----
-
-### create_user()
-
-```python
-def create_user(...)
-```
-
----
-
-### update_user()
-
-```python
-def update_user(...)
-```
-
----
-
-### patch_user()
-
-```python
-def patch_user(...)
-```
-
----
-
-### delete_user()
-
-```python
-def delete_user(...)
-```
-
----
-
-# 4. Router trở nên rất ngắn
-
-Router chỉ còn
-
-```python
-request
-↓
-
-repository
-
-↓
-
-response
-```
-
-Đây chính là mục tiêu của Repository Pattern.
-
----
-
-# 5. PATCH
-
-Đã thực hành endpoint
-
-```
-PATCH /users/{id}
-```
-
-với
-
-```python
-UserPatch
-```
-
-và
-
-```python
-exclude_unset=True
-```
-
-để chỉ cập nhật những field được gửi lên.
-
-Ví dụ
-
-```json
-{
-    "name": "New Name"
-}
-```
-
-chỉ cập nhật
-
-```
-name
-```
-
-không ghi đè
-
-```
-email
-age
-...
-```
-
----
-
-# 6. PUT vs PATCH
-
-Đã hiểu sự khác nhau.
-
-PUT
-
-```
-Update toàn bộ Resource
-```
-
-PATCH
-
-```
-Update một phần Resource
-```
-
----
-
-# 7. Router không còn viết SQLAlchemy
-
-Đây là thay đổi quan trọng nhất.
-
-Router
-
-❌ không còn
-
-```python
-db.query(...)
-```
-
-mà chỉ gọi
-
-```python
-user_crud....
-```
-
----
-
-# 8. Response vẫn giữ chuẩn
-
-Toàn bộ endpoint đều trả về
-
-```python
-APIResponse
-```
-
-và
-
-```python
-response(...)
-```
-
-để Response luôn thống nhất.
-
----
-
-# 9. HTTPException
-
-Đã thực hành
-
-```python
-raise HTTPException(
-    status_code=404,
-    detail="User not found"
-)
-```
-
-Repository trả về
-
-```python
-None
-```
-
-Router quyết định trả lỗi.
-
-Điều này giúp Repository không phụ thuộc FastAPI.
-
----
-
-# 10. Điều học được
-
-Không phải Router càng nhiều code càng tốt.
-
-Ngược lại.
-
-Router càng mỏng càng đúng.
-
-Business Logic
-
-↓
-
-Repository
-
-HTTP
-
-↓
-
-Router
-
----
-
-# 11. Kiến thức mới
-
-Đã hiểu:
-
-- Repository Pattern
-- Separation of Concerns
-- Single Responsibility Principle
-- PATCH
-- exclude_unset
-- CRUD Layer
-- HTTP Layer
-- Database Layer
-
----
-
-# 12. Cấu trúc project hiện tại
-
-```
-app/
-
-    core/
-
-    crud/
-
-        user.py
-
-    database.py
-
-    dependencies.py
-
-    models/
-
-    routers/
-
-        user.py
-
-    schemas/
-
-    utils/
-
-        response.py
-```
-
----
-
-# 13. Những gì đã thực hành
-
-✔ CRUD
-
-✔ SQLAlchemy ORM
-
-✔ Pydantic v2
-
-✔ APIResponse
-
-✔ Response Wrapper
-
-✔ Dependency Injection
-
-✔ Repository Pattern
-
-✔ PATCH
-
-✔ PUT
-
-✔ Alembic
-
-✔ Docker
-
-✔ PostgreSQL
-
----
-
-# 🇺🇸 English
-
-## Today's Topic
-
-Implemented the Repository Pattern in the FastAPI project.
-
-The goal was not to add new features but to organize the project using a professional backend architecture.
-
----
-
-## What was accomplished
-
-- Moved all database operations into the Repository layer.
-- Routers now only handle HTTP requests and responses.
-- CRUD logic is centralized in `app/crud/user.py`.
-- Added support for partial updates using PATCH.
-- Used `exclude_unset=True` for safe partial updates.
-- Kept API responses consistent through the response wrapper.
-- Continued using Dependency Injection with SQLAlchemy sessions.
-- Preserved clean separation between HTTP logic and database logic.
-
----
-
-## Key Concepts Learned
-
-- Repository Pattern
-- Separation of Concerns
-- Single Responsibility Principle
-- Partial Update (PATCH)
-- Full Update (PUT)
-- CRUD Layer
-- HTTP Layer
-- Database Layer
-- Clean FastAPI Architecture
-
----
-
-## Current Project Structure
-
-```
-app/
-
-    core/
-
-    crud/
-
-        user.py
-
-    database.py
-
-    dependencies.py
-
-    models/
-
-    routers/
-
-        user.py
-
-    schemas/
-
-    utils/
-
-        response.py
-```
-
----
-
-## Technologies Practiced
-
-- FastAPI
-- SQLAlchemy ORM
-- PostgreSQL
-- Docker
-- Alembic
-- Pydantic v2
-- Repository Pattern
-- Dependency Injection
-- REST API Design
-- PATCH & PUT Endpoints
-
----
-
-# ✅ Current Status
-
-The project now follows a much cleaner architecture than the initial version.
-
-The Router layer is responsible only for HTTP communication.
-
-The Repository layer manages all database operations.
-
-This separation significantly improves readability, maintainability, testing, and scalability.
-
-The project is now ready to move toward the next architectural layer, where business logic will be separated from the data access layer.
-```
-
-
----
-
-## `docs/diary/2026-08-10-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-10
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
 ```
 
 
@@ -6971,528 +7738,6 @@ Next step
 ```
 
 Nếu thiếu log, tôi sẽ ghi rõ **không có log nguyên bản**, thay vì biến suy đoán thành lịch sử.
-```
-
-
----
-
-## `docs/diary/2026-08-11-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-11
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-12-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-12
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-13-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-13
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-14-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-14
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-15-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-15
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-16-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-16
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-17-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-17
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-18-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-18
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-19-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-19
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-20-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-20
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-21-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-21
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-22-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-22
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-23-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-23
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-24-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-24
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-25-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-25
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-26-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-26
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-27-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-27
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
-```
-
-
----
-
-## `docs/diary/2026-08-28-current-progress.md`
-
-```markdown
-# 📅 Development Diary — 2026-08-28
-
-> **Retrospective entry:** Không còn log nguyên bản đủ để xác nhận chính xác hoạt động trong ngày này.
-
-Khoảng thời gian **10/08/2026 → 28/08/2026** được ghi nhận chung tại:
-
-[Retrospective Learning Record](./2026-08-10-to-2026-08-28-retrospective-gap.md)
-
-Tôi không muốn tự dựng một lịch sử giả cho ngày này.
-
-### Bài học về documentation
-
-```text
-đã làm
-≠
-đã hiểu
-≠
-đã kiểm chứng
-```
-
-Từ đây diary sẽ được ghi dựa trên mục tiêu, thao tác thực tế, kết quả, lỗi, root cause và next step.
 ```
 
 
@@ -8739,61 +8984,1573 @@ Hiện tại gói phân tích dữ liệu chuyên sâu nâng cao của dự án 
 
 ---
 
+## `docs/diary/2026-09-29-current-progress.md`
+
+```markdown
+# Hoàn thiện Authentication và kiểm tra project
+
+## 📝 Công việc đã làm
+
+Trong ngày đầu tiên của tuần, tôi tiếp tục kiểm tra phần authentication của project **FastAPI User Management**.
+
+Tôi tập trung vào phần **password security**, đặc biệt là các hàm:
+* `hash_password()`
+* `verify_password()`
+* `create_access_token()`
+
+Project đang sử dụng `pwdlib` với **Argon2** để hash password và `python-jose` để tạo **JWT**.
+
+Tôi chạy thử trực tiếp các hàm hash và verify trong container để kiểm tra:
+- [x] Password đúng có verify thành công không.
+- [x] Password sai có bị từ chối không.
+- [x] Password có được lưu dưới dạng hash hay không.
+
+> **Kết quả:** Quá trình password hashing và verification hoạt động chính xác.
+
+Tôi cũng kiểm tra lại cách tạo access token và cập nhật phần xử lý thời gian sang `datetime` có timezone **UTC**.
+
+---
+
+## 🐳 Docker
+
+Trong quá trình chạy `docker-compose`, tôi gặp một số cảnh báo (*warning*):
+```text
+The "UID" variable is not set.
+The "GID" variable is not set.
+```
+
+**Cách xử lý:**
+1. Kiểm tra lại cấu hình Docker Compose configuration.
+2. Kiểm tra cách container API được khởi chạy.
+
+Sau khi điều chỉnh cấu hình, API vẫn hoạt động bình thường và không ảnh hưởng đến dữ liệu **PostgreSQL** hiện tại.
+
+---
+
+## 🚀 Kết quả
+
+Kiểm tra trạng thái hoạt động (*Health check*) của API:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Kết quả trả về:
+```json
+{
+  "status": "healthy",
+  "api": "running",
+  "database": "connected"
+}
+```
+
+Qua phần này, tôi hiểu rõ hơn về cách kiểm tra một backend service đang chạy, cũng như cách kiểm tra nhanh kết nối giữa API với database.
+```
+
+
+---
+
+## `docs/diary/2026-09-30-current-progress.md`
+
+```markdown
+# Debug Playwright Firefox trong Docker
+
+## 📝 Công việc đã làm
+
+Hôm nay tôi tập trung vào việc chạy **E2E test** bằng **Playwright** với trình duyệt **Firefox** bên trong Docker.
+
+Ban đầu, API vẫn chạy bình thường nhưng Firefox không thể khởi động bên trong container. Lỗi gặp phải như sau:
+
+```text
+Sandbox: CanCreateUserNamespace() clone() failure: EPERM
+```
+
+**Phân tích ban đầu:**
+* Tôi đã kiểm tra lại quá trình cài đặt Playwright và Firefox nhưng nhận ra vấn đề không nằm ở việc cài thiếu package.
+* Nguyên nhân gốc rễ liên quan đến **sandbox** và **Linux user namespace** bên trong Docker container.
+
+---
+
+## 🔍 Quá trình Debug
+
+Tôi tiến hành kiểm tra việc tạo user namespace bên trong container và phát hiện **Docker security profile** đang ngăn chặn thao tác này.
+
+**Giải pháp xử lý:**
+Sau khi tìm hiểu và thử nghiệm, tôi đã bổ sung cấu hình `security_opt` vào container API trong môi trường development hiện tại:
+
+```yaml
+security_opt:
+  - seccomp:unconfined
+```
+
+**Kết quả sau cấu hình:**
+* Tiến hành rebuild và restart lại container, Firefox đã có thể khởi động thành công.
+* Tôi đã kiểm tra trực tiếp việc launch Firefox trước khi chạy toàn bộ E2E test.
+* **Kết quả:** `Firefox launch OK`
+
+---
+
+## 💡 Bài học kinh nghiệm
+
+Qua lỗi này, tôi rút ra được bài học rằng khi một chương trình chạy tốt ở máy local nhưng thất bại trong Docker, nguyên nhân có thể nằm ở:
+* **Permission** (Quyền truy cập)
+* **Sandbox** (Cơ chế cô lập)
+* **Security profile** (Cấu hình bảo mật)
+* **Container configuration** (Cấu hình container)
+
+> 📌 **Lưu ý quan trọng:** Cấu hình `seccomp:unconfined` hiện tại chỉ được áp dụng để phục vụ môi trường **development / E2E test** và **không** được xem là cấu hình mặc định khi triển khai lên môi trường **production** để đảm bảo tính an toàn hệ thống.
+```
+
+
+---
+
+## `docs/diary/2026-10-01-current-progress.md`
+
+```markdown
+# Chạy lại toàn bộ test và kiểm tra database
+
+## 🧪 Quá trình Testing
+
+Sau khi xử lý thành công vấn đề với Playwright Firefox, tôi tiến hành chạy lại toàn bộ API test và E2E test bằng lệnh sau:
+
+```bash
+docker compose exec \
+  -e PYTHONPATH=/app \
+  api pytest -q \
+  tests/api tests/e2e \
+  --browser firefox \
+  --cov=app \
+  --cov-report=term-missing \
+  --cov-report=html
+```
+
+**Kết quả kiểm thử:**
+* **Tổng số:** `31 passed`
+  * bao gồm **22 API tests** và **9 E2E tests**.
+* **Mức độ bao phủ (Coverage):** Đạt khoảng **79%**.
+
+Tôi cũng đã khởi tạo **HTML coverage report** để xem chi tiết những phần code nào đã được test và những phần nào còn đang bị thiếu sót.
+
+---
+
+## 🗄️ Cấu trúc PostgreSQL và Alembic
+
+Tôi đã thực hiện kiểm tra lại database và quá trình migration:
+* **Alembic current state:** Đang ở revision `e7d9b8aad922 (head)`.
+* **Quản lý Schema:** Project hiện tại đã **không còn** sử dụng `create_all()` trong file `main.py` để tự tạo schema tự động khi application khởi động. Việc quản lý và cập nhật database schema hoàn toàn được thực hiện thông qua **Alembic migration**.
+* **Dữ liệu:** Tôi đã xác nhận lại PostgreSQL container và đảm bảo toàn bộ dữ liệu vẫn được lưu trữ an toàn, độc lập trong **Docker volume**.
+
+---
+
+## 💡 Bài học kinh nghiệm
+
+* **Phân biệt kiểm thử:** Hiểu rõ hơn sự khác nhau giữa **API test** (tập trung vào từng API/chức năng cụ thể) và **E2E test** (kiểm tra toàn bộ luồng hoạt động thực tế gần nhất với cách người dùng cuối sử dụng hệ thống).
+* **Bản chất của Test Coverage:** Hiểu thêm rằng *coverage* là một chỉ số tốt giúp đo lường mức độ mã nguồn được kiểm thử, tuy nhiên coverage đạt tỷ lệ cao không đồng nghĩa với việc project chắc chắn hoàn toàn sạch bug.
+```
+
+
+---
+
+## `docs/diary/2026-10-02-current-progress.md`
+
+```markdown
+# Bắt đầu học NumPy và Pandas
+
+## 📊 Bắt đầu phần Data Analysis
+
+Sau khi phần backend và testing đã tương đối ổn định, tôi chuyển sang lộ trình học tập mới bao gồm các thư viện:
+* **NumPy**
+* **Pandas**
+* **Matplotlib**
+
+Để chuẩn bị, tôi đã tạo riêng thư mục `practice/` để chứa toàn bộ mã nguồn thực hành, nhằm đảm bảo cô lập hoàn toàn và không làm ảnh hưởng đến mã nguồn production của dự án.
+
+---
+
+## 💾 Làm việc với dữ liệu User
+
+Tôi thực hiện kết nối và trích xuất dữ liệu `User` trực tiếp từ cơ sở dữ liệu **PostgreSQL** thông qua **SQLAlchemy**, sau đó chuyển đổi tập dữ liệu này thành một **Pandas DataFrame**.
+
+### Cấu trúc dữ liệu thu được:
+* **Kích thước:** `93 rows` × `5 columns`
+* **Chi tiết các trường thông tin (Fields):**
+
+| Model thực tế trong DB | DataFrame thu được |
+| :--- | :--- |
+| `id`, `name`, `email`, `role`, `password`, `full_name` | `id`, `name`, `email`, `role`, `full_name` *(loại bỏ `password`)* |
+
+---
+
+## 🧮 Thực hành với NumPy
+
+Tôi làm quen với các phép toán thống kê cơ bản của **NumPy** bao gồm:
+* `mean` (trung bình)
+* `median` (trung vị)
+* `min` / `max` (giá trị nhỏ nhất / lớn nhất)
+* `sum` (tổng)
+* `std` (độ lệch chuẩn)
+
+> 💡 **Bài học rút ra:** Ban đầu, tôi sử dụng cột `id` để luyện tập các phép tính trên. Tuy nhiên, tôi nhanh chóng nhận ra rằng vì `id` chỉ đóng vai trò là định danh (*identifier*), các chỉ số thống kê toán học trên cột này hoàn toàn không mang lại giá trị hay ý nghĩa về mặt nghiệp vụ (*business logic*). Mặc dù vậy, bài tập này vẫn giúp tôi hiểu rõ cách thức NumPy xử lý và vận hành trên các mảng dữ liệu số.
+
+---
+
+## 🐛 Lỗi gặp phải trong quá trình thực hành
+
+Trong đoạn code ban đầu, tôi đã gọi ra trường dữ liệu `username` theo thói quen cũ. Do model thực tế không tồn tại trường này, hệ thống đã trả về cảnh báo lỗi:
+
+```text
+AttributeError: 'User' object has no attribute 'username'
+```
+
+**Cách xử lý:** Tôi đã tiến hành đối chiếu lại cấu trúc định nghĩa của model `User` và điều chỉnh mã nguồn để sử dụng chính xác các trường dữ liệu hiện có (`id`, `name`, `email`, `role`, `full_name`).
+
+---
+
+## 💡 Bài học kinh nghiệm
+
+* **Tránh tư duy lối mòn:** Khi làm việc với một dự án thực tế có sẵn, tuyệt đối không được tự giả định cấu trúc dữ liệu hay các model sẽ giống hệt với các bài hướng dẫn (*tutorials*) trên mạng.
+* **Quy trình chuẩn:** Luôn có bước kiểm tra, rà soát lại cấu trúc thực tế của database schema hoặc file định nghĩa model trước khi bắt tay vào viết code xử lý dữ liệu.
+```
+
+
+---
+
+## `docs/diary/2026-10-03-current-progress.md`
+
+```markdown
+# Học Pandas: Filter, Sort và GroupBy
+
+## 📂 Thao tác với DataFrame
+
+Hôm nay tôi tiếp tục làm việc với file `practice/pandas_lesson2.py` để thực hành các cách trích xuất dữ liệu từ DataFrame.
+
+* **Chọn một column:**
+  ```python
+  df["name"]
+  ```
+* **Chọn nhiều column:**
+  ```python
+  df[["name", "email", "role"]]
+  ```
+
+Tôi cũng thử trích xuất đồng thời `df[["name", "full_name"]]` để quan sát và đối chiếu mối quan hệ giữa hai trường dữ liệu này.
+
+---
+
+## 🔍 Kỹ thuật Filter (Lọc dữ liệu)
+
+Tôi thực hành lọc dữ liệu người dùng dựa trên các điều kiện cụ thể:
+
+* **Lọc theo role:**
+  ```python
+  df[df["role"] == "user"]
+  ```
+* **Lọc những user có tên chứa chuỗi "Swagger"** (không phân biệt hoa thường và bỏ qua giá trị rỗng):
+  ```python
+  df[df["name"].str.contains("Swagger", case=False, na=False)]
+  ```
+
+> 📊 **Kết quả:** Hệ thống lọc ra được **91 Swagger users**.
+
+---
+
+## 🔀 Kỹ thuật Sort (Sắp xếp dữ liệu)
+
+Tôi thực hành sắp xếp dữ liệu theo các chiều hướng khác nhau:
+* Sắp xếp theo tên tăng dần: `df.sort_values("name")`
+* Sắp xếp theo tên giảm dần: `df.sort_values("name", ascending=False)`
+* Sắp xếp theo ID giảm dần và dùng `.head(10)` để lấy ra 10 bản ghi đầu tiên:
+  ```python
+  df.sort_values("id", ascending=False).head(10)
+  ```
+
+💡 **Bài học rút ra:** Hàm `sort_values()` chỉ thay đổi thứ tự hiển thị của các hàng (*rows*) trong DataFrame chứ không làm biến đổi bản chất dữ liệu. Ngoài ra, việc xếp ngược ID chỉ là một mẹo đơn giản để xem nhanh các bản ghi. Để xác định chính xác người dùng nào được tạo gần đây nhất, cấu trúc database chuẩn bắt buộc phải có trường mốc thời gian như `created_at`.
+
+---
+
+## 👥 Kỹ thuật GroupBy (Gom nhóm dữ liệu)
+
+Khi bắt đầu gọi lệnh `df.groupby("role")`, kết quả trả về chỉ là một đối tượng `DataFrameGroupBy` ẩn. Để thu được số liệu thực tế, tôi kết hợp thêm các hàm tổng hợp (*aggregation*):
+
+* **Đếm số lượng phần tử theo nhóm:**
+  ```python
+  df.groupby("role").size()
+  # Kết quả trả về: user    93
+  ```
+* **Đếm số lượng theo cột định danh:**
+  ```python
+  df.groupby("role")["id"].count()
+  ```
+* **Chuyển đổi kết quả gom nhóm ngược lại thành một DataFrame hoàn chỉnh:**
+  ```python
+  df.groupby("role").size().reset_index(name="user_count")
+  ```
+
+---
+
+## 💡 Bài học kinh nghiệm
+
+Tôi bắt đầu nhận thấy sự tương đồng rất lớn và có tính hệ thống giữa ngôn ngữ truy vấn **SQL** và thư viện **Pandas**:
+
+| Tính năng | Câu lệnh SQL (PostgreSQL) | Cú pháp tương đương trong Pandas |
+| :--- | :--- | :--- |
+| **Lọc dữ liệu** | `WHERE` | `df[condition]` |
+| **Sắp xếp** | `ORDER BY` | `.sort_values()` |
+| **Gom nhóm** | `GROUP BY` | `.groupby()` |
+| **Đếm số lượng** | `COUNT()` | `.size()` hoặc `.count()` |
+
+Mối liên hệ trực quan này giúp tôi tận dụng tốt những kiến thức backend đã học về PostgreSQL để tiếp thu thư viện Pandas nhanh chóng hơn.
+```
+
+
+---
+
+## `docs/diary/2026-10-04-project-summary.md`
+
+```markdown
+# FastAPI User Management — Weekly Project Summary
+
+**Period:** 2026-09-29 → 2026-10-04
+
+## 1. Main focus
+
+This period focused on stabilizing the FastAPI learning environment and beginning the transition from backend development toward data analysis.
+
+The work covered four connected areas:
+
+- authentication and password security;
+- Docker / Playwright E2E stability;
+- regression testing and coverage;
+- introductory NumPy and Pandas practice using project data.
+
+---
+
+## 2. Authentication and security review
+
+The authentication flow was reviewed around:
+
+```text
+password
+   ↓
+Argon2 hashing / verification
+   ↓
+JWT access token
+```
+
+The project uses `pwdlib` with Argon2 for password hashing and `python-jose` for JWT creation.
+
+The password flow was verified directly inside the container:
+
+- correct password → accepted;
+- incorrect password → rejected;
+- stored password → hashed instead of plain text.
+
+UTC-aware datetime handling was also reviewed for token-related time values.
+
+---
+
+## 3. Docker and Playwright Firefox
+
+A Playwright/Firefox issue appeared inside Docker:
+
+```text
+Sandbox: CanCreateUserNamespace() clone() failure: EPERM
+```
+
+The root cause was related to the container security profile rather than missing Python packages.
+
+For the local development / E2E environment, the API service was tested with:
+
+```yaml
+security_opt:
+  - seccomp:unconfined
+```
+
+This allowed Firefox to launch successfully in the controlled development environment.
+
+> This setting reduces container isolation and is not treated as a production default.
+
+---
+
+## 4. Regression testing
+
+After stabilizing Firefox, the API and E2E tests were run again.
+
+Verified result at this milestone:
+
+```text
+31 passed
+```
+
+including:
+
+```text
+22 API tests
+9 E2E tests
+```
+
+Coverage was approximately:
+
+```text
+79%
+```
+
+The key lesson was that coverage is useful for locating untested code, but a high coverage percentage does not prove that the application is bug-free.
+
+---
+
+## 5. PostgreSQL and Alembic
+
+The database remained managed through PostgreSQL and Alembic.
+
+At this milestone:
+
+```text
+Alembic head:
+e7d9b8aad922
+```
+
+The project no longer depended on `Base.metadata.create_all()` in application startup as the main schema-management mechanism.
+
+The intended flow remained:
+
+```text
+SQLAlchemy Model
+      ↓
+Alembic Migration
+      ↓
+PostgreSQL Schema
+```
+
+---
+
+## 6. Beginning the Data Analysis track
+
+After the backend/testing environment became more stable, a separate practice area was used for:
+
+- NumPy;
+- Pandas;
+- Matplotlib preparation.
+
+Project user data was loaded from PostgreSQL into a Pandas DataFrame.
+
+The password field was intentionally excluded from analytical output.
+
+Early Pandas practice included:
+
+```text
+column selection
+filtering
+sorting
+groupby
+value_counts
+missing-value checks
+```
+
+---
+
+## 7. Data-analysis lessons
+
+Several important lessons appeared early:
+
+### Identifier is not a business metric
+
+Using `id` to practice NumPy functions is technically possible, but statistics such as mean or standard deviation on an identifier normally have no business meaning.
+
+### Inspect schema before assuming columns
+
+An early attempt referenced a non-existent `username` attribute.
+
+The fix was to verify the actual `User` model and use the real fields instead.
+
+### Clean text before grouping
+
+Name initials showed separate values such as:
+
+```text
+A
+S
+a
+```
+
+Normalizing case before counting produced a more meaningful grouping.
+
+### SQL and Pandas have strong conceptual parallels
+
+```text
+SQL WHERE       ↔ Pandas boolean filtering
+SQL ORDER BY    ↔ sort_values()
+SQL GROUP BY    ↔ groupby()
+SQL COUNT       ↔ size() / count()
+```
+
+This connection made the transition from backend database work to data analysis easier to understand.
+
+---
+
+## 8. Status at the end of the period
+
+```text
+FastAPI backend              ✅ working
+PostgreSQL                   ✅ working
+Alembic                      ✅ working
+API automated tests          ✅
+Playwright Firefox E2E       ✅
+Coverage review              ✅
+NumPy basics                 ✅ started
+Pandas basics                ✅ started
+Matplotlib                   ⏭ next
+```
+
+---
+
+## 9. Next direction
+
+The next phase should avoid adding unrelated backend complexity.
+
+Priority:
+
+```text
+Backend stability
+      ↓
+Database correctness
+      ↓
+SQL / Pandas analysis
+      ↓
+Visualization
+      ↓
+Meaningful analytical questions
+```
+
+The aim is to reuse the same project as both a backend engineering exercise and a practical source of data for the next learning phase.
+```
+
+
+---
+
+## `docs/diary/2026-10-05-to-2026-10-11-retrospective-gap.md`
+
+```markdown
+# Retrospective Documentation Gap — 2026-10-05 → 2026-10-11
+
+## Context
+
+The development diary and mentor-facing weekly report were not maintained consistently during this period.
+
+There is not enough reliable day-by-day evidence to reconstruct a precise daily history without introducing assumptions.
+
+For that reason, this period is recorded as a **documentation gap** instead of being rewritten later as a normal weekly report.
+
+---
+
+## Reporting decision
+
+I decided not to backfill a Week 24 report after the week had already passed.
+
+The next actual mentor-facing report continues with:
+
+```text
+W25
+2026-10-12 → 2026-10-18
+```
+
+The timeline therefore remains honest:
+
+```text
+previous submitted report
+        ↓
+W24 — not submitted
+        ↓
+W25 — next actual report
+```
+
+The missing report is acknowledged as a gap rather than being disguised as a report written on time.
+
+---
+
+## What can be confirmed
+
+The project continued moving toward a more stable backend and database foundation around this period.
+
+The surrounding verified milestones show continued work related to:
+
+- FastAPI architecture;
+- PostgreSQL;
+- Alembic migrations;
+- authentication and authorization;
+- automated tests;
+- database consistency;
+- preparation for the transition toward data analysis.
+
+These activities are intentionally **not assigned to specific dates inside this gap** because the original daily record is unavailable.
+
+---
+
+## Documentation lesson
+
+Documentation is part of the engineering workflow.
+
+When the original record is missing, the safer rule is:
+
+```text
+actual evidence
+      >
+a perfectly continuous-looking timeline
+```
+
+Going forward, the diary should be updated from verified commands, test results, commits, database state, and concrete learning outcomes.
+```
+
+
+---
+
+## `docs/diary/2026-10-12-to-2026-10-18-current-progress.md`
+
+```markdown
+# Development Diary — 2026-10-12 → 2026-10-18
+
+**Weekly report:** W25
+
+## Main goal
+
+The main objective this week was to finish the FastAPI backend at a reasonable portfolio / learning-project boundary and stop adding backend features.
+
+After reaching that checkpoint, the project began transitioning toward SQL and Data Analysis using the same PostgreSQL database.
+
+---
+
+## 1. Database lifecycle V2
+
+The User entity was extended with:
+
+```text
+is_active
+created_at
+updated_at
+last_login_at
+```
+
+The Post entity was extended with:
+
+```text
+status
+created_at
+updated_at
+```
+
+Valid post statuses:
+
+```text
+draft
+published
+archived
+```
+
+The lifecycle migration was applied through Alembic:
+
+```text
+c42a7f91d8e3
+```
+
+The migration was verified against PostgreSQL instead of assuming that updating the ORM model automatically updated the database.
+
+---
+
+## 2. Schema-drift debugging
+
+A major issue this week was schema drift.
+
+At one stage:
+
+```text
+SQLAlchemy model
+    had new lifecycle fields
+```
+
+while:
+
+```text
+PostgreSQL
+    still had an older schema
+```
+
+This caused runtime failures when the application queried columns that the database did not yet have.
+
+After the migration was created and applied, the PostgreSQL schema and application model were synchronized.
+
+A second mismatch appeared around Post status handling.
+
+`PostService` correctly passed:
+
+```python
+status=post_data.status
+```
+
+but the running SQLAlchemy `Post` model did not yet expose the field correctly.
+
+The observed error was:
+
+```text
+TypeError:
+'status' is an invalid keyword argument for Post
+```
+
+This showed that the failure occurred at ORM object construction before SQL was sent to PostgreSQL.
+
+---
+
+## 3. Authentication lifecycle
+
+Authentication was extended to support account lifecycle behavior.
+
+After a successful login:
+
+```text
+last_login_at = current UTC time
+```
+
+Inactive accounts:
+
+```text
+is_active = false
+```
+
+cannot receive a new JWT.
+
+Existing tokens are also rejected after the account is deactivated because `get_current_user()` checks the current database state.
+
+The JWT subject remains:
+
+```text
+sub = str(user.id)
+```
+
+instead of reverting to the earlier email-based subject.
+
+---
+
+## 4. API and schema lifecycle
+
+Pydantic response schemas now expose lifecycle data.
+
+User responses include:
+
+```text
+is_active
+created_at
+updated_at
+last_login_at
+```
+
+Post responses include:
+
+```text
+status
+created_at
+updated_at
+```
+
+Post input validation uses the allowed lifecycle states:
+
+```text
+draft
+published
+archived
+```
+
+Invalid values are rejected at the API boundary before they reach PostgreSQL.
+
+PostgreSQL still retains a CHECK constraint as database-level defense in depth.
+
+---
+
+## 5. Automated verification
+
+Lifecycle coverage was added for:
+
+- user lifecycle response fields;
+- `last_login_at`;
+- inactive-user login rejection;
+- rejection of an already-issued token after deactivation;
+- default Post status;
+- Post status update;
+- invalid Post status;
+- PostgreSQL Post status constraint.
+
+Verified regression results:
+
+```text
+Integration: 11 passed
+API:         50 passed
+E2E:          9 passed
+Full suite:  79 passed
+```
+
+Final full-suite result:
+
+```text
+79 passed
+```
+
+This became the stopping point for FastAPI feature development.
+
+---
+
+## 6. FastAPI feature freeze
+
+I intentionally decided not to continue expanding the backend with unrelated infrastructure such as:
+
+```text
+Redis
+Celery
+Kafka
+Microservices
+Kubernetes
+```
+
+The backend already provides enough material to explain and demonstrate:
+
+- FastAPI;
+- PostgreSQL;
+- SQLAlchemy;
+- Alembic;
+- JWT authentication;
+- role-based authorization;
+- Repository / Service architecture;
+- validation;
+- pagination;
+- eager loading / query efficiency;
+- API, unit, integration, and E2E testing;
+- schema-drift debugging.
+
+The goal now is depth and analysis rather than adding more backend technologies.
+
+---
+
+## 7. Transition to Data Analysis
+
+The original development/test data was inspected with SQL.
+
+Initial database state used for exploration:
+
+```text
+184 users
+113 posts
+```
+
+The data was not suitable for meaningful analytical practice because it was dominated by test records:
+
+```text
+all users had the same role
+all users were active
+all posts were published
+every posting user had exactly one post
+```
+
+The SQL calculations were valid, but the dataset lacked behavioral variation.
+
+This produced an important lesson:
+
+> A technically correct query does not automatically produce a meaningful business insight.
+
+---
+
+## 8. Reproducible analytics dataset
+
+A dedicated synthetic dataset was created for analysis practice.
+
+Verified analytics data:
+
+```text
+600 analytics users
+2,250 analytics posts
+```
+
+User distribution:
+
+```text
+570 user
+30 admin
+
+540 active
+60 inactive
+```
+
+Post status distribution:
+
+```text
+1,575 published
+450 draft
+225 archived
+```
+
+User posting segments:
+
+```text
+No posts       120
+1 post         150
+2–5 posts      210
+6–10 posts      90
+11–20 posts     30
+```
+
+---
+
+## 9. SQL exploration
+
+Exploratory SQL was written and executed for:
+
+- total users and posts;
+- posting users vs non-posting users;
+- posting rate;
+- average posts per user;
+- average posts per posting user;
+- Post status distribution;
+- User segmentation;
+- role distribution;
+- active/inactive distribution;
+- top content creators;
+- monthly user registrations;
+- monthly post activity;
+- active vs inactive engagement.
+
+Verified synthetic-dataset KPIs:
+
+```text
+Posting rate:                  80.00%
+Average posts / user:           3.75
+Average posts / posting user:   4.69
+
+Published: 70%
+Draft:     20%
+Archived:  10%
+```
+
+---
+
+## 10. Main learning outcome
+
+The project has now changed direction:
+
+```text
+Backend engineering
+        ↓
+Database understanding
+        ↓
+SQL analysis
+        ↓
+Data quality
+        ↓
+Business interpretation
+```
+
+The central Data Analyst lesson from this week is:
+
+> Query correctness and business validity are different questions.
+
+An analyst must understand where the data came from, how it was generated, what it represents, and what limitations exist before interpreting a metric.
+
+---
+
+## 11. Current direction
+
+```text
+FastAPI
+  ✅ feature development stopped
+        ↓
+PostgreSQL
+        ↓
+SQL analytics
+        ↓
+CTE / Window Functions
+        ↓
+Pandas / NumPy
+        ↓
+EDA
+        ↓
+Matplotlib
+        ↓
+Dashboard
+```
+
+## Next step
+
+Continue with:
+
+- KPI analysis;
+- CTEs;
+- Window Functions;
+- `LAG`;
+- `RANK`;
+- `NTILE`;
+- Pandas EDA;
+- visualization;
+- business-insight writing.
+```
+
+
+---
+
+## `docs/diary/2026-10-18-project-summary.md`
+
+```markdown
+# FastAPI User Management — Current Project Summary
+
+**Updated:** 2026-10-18
+
+## Project direction
+
+The project started as a FastAPI backend learning project.
+
+It has now reached a stable backend milestone and is transitioning toward a combined:
+
+```text
+Backend
++
+Database
++
+Data Analysis
+```
+
+learning project.
+
+---
+
+## Backend architecture
+
+```text
+Client
+  ↓
+FastAPI Router
+  ↓
+Service
+  ↓
+Repository
+  ↓
+SQLAlchemy ORM
+  ↓
+PostgreSQL
+```
+
+Responsibilities are intentionally separated:
+
+- **Router:** HTTP boundary.
+- **Service:** business rules and orchestration.
+- **Repository:** database access.
+- **Schema:** API validation and contract.
+- **Model:** ORM/database representation.
+- **Alembic:** schema evolution.
+
+---
+
+## Authentication
+
+Current authentication flow:
+
+```text
+Password
+  ↓
+Argon2 verification
+  ↓
+JWT
+  ↓
+user.id stored in sub
+  ↓
+get_current_user()
+  ↓
+active-user validation
+```
+
+User roles:
+
+```text
+user
+admin
+```
+
+Inactive users cannot obtain a new token, and previously issued tokens are rejected after deactivation because protected requests re-check the current database state.
+
+---
+
+## Database lifecycle
+
+User lifecycle fields include:
+
+```text
+id
+name
+email
+role
+password
+full_name
+is_active
+created_at
+updated_at
+last_login_at
+```
+
+Post fields include:
+
+```text
+id
+title
+content
+user_id
+status
+created_at
+updated_at
+```
+
+Post statuses:
+
+```text
+draft
+published
+archived
+```
+
+---
+
+## Database migration
+
+Schema changes are controlled by Alembic.
+
+Latest lifecycle migration at this milestone:
+
+```text
+c42a7f91d8e3
+```
+
+The project now treats these as three states that must be verified separately:
+
+```text
+SQLAlchemy Model
+Alembic Migration
+PostgreSQL Schema
+```
+
+One being correct does not automatically prove the other two are correct.
+
+---
+
+## Testing
+
+Latest verified full regression:
+
+```text
+79 passed
+```
+
+Testing includes:
+
+- API tests;
+- Unit tests;
+- PostgreSQL integration tests;
+- migration/schema behavior tests;
+- Playwright / Swagger E2E tests.
+
+Testing is used as regression protection and as a debugging tool rather than simply as a way to obtain green output.
+
+---
+
+## Important debugging lesson
+
+One of the most useful lessons from the project was schema drift.
+
+The project encountered both directions of mismatch:
+
+```text
+ORM newer
+Database older
+```
+
+and:
+
+```text
+Database/runtime state newer
+ORM/runtime code inconsistent
+```
+
+The debugging workflow became:
+
+```text
+Failed test / HTTP error
+        ↓
+Traceback
+        ↓
+Application layer
+        ↓
+SQLAlchemy
+        ↓
+Alembic state
+        ↓
+PostgreSQL schema
+```
+
+instead of changing code based on guesses.
+
+---
+
+## Data Analysis track
+
+A dedicated reproducible analytics dataset is now available:
+
+```text
+600 analytics users
+2,250 analytics posts
+```
+
+The dataset intentionally contains variation suitable for SQL practice.
+
+Current synthetic distributions include:
+
+```text
+Roles:
+570 user
+30 admin
+
+Account state:
+540 active
+60 inactive
+
+Post status:
+1,575 published
+450 draft
+225 archived
+```
+
+---
+
+## SQL Analytics
+
+Exploratory analysis currently includes:
+
+- `GROUP BY`;
+- `LEFT JOIN`;
+- aggregate functions;
+- ratios and percentages;
+- `CASE WHEN`;
+- `FILTER`;
+- `DATE_TRUNC`;
+- user segmentation;
+- monthly activity;
+- engagement comparisons.
+
+Current synthetic KPIs include:
+
+```text
+Posting rate:                  80.00%
+Average posts / user:           3.75
+Average posts / posting user:   4.69
+Published posts:               70%
+Draft posts:                   20%
+Archived posts:                10%
+```
+
+These metrics describe **synthetic data** and must not be presented as real user behavior.
+
+---
+
+## Current status
+
+```text
+FastAPI Feature Development   ✅ DONE
+PostgreSQL / Alembic          ✅ STABLE
+Automated Regression          ✅ 79 PASS
+Analytics Seed Dataset        ✅ DONE
+SQL Exploration               ✅ STARTED
+KPI Analysis                  ⏭ NEXT
+Window Functions              ⏭
+Pandas EDA                    ⏭
+Visualization                 ⏭
+Dashboard                     ⏭
+```
+
+---
+
+## Main learning outcome
+
+The project is no longer only about writing endpoints.
+
+The learning path now connects:
+
+```text
+Application
+    ↓
+Database
+    ↓
+Testing
+    ↓
+Data
+    ↓
+Analysis
+    ↓
+Insight
+```
+
+The next priority is to use SQL and Python to answer analytical questions instead of expanding the backend with additional infrastructure features.
+```
+
+
+---
+
 ## `docs/diary/README.md`
 
 ```markdown
 # FastAPI User Management — Development Diary
-## 2026-08-30 → 2026-09-06
 
-Bộ diary này nối tiếp `docs/diary/2026-08-30-current-progress.md` và ghi lại tiến trình đến hết ngày 06/09/2026.
+**Last updated:** 2026-10-18
 
-## Files
+This directory records the learning and development journey of the FastAPI User Management project.
+
+The diary is treated as a historical engineering record:
+
+- older entries describe the project state at that time;
+- old entries are not rewritten simply because the architecture changed later;
+- retrospective entries are clearly marked when the original daily log is unavailable;
+- missing periods are recorded as gaps instead of being reconstructed as fake daily history.
+
+---
+
+## Current project status
+
+FastAPI feature development has reached the planned stopping point.
+
+Latest verified regression:
 
 ```text
-2026-08-30-current-progress.md
-2026-08-31-current-progress.md
-2026-09-01-current-progress.md
-2026-09-02-current-progress.md
-2026-09-03-current-progress.md
-2026-09-04-current-progress.md
-2026-09-05-current-progress.md
-2026-09-06-current-progress.md
+79 passed
 ```
 
-## Lưu ý về tính chính xác lịch sử
-
-Các diary từ **30/08 đến 05/09** là bản **tái dựng liên tục từ project context và các trao đổi đã có**, vì các file diary riêng của những ngày này không có sẵn trong nguồn Library mà tôi có thể đọc tại thời điểm tạo gói.
-
-Vì vậy chúng được viết để **nối mạch học tập và kỹ thuật**, không nên hiểu là commit history theo từng giờ.
-
-File **2026-09-06-current-progress.md** được dựa trên diary 06/09 hiện có và kết quả test cuối ngày.
-
-## Điểm tiếp tục
-
-Tại cuối ngày 06/09:
+Current backend flow:
 
 ```text
-POST /users/
-      ↓
-POST /auth/login
-      ↓
-Authorize
-      ↓
-POST /posts/
-      ↓
-GET /posts/{post_id}
-      ↓
-PATCH /posts/{post_id}
-      ↓
-DELETE /posts/{post_id}
-      ↓
-Screenshot evidence
+HTTP Request
+    ↓
+FastAPI Router
+    ↓
+Service
+    ↓
+Repository
+    ↓
+SQLAlchemy ORM
+    ↓
+PostgreSQL
 ```
 
-E2E hiện đạt:
+Current direction:
 
 ```text
-3 passed, 2 warnings
+FastAPI Backend
+      ✅ DONE
+       ↓
+PostgreSQL / SQL
+       ↓
+Data Analysis
+       ↓
+Pandas / NumPy
+       ↓
+Visualization
+       ↓
+Dashboard
+```
+
+---
+
+## Current mentor-facing files
+
+Start here for the latest state:
+
+1. [Current Project Summary — 18/10/2026](./2026-10-18-project-summary.md)
+2. [W25 Development Diary — 12/10 → 18/10](./2026-10-12-to-2026-10-18-current-progress.md)
+3. [Documentation Gap — 05/10 → 11/10](./2026-10-05-to-2026-10-11-retrospective-gap.md)
+4. [Weekly Project Summary — 29/09 → 04/10](./2026-10-04-project-summary.md)
+
+---
+
+## Timeline
+
+### 28/07 → 09/08 — Backend foundation
+
+Topics included:
+
+- FastAPI CRUD;
+- SQLAlchemy;
+- PostgreSQL;
+- JWT authentication;
+- Docker;
+- Alembic;
+- Repository Pattern;
+- Service Layer;
+- Models / Schemas;
+- testing;
+- schema debugging.
+
+Historical overview:
+
+[Project Summary — 09/08](./2026-08-09-project-summary.md)
+
+---
+
+### 10/08 → 28/08 — Retrospective gap
+
+The original day-by-day record is not reliable enough to reconstruct exact activity.
+
+Use the single consolidated retrospective instead:
+
+[Retrospective Learning Record — 10/08 → 28/08](./2026-08-10-to-2026-08-28-retrospective-gap.md)
+
+---
+
+### 29/08 → 13/09 — Runtime verification and E2E
+
+Focus included:
+
+- authentication verification;
+- request-flow review;
+- Alembic baseline stabilization;
+- API tests;
+- Playwright / Swagger E2E;
+- debugging Swagger Authorize → Post interaction.
+
+---
+
+### 14/09 → 23/09 — Documentation gap
+
+There are no reliable daily diary files for this period in the current project context.
+
+The gap is intentionally left visible rather than reconstructed from assumptions.
+
+---
+
+### 24/09 → 28/09 — Architecture cleanup and pagination
+
+Focus included:
+
+- removing overlap between old CRUD and Repository/Service architecture;
+- handing schema management to Alembic;
+- Docker environment cleanup;
+- server-side pagination and search;
+- planning stronger automated test coverage.
+
+---
+
+### 29/09 → 04/10 — Testing stability and first Data Analysis practice
+
+Focus included:
+
+- authentication/password verification;
+- Docker Firefox sandbox debugging;
+- API + E2E regression and coverage;
+- NumPy basics;
+- Pandas filtering, sorting, grouping, `value_counts`, and missing-value checks.
+
+See:
+
+[Weekly Project Summary — 29/09 → 04/10](./2026-10-04-project-summary.md)
+
+---
+
+### 05/10 → 11/10 — Report not submitted
+
+This period is not backfilled as a fake Week 24 report.
+
+See:
+
+[Retrospective Documentation Gap — 05/10 → 11/10](./2026-10-05-to-2026-10-11-retrospective-gap.md)
+
+---
+
+### 12/10 → 18/10 — W25
+
+Major verified milestones:
+
+- User/Post lifecycle fields;
+- Alembic lifecycle migration;
+- inactive-user authentication behavior;
+- `last_login_at`;
+- Post status lifecycle;
+- full regression reaching `79 passed`;
+- FastAPI feature freeze;
+- analytics-ready synthetic dataset;
+- SQL exploration.
+
+See:
+
+[W25 Development Diary — 12/10 → 18/10](./2026-10-12-to-2026-10-18-current-progress.md)
+
+and:
+
+[Current Project Summary — 18/10](./2026-10-18-project-summary.md)
+
+---
+
+## Documentation rule
+
+Each meaningful diary entry should answer:
+
+```text
+What was the goal?
+      ↓
+What was actually done?
+      ↓
+What failed?
+      ↓
+What was the root cause?
+      ↓
+How was it verified?
+      ↓
+What was learned?
+      ↓
+What comes next?
+```
+
+The purpose of the diary is not to make the project appear perfect.
+
+Debugging, failed assumptions, documentation gaps, and architectural corrections are part of the learning record.
+
+---
+
+## Data Analysis direction
+
+A dedicated reproducible synthetic dataset is now used for analysis practice:
+
+```text
+600 analytics users
+2,250 analytics posts
+```
+
+Current SQL topics include:
+
+- `SELECT`;
+- `WHERE`;
+- `ORDER BY`;
+- aggregate functions;
+- `GROUP BY`;
+- `LEFT JOIN`;
+- `CASE WHEN`;
+- `FILTER`;
+- `DATE_TRUNC`;
+- percentages and ratios;
+- user segmentation;
+- exploratory KPI analysis.
+
+Next:
+
+```text
+CTE
+↓
+Window Functions
+↓
+LAG / LEAD
+↓
+RANK / NTILE
+↓
+Pandas EDA
+↓
+Visualization
+↓
+Dashboard
 ```
 ```
 
@@ -9284,22 +11041,656 @@ if __name__ == "__main__":
 
 ---
 
+## `mentor-web/.gitignore`
+
+```gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Auto-generated mentor progress data
+/src/data/progress.generated.json
+```
+
+
+---
+
+## `mentor-web/AGENTS.md`
+
+```markdown
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+```
+
+
+---
+
+## `mentor-web/README.md`
+
+```markdown
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+
+
+---
+
+## `practice/pandas_lesson2.py`
+
+```python
+import pandas as pd
+
+from sqlalchemy import select
+
+from app.database import SessionLocal
+from app.models.user import User
+
+
+# ==========================================
+# 1. LOAD USERS FROM DATABASE
+# ==========================================
+
+with SessionLocal() as db:
+    users = db.scalars(
+        select(User)
+    ).all()
+
+
+# ==========================================
+# 2. CONVERT DATABASE DATA -> DATAFRAME
+# ==========================================
+
+data = []
+
+for user in users:
+    data.append(
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "full_name": user.full_name,
+        }
+    )
+
+df = pd.DataFrame(data)
+
+
+# ==========================================
+# 3. SELECT ONE COLUMN
+# ==========================================
+
+print("\n========== ONE COLUMN ==========")
+
+print(df["name"])
+
+
+# ==========================================
+# 4. SELECT MULTIPLE COLUMNS
+# ==========================================
+
+print("\n========== MULTIPLE COLUMNS ==========")
+
+print(
+    df[
+        ["name", "email", "role"]
+    ]
+)
+
+
+print("\n========== NAME + FULL NAME ==========")
+
+print(
+    df[
+        ["name", "full_name"]
+    ]
+)
+
+# ==========================================
+# 5. FILTER BY ROLE
+# ==========================================
+
+print("\n========== FILTER: ROLE = USER ==========")
+
+users = df[df["role"] == "user"]
+
+print(users)
+
+# ==========================================
+# 6. FILTER NAME CONTAINS "SWAGGER"
+# ==========================================
+
+print("\n========== FILTER: NAME CONTAINS SWAGGER ==========")
+
+swagger_users = df[
+    df["name"].str.contains("Swagger", case=False, na=False)
+]
+
+print(swagger_users)
+
+
+# ==========================================
+# 7. COUNT SWAGGER USERS
+# ==========================================
+
+print("\n========== NUMBER OF SWAGGER USERS ==========")
+
+print(len(swagger_users))
+
+
+# ==========================================
+# 8. SORT BY NAME
+# ==========================================
+
+print("\n========== SORT BY NAME ==========")
+
+sorted_by_name = df.sort_values(
+    "name"
+)
+
+print(
+    sorted_by_name[
+        ["id", "name", "role"]
+    ]
+)
+
+
+# ==========================================
+# 9. SORT NAME DESCENDING
+# ==========================================
+
+print("\n========== SORT NAME DESCENDING ==========")
+
+sorted_by_name_desc = df.sort_values(
+    "name",
+    ascending=False
+)
+
+print(
+    sorted_by_name_desc[
+        ["id", "name"]
+    ]
+)
+
+
+# ==========================================
+# 10. SORT BY ID DESCENDING
+# ==========================================
+
+print("\n========== SORT BY ID DESCENDING ==========")
+
+latest_users = df.sort_values(
+    "id",
+    ascending=False
+)
+
+print(
+    latest_users[
+        ["id", "name", "email"]
+    ].head(10)
+)
+
+# ==========================================
+# 11. GROUP BY ROLE
+# ==========================================
+
+print("\n========== GROUP BY ROLE ==========")
+
+grouped_by_role = df.groupby("role")
+
+print(grouped_by_role)
+
+
+# ==========================================
+# 11. GROUP BY ROLE + SIZE
+# ==========================================
+
+print("\n========== USERS BY ROLE ==========")
+
+users_by_role = (
+    df.groupby("role")
+      .size()
+)
+
+print(users_by_role)
+
+
+# ==========================================
+# 12. GROUP BY ROLE + COUNT ID
+# ==========================================
+
+print("\n========== COUNT USERS BY ROLE ==========")
+
+user_count_by_role = (
+    df.groupby("role")["id"]
+      .count()
+)
+
+print(user_count_by_role)
+
+
+# ==========================================
+# 13. GROUP BY ROLE -> DATAFRAME
+# ==========================================
+
+print("\n========== USERS BY ROLE DATAFRAME ==========")
+
+users_by_role_df = (
+    df.groupby("role")
+      .size()
+      .reset_index(name="user_count")
+)
+
+print(users_by_role_df)
+
+
+# ==========================================
+# 11. USERS BY ROLE
+# ==========================================
+
+print("\n========== USERS BY ROLE ==========")
+
+users_by_role = (
+    df.groupby("role")
+      .size()
+)
+
+print(users_by_role)
+
+
+# ==========================================
+# 12. COUNT ID BY ROLE
+# ==========================================
+
+print("\n========== COUNT ID BY ROLE ==========")
+
+user_count_by_role = (
+    df.groupby("role")["id"]
+      .count()
+)
+
+print(user_count_by_role)
+
+
+# ==========================================
+# 13. USERS BY ROLE DATAFRAME
+# ==========================================
+
+print("\n========== USERS BY ROLE DATAFRAME ==========")
+
+users_by_role_df = (
+    df.groupby("role")
+      .size()
+      .reset_index(name="user_count")
+)
+
+print(users_by_role_df)
+
+
+# ==========================================
+# 14. VALUE COUNTS
+# ==========================================
+
+print("\n========== VALUE COUNTS ==========")
+
+role_counts = df["role"].value_counts()
+
+print(role_counts)
+
+
+# ==========================================
+# 15. GROUP BY FIRST LETTER OF NAME
+# ==========================================
+
+print("\n========== USERS BY FIRST LETTER ==========")
+
+users_by_first_letter = (
+    df["name"]
+      .str[0]
+      .value_counts()
+      .sort_index()
+)
+
+print(users_by_first_letter)
+
+
+# ==========================================
+# 16. GROUP BY FIRST LETTER - CASE INSENSITIVE
+# ==========================================
+
+print("\n========== FIRST LETTER CASE INSENSITIVE ==========")
+
+users_by_first_letter = (
+    df["name"]
+      .str[0]
+      .str.upper()
+      .value_counts()
+      .sort_index()
+)
+
+print(users_by_first_letter)
+
+# ==========================================
+# 14. VALUE COUNTS
+# ==========================================
+
+print("\n========== VALUE COUNTS ==========")
+
+role_counts = df["role"].value_counts()
+
+print(role_counts)
+
+
+# ==========================================
+# 15. FIRST LETTER OF NAME
+# ==========================================
+
+print("\n========== USERS BY FIRST LETTER ==========")
+
+users_by_first_letter = (
+    df["name"]
+      .str[0]
+      .str.upper()
+      .value_counts()
+      .sort_index()
+)
+
+print(users_by_first_letter)
+
+
+# ==========================================
+# 16. CHECK MISSING VALUES
+# ==========================================
+
+print("\n========== MISSING VALUES ==========")
+
+missing_values = df.isna().sum()
+
+print(missing_values)
+
+
+# ==========================================
+# 17. SMALL PRACTICE
+# ==========================================
+
+print("\n========== SWAGGER USERS SORTED ==========")
+
+swagger_users = df[
+    df["name"].str.contains("Swagger", case=False, na=False)
+]
+
+swagger_users = swagger_users.sort_values("name")
+
+print(swagger_users[["id", "name", "email"]])
+
+print("\n========== SWAGGER NAME COUNTS ==========")
+
+swagger_name_counts = swagger_users["name"].value_counts()
+
+print(swagger_name_counts)
+
+print("\n========== MISSING VALUES ==========")
+
+print(swagger_users.isna().sum())
+```
+
+
+---
+
+## `practice/pandas_numpy_lesson1.py`
+
+```python
+import numpy as np
+import pandas as pd
+
+from sqlalchemy import select
+
+from app.database import SessionLocal
+from app.models.user import User
+
+
+# ==========================================
+# 1. Lấy User từ PostgreSQL
+# ==========================================
+
+with SessionLocal() as db:
+    users = db.scalars(
+        select(User)
+    ).all()
+
+
+# ==========================================
+# 2. SQLAlchemy objects -> Pandas DataFrame
+# ==========================================
+
+data = []
+
+for user in users:
+    data.append(
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "full_name": user.full_name,
+        }
+    )
+
+df = pd.DataFrame(data)
+
+
+# ==========================================
+# 3. Xem DataFrame
+# ==========================================
+
+print("\n========== DATAFRAME ==========")
+print(df)
+
+
+# ==========================================
+# 4. Kích thước DataFrame
+# ==========================================
+
+print("\n========== SHAPE ==========")
+print(df.shape)
+
+
+# ==========================================
+# 5. Tên các cột
+# ==========================================
+
+print("\n========== COLUMNS ==========")
+print(df.columns)
+
+
+# ==========================================
+# 6. Kiểu dữ liệu
+# ==========================================
+
+print("\n========== DTYPES ==========")
+print(df.dtypes)
+
+
+# ==========================================
+# 7. 5 dòng đầu
+# ==========================================
+
+print("\n========== HEAD ==========")
+print(df.head())
+
+
+# ==========================================
+# 8. Thống kê cơ bản
+# ==========================================
+
+print("\n========== DESCRIBE ==========")
+print(df.describe())
+
+
+# ==========================================
+# 9. Đếm User theo Role
+# ==========================================
+
+print("\n========== USERS BY ROLE ==========")
+print(df["role"].value_counts())
+
+
+# ==========================================
+# 10. Kiểm tra dữ liệu thiếu
+# ==========================================
+
+print("\n========== MISSING VALUES ==========")
+print(df.isna().sum())
+
+
+# ==========================================
+# 11. Lấy riêng cột name
+# ==========================================
+
+print("\n========== NAMES ==========")
+print(df["name"])
+
+
+# ==========================================
+# 12. Lấy nhiều cột
+# ==========================================
+
+print("\n========== NAME + ROLE ==========")
+
+print(
+    df[
+        [
+            "name",
+            "role",
+        ]
+    ]
+)
+
+
+# ==========================================
+# 13. Chuyển User ID sang NumPy array
+# ==========================================
+
+user_ids = df["id"].to_numpy()
+
+print("\n========== NUMPY USER IDS ==========")
+print(user_ids)
+
+
+# ==========================================
+# 14. NumPy statistics
+# ==========================================
+
+print("\n========== NUMPY STATISTICS ==========")
+
+print("Mean   :", np.mean(user_ids))
+print("Median :", np.median(user_ids))
+print("Min    :", np.min(user_ids))
+print("Max    :", np.max(user_ids))
+print("Sum    :", np.sum(user_ids))
+print("Std    :", np.std(user_ids))
+```
+
+
+---
+
 ## `pytest.ini`
 
 ```ini
 [pytest]
 python_files = test_*.py
-
 python_classes = Test*
-
 python_functions = test_*
 
 addopts =
     -v
     --tb=short
+    --browser=firefox
 
 testpaths =
     tests
+
+markers =
+    integration: tests that require a real PostgreSQL database
 
 filterwarnings =
     ignore::DeprecationWarning:starlette.*
@@ -9933,28 +12324,175 @@ except Exception as e:
 
 ---
 
-## `tests/api/test_auth.py`
+## `tests/api/test_analytics.py`
 
 ```python
-def test_login_success(client):
+def login_user(
+    client,
+    email: str,
+    password: str = "123456",
+) -> None:
+    response = client.post(
+        "/auth/login",
+        data={
+            "username": email,
+            "password": password,
+        },
+    )
+
+    assert response.status_code == 200
+
+    token = response.json()["access_token"]
+
+    client.headers.update(
+        {
+            "Authorization": f"Bearer {token}",
+        }
+    )
+
+
+def test_analytics_requires_authentication(
+    client,
+):
+    response = client.get(
+        "/analytics/users/summary"
+    )
+
+    assert response.status_code == 401
+
+
+def test_analytics_rejects_normal_user(
+    client,
+):
     create_response = client.post(
         "/users/",
         json={
-            "name": "loginuser",
-            "email": "login@example.com",
+            "name": "analyticsuser",
+            "email": "analytics-user@example.com",
             "password": "123456",
-            "full_name": "Login User",
+            "full_name": "Analytics User",
         },
     )
 
     assert create_response.status_code == 201
 
+    login_user(
+        client,
+        "analytics-user@example.com",
+    )
+
+    response = client.get(
+        "/analytics/users/summary"
+    )
+
+    assert response.status_code == 403
+    assert (
+        response.json()["detail"]
+        == "Admin access required"
+    )
+
+
+def test_admin_can_get_user_analytics(
+    auth_client,
+):
+    response = auth_client.get(
+        "/analytics/users/summary"
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert body["status"] == "success"
+
+    assert (
+        body["message"]
+        == "User analytics retrieved successfully"
+    )
+
+    data = body["data"]
+
+    assert isinstance(
+        data["total_users"],
+        int,
+    )
+
+    assert data["total_users"] >= 1
+
+    assert isinstance(
+        data["users_by_role"],
+        list,
+    )
+
+    admin_rows = [
+        row
+        for row in data["users_by_role"]
+        if row["role"] == "admin"
+    ]
+
+    assert len(admin_rows) == 1
+    assert admin_rows[0]["user_count"] >= 1
+```
+
+
+---
+
+## `tests/api/test_auth.py`
+
+```python
+from jose import jwt
+
+from app.core.config import settings
+from app.core.security import create_access_token
+
+
+def create_user(
+    client,
+    *,
+    name: str,
+    email: str,
+    password: str = "123456",
+):
     response = client.post(
+        "/users/",
+        json={
+            "name": name,
+            "email": email,
+            "password": password,
+            "full_name": name,
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()["data"]
+
+
+def login(
+    client,
+    *,
+    email: str,
+    password: str = "123456",
+):
+    return client.post(
         "/auth/login",
         data={
-            "username": "login@example.com",
-            "password": "123456",
+            "username": email,
+            "password": password,
         },
+    )
+
+
+def test_login_success(client):
+    user = create_user(
+        client,
+        name="Login User",
+        email="login@example.com",
+    )
+
+    response = login(
+        client,
+        email="login@example.com",
     )
 
     assert response.status_code == 200
@@ -9964,39 +12502,153 @@ def test_login_success(client):
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
-
-def test_login_wrong_password(client):
-    client.post(
-        "/users/",
-        json={
-            "name": "loginuser",
-            "email": "wrong-password@example.com",
-            "password": "123456",
-            "full_name": "Wrong Password",
-        },
+    payload = jwt.decode(
+        data["access_token"],
+        settings.SECRET_KEY,
+        algorithms=[
+            settings.ALGORITHM,
+        ],
     )
 
-    response = client.post(
-        "/auth/login",
-        data={
-            "username": "wrong-password@example.com",
-            "password": "wrong-password",
-        },
+    assert payload["sub"] == str(
+        user["id"]
+    )
+
+
+def test_login_wrong_password(client):
+    create_user(
+        client,
+        name="Wrong Password",
+        email="wrong-password@example.com",
+    )
+
+    response = login(
+        client,
+        email="wrong-password@example.com",
+        password="wrong-password",
     )
 
     assert response.status_code == 401
+    assert (
+        response.json()["detail"]
+        == "Invalid email or password"
+    )
 
 
 def test_login_unknown_user(client):
-    response = client.post(
-        "/auth/login",
-        data={
-            "username": "notfound@example.com",
-            "password": "123456",
+    response = login(
+        client,
+        email="notfound@example.com",
+    )
+
+    assert response.status_code == 401
+    assert (
+        response.json()["detail"]
+        == "Invalid email or password"
+    )
+
+
+def test_auth_me_with_valid_token(client):
+    user = create_user(
+        client,
+        name="Current User",
+        email="current-user@example.com",
+    )
+
+    login_response = login(
+        client,
+        email="current-user@example.com",
+    )
+
+    assert (
+        login_response.status_code
+        == 200
+    )
+
+    token = login_response.json()[
+        "access_token"
+    ]
+
+    response = client.get(
+        "/auth/me",
+        headers={
+            "Authorization": (
+                f"Bearer {token}"
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["id"] == user["id"]
+    assert (
+        data["email"]
+        == "current-user@example.com"
+    )
+
+
+def test_auth_me_with_invalid_token(
+    client,
+):
+    response = client.get(
+        "/auth/me",
+        headers={
+            "Authorization": (
+                "Bearer invalid-token"
+            ),
         },
     )
 
     assert response.status_code == 401
+
+    assert (
+        response.json()["detail"]
+        == "Could not validate credentials"
+    )
+
+    assert (
+        response.headers[
+            "www-authenticate"
+        ]
+        == "Bearer"
+    )
+
+
+def test_legacy_email_subject_token_still_works(
+    client,
+):
+    user = create_user(
+        client,
+        name="Legacy User",
+        email="legacy@example.com",
+    )
+
+    legacy_token = create_access_token(
+        {
+            "sub": "legacy@example.com",
+        }
+    )
+
+    response = client.get(
+        "/auth/me",
+        headers={
+            "Authorization": (
+                f"Bearer {legacy_token}"
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["id"] == user["id"]
+    assert (
+        data["email"]
+        == "legacy@example.com"
+    )
 ```
 
 
@@ -10051,6 +12703,693 @@ def test_health(client):
 
     assert body["status"] == "healthy"
     assert body["database"] == "connected"
+```
+
+
+---
+
+## `tests/api/test_lifecycle.py`
+
+```python
+def create_user(
+    client,
+    *,
+    email: str,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": "Lifecycle User",
+            "email": email,
+            "password": "123456",
+            "full_name": "Lifecycle User",
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()["data"]
+
+
+def login(
+    client,
+    *,
+    email: str,
+):
+    return client.post(
+        "/auth/login",
+        data={
+            "username": email,
+            "password": "123456",
+        },
+    )
+
+
+def test_new_user_has_lifecycle_fields(
+    client,
+):
+    user = create_user(
+        client,
+        email="lifecycle-fields@example.com",
+    )
+
+    assert user["is_active"] is True
+    assert user["created_at"] is not None
+    assert user["updated_at"] is not None
+    assert user["last_login_at"] is None
+
+
+def test_login_updates_last_login_at(
+    client,
+):
+    email = "last-login@example.com"
+
+    create_user(
+        client,
+        email=email,
+    )
+
+    login_response = login(
+        client,
+        email=email,
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()[
+        "access_token"
+    ]
+
+    response = client.get(
+        "/auth/me",
+        headers={
+            "Authorization": (
+                f"Bearer {token}"
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+
+    assert (
+        response.json()["last_login_at"]
+        is not None
+    )
+
+
+def test_inactive_user_cannot_login(
+    client,
+    admin_client,
+):
+    email = "inactive-login@example.com"
+
+    user = create_user(
+        client,
+        email=email,
+    )
+
+    deactivate_response = admin_client.patch(
+        f"/users/{user['id']}",
+        json={
+            "is_active": False,
+        },
+    )
+
+    assert (
+        deactivate_response.status_code
+        == 200
+    )
+
+    login_response = login(
+        client,
+        email=email,
+    )
+
+    assert (
+        login_response.status_code
+        == 401
+    )
+
+
+def test_existing_token_rejected_after_deactivation(
+    client,
+    admin_client,
+):
+    email = "inactive-token@example.com"
+
+    user = create_user(
+        client,
+        email=email,
+    )
+
+    login_response = login(
+        client,
+        email=email,
+    )
+
+    assert login_response.status_code == 200
+
+    token = login_response.json()[
+        "access_token"
+    ]
+
+    deactivate_response = admin_client.patch(
+        f"/users/{user['id']}",
+        json={
+            "is_active": False,
+        },
+    )
+
+    assert (
+        deactivate_response.status_code
+        == 200
+    )
+
+    response = client.get(
+        "/auth/me",
+        headers={
+            "Authorization": (
+                f"Bearer {token}"
+            ),
+        },
+    )
+
+    assert response.status_code == 403
+
+    assert (
+        response.json()["detail"]
+        == "Inactive user"
+    )
+
+
+def test_post_default_status_is_published(
+    user_client,
+):
+    response = user_client.post(
+        "/posts/",
+        json={
+            "title": "Published Post",
+            "content": "Content",
+        },
+    )
+
+    assert response.status_code == 201
+
+    data = response.json()
+
+    assert data["status"] == "published"
+    assert data["created_at"] is not None
+    assert data["updated_at"] is not None
+
+
+def test_post_status_can_be_changed(
+    user_client,
+):
+    create_response = user_client.post(
+        "/posts/",
+        json={
+            "title": "Lifecycle Post",
+            "content": "Lifecycle content",
+        },
+    )
+
+    assert (
+        create_response.status_code
+        == 201
+    )
+
+    post_id = create_response.json()["id"]
+
+    response = user_client.patch(
+        f"/posts/{post_id}",
+        json={
+            "status": "archived",
+        },
+    )
+
+    assert response.status_code == 200
+
+    assert (
+        response.json()["status"]
+        == "archived"
+    )
+
+
+def test_invalid_post_status_rejected(
+    user_client,
+):
+    response = user_client.post(
+        "/posts/",
+        json={
+            "title": "Invalid Status",
+            "content": "Content",
+            "status": "deleted",
+        },
+    )
+
+    assert response.status_code == 422
+```
+
+
+---
+
+## `tests/api/test_openapi_contract.py`
+
+```python
+def get_openapi(client):
+    response = client.get(
+        "/openapi.json"
+    )
+
+    assert response.status_code == 200
+
+    return response.json()
+
+
+def resolve_schema(
+    openapi: dict,
+    schema: dict,
+) -> dict:
+    reference = schema.get("$ref")
+
+    if reference is None:
+        return schema
+
+    prefix = "#/components/schemas/"
+
+    assert reference.startswith(
+        prefix
+    )
+
+    schema_name = reference.removeprefix(
+        prefix
+    )
+
+    return openapi[
+        "components"
+    ][
+        "schemas"
+    ][
+        schema_name
+    ]
+
+
+def extract_non_null_schema(
+    schema: dict,
+) -> dict:
+    alternatives = schema.get(
+        "anyOf"
+    )
+
+    if alternatives is None:
+        return schema
+
+    for alternative in alternatives:
+        if (
+            alternative.get("type")
+            != "null"
+        ):
+            return alternative
+
+    raise AssertionError(
+        "No non-null schema found"
+    )
+
+
+def test_users_list_openapi_is_typed(
+    client,
+):
+    openapi = get_openapi(
+        client
+    )
+
+    response_schema = (
+        openapi[
+            "paths"
+        ][
+            "/users/"
+        ][
+            "get"
+        ][
+            "responses"
+        ][
+            "200"
+        ][
+            "content"
+        ][
+            "application/json"
+        ][
+            "schema"
+        ]
+    )
+
+    api_response_schema = (
+        resolve_schema(
+            openapi,
+            response_schema,
+        )
+    )
+
+    data_schema = (
+        api_response_schema[
+            "properties"
+        ][
+            "data"
+        ]
+    )
+
+    data_schema = (
+        extract_non_null_schema(
+            data_schema
+        )
+    )
+
+    assert (
+        data_schema["type"]
+        == "array"
+    )
+
+    item_schema = (
+        data_schema[
+            "items"
+        ]
+    )
+
+    assert (
+        item_schema["$ref"]
+        .endswith(
+            "/UserResponse"
+        )
+    )
+
+
+def test_user_detail_openapi_is_typed(
+    client,
+):
+    openapi = get_openapi(
+        client
+    )
+
+    response_schema = (
+        openapi[
+            "paths"
+        ][
+            "/users/{user_id}"
+        ][
+            "get"
+        ][
+            "responses"
+        ][
+            "200"
+        ][
+            "content"
+        ][
+            "application/json"
+        ][
+            "schema"
+        ]
+    )
+
+    api_response_schema = (
+        resolve_schema(
+            openapi,
+            response_schema,
+        )
+    )
+
+    data_schema = (
+        api_response_schema[
+            "properties"
+        ][
+            "data"
+        ]
+    )
+
+    data_schema = (
+        extract_non_null_schema(
+            data_schema
+        )
+    )
+
+    assert (
+        data_schema["$ref"]
+        .endswith(
+            "/UserResponse"
+        )
+    )
+
+
+def test_users_pagination_headers_are_documented(
+    client,
+):
+    openapi = get_openapi(
+        client
+    )
+
+    headers = (
+        openapi[
+            "paths"
+        ][
+            "/users/"
+        ][
+            "get"
+        ][
+            "responses"
+        ][
+            "200"
+        ][
+            "headers"
+        ]
+    )
+
+    assert (
+        "X-Total-Count"
+        in headers
+    )
+
+    assert (
+        "X-Limit"
+        in headers
+    )
+
+    assert (
+        "X-Offset"
+        in headers
+    )
+
+    assert (
+        "X-Has-More"
+        in headers
+    )
+
+
+def test_posts_pagination_headers_are_documented(
+    client,
+):
+    openapi = get_openapi(
+        client
+    )
+
+    headers = (
+        openapi[
+            "paths"
+        ][
+            "/posts/"
+        ][
+            "get"
+        ][
+            "responses"
+        ][
+            "200"
+        ][
+            "headers"
+        ]
+    )
+
+    assert (
+        "X-Total-Count"
+        in headers
+    )
+
+    assert (
+        "X-Limit"
+        in headers
+    )
+
+    assert (
+        "X-Offset"
+        in headers
+    )
+
+    assert (
+        "X-Has-More"
+        in headers
+    )
+```
+
+
+---
+
+## `tests/api/test_pagination.py`
+
+```python
+def create_user(
+    client,
+    *,
+    name: str,
+    email: str,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": name,
+            "email": email,
+            "password": "123456",
+            "full_name": name,
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()["data"]
+
+
+def create_post(
+    client,
+    *,
+    title: str,
+):
+    response = client.post(
+        "/posts/",
+        json={
+            "title": title,
+            "content": "Pagination content",
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()
+
+
+def test_users_pagination_headers(
+    admin_client,
+):
+    for index in range(3):
+        create_user(
+            admin_client,
+            name=f"Page User {index}",
+            email=(
+                f"page-user-{index}"
+                "@example.com"
+            ),
+        )
+
+    response = admin_client.get(
+        "/users/",
+        params={
+            "search": "Page User",
+            "limit": 2,
+            "offset": 1,
+        },
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert (
+        body["status"]
+        == "success"
+    )
+
+    assert len(
+        body["data"]
+    ) == 2
+
+    assert (
+        response.headers[
+            "X-Total-Count"
+        ]
+        == "3"
+    )
+
+    assert (
+        response.headers[
+            "X-Limit"
+        ]
+        == "2"
+    )
+
+    assert (
+        response.headers[
+            "X-Offset"
+        ]
+        == "1"
+    )
+
+    assert (
+        response.headers[
+            "X-Has-More"
+        ]
+        == "false"
+    )
+
+
+def test_posts_pagination_headers(
+    user_client,
+):
+    for index in range(3):
+        create_post(
+            user_client,
+            title=(
+                f"Pagination Post {index}"
+            ),
+        )
+
+    response = user_client.get(
+        "/posts/",
+        params={
+            "search":
+                "Pagination Post",
+            "limit": 2,
+            "offset": 0,
+        },
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert len(body) == 2
+
+    assert (
+        response.headers[
+            "X-Total-Count"
+        ]
+        == "3"
+    )
+
+    assert (
+        response.headers[
+            "X-Limit"
+        ]
+        == "2"
+    )
+
+    assert (
+        response.headers[
+            "X-Offset"
+        ]
+        == "0"
+    )
+
+    assert (
+        response.headers[
+            "X-Has-More"
+        ]
+        == "true"
+    )
 ```
 
 
@@ -10350,24 +13689,158 @@ def test_create_post_invalid_title(client):
 
 ---
 
+## `tests/api/test_user_filters.py`
+
+```python
+def create_user(
+    client,
+    *,
+    name: str,
+    email: str,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": name,
+            "email": email,
+            "password": "123456",
+            "full_name": name,
+        },
+    )
+
+    assert response.status_code == 201
+    return response.json()["data"]
+
+
+def test_filter_users_by_user_role(admin_client):
+    create_user(
+        admin_client,
+        name="Alpha User",
+        email="alpha-filter@example.com",
+    )
+    create_user(
+        admin_client,
+        name="Beta User",
+        email="beta-filter@example.com",
+    )
+
+    response = admin_client.get(
+        "/users/",
+        params={"role": "user"},
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert len(body["data"]) == 2
+    assert all(
+        user["role"] == "user"
+        for user in body["data"]
+    )
+    assert response.headers["X-Total-Count"] == "2"
+
+
+def test_filter_users_by_admin_role(admin_client):
+    create_user(
+        admin_client,
+        name="Normal User",
+        email="normal-filter@example.com",
+    )
+
+    response = admin_client.get(
+        "/users/",
+        params={"role": "admin"},
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert len(body["data"]) == 1
+    assert all(
+        user["role"] == "admin"
+        for user in body["data"]
+    )
+    assert response.headers["X-Total-Count"] == "1"
+
+
+def test_role_filter_combines_with_search(admin_client):
+    create_user(
+        admin_client,
+        name="Alpha User",
+        email="alpha-search@example.com",
+    )
+
+    response = admin_client.get(
+        "/users/",
+        params={
+            "role": "admin",
+            "search": "Alpha",
+        },
+    )
+
+    assert response.status_code == 200
+
+    body = response.json()
+
+    assert body["data"] == []
+    assert response.headers["X-Total-Count"] == "0"
+
+
+def test_invalid_role_returns_422(admin_client):
+    response = admin_client.get(
+        "/users/",
+        params={"role": "superadmin"},
+    )
+
+    assert response.status_code == 422
+```
+
+
+---
+
 ## `tests/api/test_users.py`
 
 ```python
-def test_get_users(auth_client):
-    response = auth_client.get("/users/")
+def test_get_users(admin_client):
+    response = admin_client.get(
+        "/users/"
+    )
 
     assert response.status_code == 200
 
     data = response.json()
 
     assert data["status"] == "success"
-    assert isinstance(data["data"], list)
+    assert isinstance(
+        data["data"],
+        list,
+    )
 
 
 def test_get_users_unauthorized(client):
-    response = client.get("/users/")
+    response = client.get(
+        "/users/"
+    )
 
     assert response.status_code == 401
+
+
+def test_get_users_forbidden_for_normal_user(
+    user_client,
+):
+    response = user_client.get(
+        "/users/"
+    )
+
+    assert response.status_code == 403
+
+    assert (
+        response.json()["detail"]
+        == "Admin access required"
+    )
+
 
 def test_create_user(client):
     response = client.post(
@@ -10385,12 +13858,31 @@ def test_create_user(client):
     data = response.json()
 
     assert data["status"] == "success"
-    assert data["data"]["name"] == "testuser"
-    assert data["data"]["email"] == "testuser@example.com"
-    assert data["data"]["role"] == "user"
-    assert data["data"]["full_name"] == "Test User"
 
-    assert "password" not in data["data"]
+    assert (
+        data["data"]["name"]
+        == "testuser"
+    )
+
+    assert (
+        data["data"]["email"]
+        == "testuser@example.com"
+    )
+
+    assert (
+        data["data"]["role"]
+        == "user"
+    )
+
+    assert (
+        data["data"]["full_name"]
+        == "Test User"
+    )
+
+    assert (
+        "password"
+        not in data["data"]
+    )
 
 
 def test_create_duplicate_email(client):
@@ -10406,18 +13898,30 @@ def test_create_duplicate_email(client):
         json=payload,
     )
 
-    assert first_response.status_code == 201
+    assert (
+        first_response.status_code
+        == 201
+    )
 
     second_response = client.post(
         "/users/",
         json=payload,
     )
 
-    assert second_response.status_code == 409
-    assert second_response.json()["detail"] == "Email already exists"
+    assert (
+        second_response.status_code
+        == 409
+    )
+
+    assert (
+        second_response.json()["detail"]
+        == "Email already exists"
+    )
 
 
-def test_create_user_invalid_password(client):
+def test_create_user_invalid_password(
+    client,
+):
     response = client.post(
         "/users/",
         json={
@@ -10425,6 +13929,209 @@ def test_create_user_invalid_password(client):
             "email": "invalid@example.com",
             "password": "123",
             "full_name": "Invalid User",
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_update_user_rejects_invalid_role(
+    admin_client,
+):
+    create_response = admin_client.post(
+        "/users/",
+        json={
+            "name": "Role User",
+            "email": "role-user@example.com",
+            "password": "123456",
+            "full_name": "Role User",
+        },
+    )
+
+    assert (
+        create_response.status_code
+        == 201
+    )
+
+    user_id = create_response.json()[
+        "data"
+    ]["id"]
+
+    response = admin_client.put(
+        f"/users/{user_id}",
+        json={
+            "name": "Role User",
+            "email": "role-user@example.com",
+            "role": "superadmin",
+            "full_name": "Role User",
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_patch_user_rejects_invalid_role(
+    admin_client,
+):
+    create_response = admin_client.post(
+        "/users/",
+        json={
+            "name": "Patch Role User",
+            "email": "patch-role@example.com",
+            "password": "123456",
+            "full_name": "Patch Role User",
+        },
+    )
+
+    assert (
+        create_response.status_code
+        == 201
+    )
+
+    user_id = create_response.json()[
+        "data"
+    ]["id"]
+
+    response = admin_client.patch(
+        f"/users/{user_id}",
+        json={
+            "role": "root",
+        },
+    )
+
+    assert response.status_code == 422
+```
+
+
+---
+
+## `tests/api/test_validation.py`
+
+```python
+def create_user(
+    client,
+    *,
+    name: str,
+    email: str,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": name,
+            "email": email,
+            "password": "123456",
+            "full_name": name,
+        },
+    )
+
+    assert response.status_code == 201
+
+    return response.json()["data"]
+
+
+def test_create_user_rejects_whitespace_name(
+    client,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": "   ",
+            "email": "whitespace@example.com",
+            "password": "123456",
+            "full_name": "Whitespace User",
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_create_user_rejects_extra_role(
+    client,
+):
+    response = client.post(
+        "/users/",
+        json={
+            "name": "Normal User",
+            "email": "extra-role@example.com",
+            "password": "123456",
+            "full_name": "Normal User",
+            "role": "admin",
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_patch_user_rejects_null_name(
+    admin_client,
+):
+    user = create_user(
+        admin_client,
+        name="Patch User",
+        email="patch-null@example.com",
+    )
+
+    response = admin_client.patch(
+        f"/users/{user['id']}",
+        json={
+            "name": None,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_create_post_rejects_whitespace_title(
+    user_client,
+):
+    response = user_client.post(
+        "/posts/",
+        json={
+            "title": "   ",
+            "content": "Content",
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_patch_post_rejects_null_title(
+    user_client,
+):
+    create_response = user_client.post(
+        "/posts/",
+        json={
+            "title": "Valid Post",
+            "content": "Content",
+        },
+    )
+
+    assert (
+        create_response.status_code
+        == 201
+    )
+
+    post_id = create_response.json()["id"]
+
+    response = user_client.patch(
+        f"/posts/{post_id}",
+        json={
+            "title": None,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_create_post_rejects_extra_user_id(
+    user_client,
+):
+    response = user_client.post(
+        "/posts/",
+        json={
+            "title": "Secure Post",
+            "content": "Content",
+            "user_id": 999999,
         },
     )
 
@@ -10437,26 +14144,32 @@ def test_create_user_invalid_password(client):
 ## `tests/conftest.py`
 
 ```python
-import pytest
+from collections.abc import Generator
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
+
 from app.core.security import hash_password
-from app.models import User
 from app.database import Base
 from app.dependencies import get_db
 from app.main import app
+from app.models import User
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 
+
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    connect_args={
+        "check_same_thread": False,
+    },
     poolclass=StaticPool,
 )
+
 
 TestingSessionLocal = sessionmaker(
     autocommit=False,
@@ -10466,8 +14179,14 @@ TestingSessionLocal = sessionmaker(
 
 
 @pytest.fixture(scope="function")
-def db_session():
-    Base.metadata.create_all(bind=engine)
+def db_session() -> Generator[
+    Session,
+    None,
+    None,
+]:
+    Base.metadata.create_all(
+        bind=engine
+    )
 
     db = TestingSessionLocal()
 
@@ -10475,18 +14194,26 @@ def db_session():
         yield db
     finally:
         db.close()
-        Base.metadata.drop_all(bind=engine)
+
+        Base.metadata.drop_all(
+            bind=engine
+        )
 
 
 @pytest.fixture(scope="function")
-def client(db_session):
+def client(
+    db_session: Session,
+) -> Generator[
+    TestClient,
+    None,
+    None,
+]:
     def override_get_db():
-        try:
-            yield db_session
-        finally:
-            pass
+        yield db_session
 
-    app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[
+        get_db
+    ] = override_get_db
 
     with TestClient(app) as test_client:
         yield test_client
@@ -10494,72 +14221,119 @@ def client(db_session):
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def auth_client(client):
+def login_client(
+    client: TestClient,
+    email: str,
+    password: str,
+) -> None:
+    response = client.post(
+        "/auth/login",
+        data={
+            "username": email,
+            "password": password,
+        },
+    )
+
+    assert response.status_code == 200
+
+    token = response.json()[
+        "access_token"
+    ]
+
+    client.headers.update(
+        {
+            "Authorization": (
+                f"Bearer {token}"
+            ),
+        }
+    )
+
+
+@pytest.fixture(scope="function")
+def user_client(
+    client: TestClient,
+) -> Generator[
+    TestClient,
+    None,
+    None,
+]:
     response = client.post(
         "/users/",
         json={
-            "name": "pytestuser",
-            "email": "pytest-auth@example.com",
+            "name": "testuser",
+            "email": "testuser@example.com",
             "password": "123456",
-            "full_name": "Pytest Auth User",
+            "full_name": "Test User",
         },
     )
 
     assert response.status_code == 201
 
-    login_response = client.post(
-        "/auth/login",
-        data={
-            "username": "pytest-auth@example.com",
-            "password": "123456",
-        },
+    login_client(
+        client,
+        email="testuser@example.com",
+        password="123456",
     )
 
-    assert login_response.status_code == 200
+    yield client
 
-    token = login_response.json()["access_token"]
-
-    client.headers.update(
-        {
-            "Authorization": f"Bearer {token}",
-        }
+    client.headers.pop(
+        "Authorization",
+        None,
     )
 
-    return client
 
 @pytest.fixture(scope="function")
-def auth_client(client, db_session):
+def admin_client(
+    client: TestClient,
+    db_session: Session,
+) -> Generator[
+    TestClient,
+    None,
+    None,
+]:
     admin = User(
         name="testadmin",
         email="testadmin@example.com",
         role="admin",
-        password=hash_password("123456"),
+        password=hash_password(
+            "123456"
+        ),
         full_name="Test Admin",
     )
 
     db_session.add(admin)
     db_session.commit()
 
-    response = client.post(
-        "/auth/login",
-        data={
-            "username": "testadmin@example.com",
-            "password": "123456",
-        },
+    login_client(
+        client,
+        email="testadmin@example.com",
+        password="123456",
     )
-
-    assert response.status_code == 200
-
-    token = response.json()["access_token"]
-
-    client.headers.update({
-        "Authorization": f"Bearer {token}"
-    })
 
     yield client
 
-    client.headers.pop("Authorization", None)
+    client.headers.pop(
+        "Authorization",
+        None,
+    )
+
+
+@pytest.fixture(scope="function")
+def auth_client(
+    admin_client: TestClient,
+) -> TestClient:
+    """
+    Backward-compatible alias.
+
+    Existing tests currently expect auth_client
+    to be an authenticated admin client.
+
+    New tests should prefer the explicit fixtures:
+    - user_client
+    - admin_client
+    """
+    return admin_client
 ```
 
 
@@ -11375,6 +15149,659 @@ def screenshot(
 
 ---
 
+## `tests/integration/__init__.py`
+
+```python
+
+```
+
+
+---
+
+## `tests/integration/conftest.py`
+
+```python
+import os
+from collections.abc import Generator
+from pathlib import Path
+
+import pytest
+from alembic import command
+from alembic.config import Config
+from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session
+
+from app.core.config import settings
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+ALEMBIC_INI = PROJECT_ROOT / "alembic.ini"
+
+TEST_DATABASE_NAME = "fastapi_test_db"
+
+
+def build_alembic_config() -> Config:
+    config = Config(
+        str(ALEMBIC_INI)
+    )
+
+    config.set_main_option(
+        "script_location",
+        str(PROJECT_ROOT / "alembic"),
+    )
+
+    return config
+
+
+@pytest.fixture(scope="session")
+def postgres_test_database() -> Generator[
+    str,
+    None,
+    None,
+]:
+    base_url = make_url(
+        settings.DATABASE_URL
+    )
+
+    if (
+        base_url.get_backend_name()
+        != "postgresql"
+    ):
+        raise RuntimeError(
+            "Integration tests require PostgreSQL."
+        )
+
+    admin_url = base_url.set(
+        database="postgres"
+    )
+
+    test_url = base_url.set(
+        database=TEST_DATABASE_NAME
+    )
+
+    test_database_url = (
+        test_url.render_as_string(
+            hide_password=False
+        )
+    )
+
+    admin_engine = create_engine(
+        admin_url,
+        isolation_level="AUTOCOMMIT",
+        pool_pre_ping=True,
+    )
+
+    with admin_engine.connect() as connection:
+        connection.execute(
+            text(
+                """
+                SELECT pg_terminate_backend(pid)
+                FROM pg_stat_activity
+                WHERE datname = :database_name
+                  AND pid <> pg_backend_pid()
+                """
+            ),
+            {
+                "database_name":
+                    TEST_DATABASE_NAME
+            },
+        )
+
+        connection.exec_driver_sql(
+            f'DROP DATABASE IF EXISTS '
+            f'"{TEST_DATABASE_NAME}"'
+        )
+
+        connection.exec_driver_sql(
+            f'CREATE DATABASE '
+            f'"{TEST_DATABASE_NAME}"'
+        )
+
+    previous_database_url = os.environ.get(
+        "DATABASE_URL"
+    )
+
+    os.environ[
+        "DATABASE_URL"
+    ] = test_database_url
+
+    try:
+        alembic_config = (
+            build_alembic_config()
+        )
+
+        command.upgrade(
+            alembic_config,
+            "head",
+        )
+
+        yield test_database_url
+
+    finally:
+        if previous_database_url is None:
+            os.environ.pop(
+                "DATABASE_URL",
+                None,
+            )
+        else:
+            os.environ[
+                "DATABASE_URL"
+            ] = previous_database_url
+
+        with admin_engine.connect() as connection:
+            connection.execute(
+                text(
+                    """
+                    SELECT pg_terminate_backend(pid)
+                    FROM pg_stat_activity
+                    WHERE datname = :database_name
+                      AND pid <> pg_backend_pid()
+                    """
+                ),
+                {
+                    "database_name":
+                        TEST_DATABASE_NAME
+                },
+            )
+
+            connection.exec_driver_sql(
+                f'DROP DATABASE IF EXISTS '
+                f'"{TEST_DATABASE_NAME}"'
+            )
+
+        admin_engine.dispose()
+
+
+@pytest.fixture(scope="session")
+def pg_engine(
+    postgres_test_database: str,
+) -> Generator[
+    Engine,
+    None,
+    None,
+]:
+    engine = create_engine(
+        postgres_test_database,
+        pool_pre_ping=True,
+    )
+
+    try:
+        yield engine
+    finally:
+        engine.dispose()
+
+
+@pytest.fixture(scope="function")
+def pg_session(
+    pg_engine: Engine,
+) -> Generator[
+    Session,
+    None,
+    None,
+]:
+    session = Session(
+        bind=pg_engine
+    )
+
+    try:
+        yield session
+
+    finally:
+        session.rollback()
+        session.close()
+```
+
+
+---
+
+## `tests/integration/test_migrations.py`
+
+```python
+from pathlib import Path
+
+import pytest
+from alembic.config import Config
+from alembic.script import ScriptDirectory
+from sqlalchemy import Engine, inspect, text
+
+
+pytestmark = pytest.mark.integration
+
+
+PROJECT_ROOT = Path(
+    __file__
+).resolve().parents[2]
+
+
+def get_script_heads() -> set[str]:
+    config = Config(
+        str(
+            PROJECT_ROOT
+            / "alembic.ini"
+        )
+    )
+
+    config.set_main_option(
+        "script_location",
+        str(
+            PROJECT_ROOT
+            / "alembic"
+        ),
+    )
+
+    script = ScriptDirectory.from_config(
+        config
+    )
+
+    return set(
+        script.get_heads()
+    )
+
+
+def test_alembic_database_is_at_head(
+    pg_engine: Engine,
+):
+    with pg_engine.connect() as connection:
+        rows = connection.execute(
+            text(
+                """
+                SELECT version_num
+                FROM alembic_version
+                """
+            )
+        )
+
+        database_heads = {
+            row[0]
+            for row in rows
+        }
+
+    assert (
+        database_heads
+        == get_script_heads()
+    )
+
+
+def test_expected_tables_exist(
+    pg_engine: Engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    tables = set(
+        inspector.get_table_names()
+    )
+
+    assert "users" in tables
+    assert "posts" in tables
+    assert "alembic_version" in tables
+
+
+def test_user_role_schema_constraints(
+    pg_engine: Engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    columns = {
+        column["name"]: column
+        for column
+        in inspector.get_columns(
+            "users"
+        )
+    }
+
+    role_column = columns[
+        "role"
+    ]
+
+    assert (
+        role_column["nullable"]
+        is False
+    )
+
+    assert "user" in str(
+        role_column["default"]
+    ).lower()
+
+    constraints = (
+        inspector
+        .get_check_constraints(
+            "users"
+        )
+    )
+
+    role_constraint = next(
+        (
+            constraint
+            for constraint
+            in constraints
+            if (
+                constraint["name"]
+                == "ck_users_role_allowed"
+            )
+        ),
+        None,
+    )
+
+    assert role_constraint is not None
+
+    sql_text = str(
+        role_constraint["sqltext"]
+    ).lower()
+
+    assert "user" in sql_text
+    assert "admin" in sql_text
+
+def test_user_lifecycle_columns_exist(
+    pg_engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    columns = {
+        column["name"]: column
+        for column
+        in inspector.get_columns(
+            "users"
+        )
+    }
+
+    assert "is_active" in columns
+    assert "created_at" in columns
+    assert "updated_at" in columns
+    assert "last_login_at" in columns
+
+    assert (
+        columns["is_active"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["created_at"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["updated_at"]["nullable"]
+        is False
+    )
+
+
+def test_post_lifecycle_schema_exists(
+    pg_engine,
+):
+    inspector = inspect(
+        pg_engine
+    )
+
+    columns = {
+        column["name"]: column
+        for column
+        in inspector.get_columns(
+            "posts"
+        )
+    }
+
+    assert "status" in columns
+    assert "created_at" in columns
+    assert "updated_at" in columns
+
+    assert (
+        columns["status"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["created_at"]["nullable"]
+        is False
+    )
+
+    assert (
+        columns["updated_at"]["nullable"]
+        is False
+    )
+
+    constraints = (
+        inspector.get_check_constraints(
+            "posts"
+        )
+    )
+
+    status_constraint = next(
+        (
+            constraint
+            for constraint
+            in constraints
+            if (
+                constraint["name"]
+                == "ck_posts_status_allowed"
+            )
+        ),
+        None,
+    )
+
+    assert status_constraint is not None
+
+    sql_text = str(
+        status_constraint["sqltext"]
+    ).lower()
+
+    assert "draft" in sql_text
+    assert "published" in sql_text
+    assert "archived" in sql_text
+```
+
+
+---
+
+## `tests/integration/test_postgres_behavior.py`
+
+```python
+import pytest
+from sqlalchemy import select, text
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from app.models import Post, User
+
+
+pytestmark = pytest.mark.integration
+
+
+def make_user(
+    email: str,
+    name: str = "Integration User",
+    role: str = "user",
+) -> User:
+    return User(
+        name=name,
+        email=email,
+        role=role,
+        password="integration-test-hash",
+        full_name=name,
+    )
+
+
+def test_duplicate_email_constraint(
+    pg_session: Session,
+):
+    first_user = make_user(
+        email="duplicate-pg@example.com",
+        name="First User",
+    )
+
+    pg_session.add(
+        first_user
+    )
+
+    pg_session.flush()
+
+    second_user = make_user(
+        email="duplicate-pg@example.com",
+        name="Second User",
+    )
+
+    pg_session.add(
+        second_user
+    )
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.flush()
+
+    pg_session.rollback()
+
+
+def test_invalid_role_check_constraint(
+    pg_session: Session,
+):
+    user = make_user(
+        email="invalid-role-pg@example.com",
+        role="superadmin",
+    )
+
+    pg_session.add(
+        user
+    )
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.flush()
+
+    pg_session.rollback()
+
+
+def test_role_not_null_constraint(
+    pg_session: Session,
+):
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.execute(
+            text(
+                """
+                INSERT INTO users (
+                    name,
+                    email,
+                    role,
+                    password,
+                    full_name
+                )
+                VALUES (
+                    :name,
+                    :email,
+                    NULL,
+                    :password,
+                    :full_name
+                )
+                """
+            ),
+            {
+                "name": "Null Role User",
+                "email":
+                    "null-role-pg@example.com",
+                "password":
+                    "integration-test-hash",
+                "full_name":
+                    "Null Role User",
+            },
+        )
+
+    pg_session.rollback()
+
+
+def test_post_user_foreign_key_constraint(
+    pg_session: Session,
+):
+    post = Post(
+        title="Invalid Owner Post",
+        content="Integration test",
+        user_id=999999999,
+    )
+
+    pg_session.add(
+        post
+    )
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.flush()
+
+    pg_session.rollback()
+
+
+def test_ilike_is_case_insensitive(
+    pg_session: Session,
+):
+    user = make_user(
+        email="mixed-case@example.com",
+        name="MiXeDCaseUser",
+    )
+
+    pg_session.add(
+        user
+    )
+
+    pg_session.flush()
+
+    statement = select(
+        User
+    ).where(
+        User.name.ilike(
+            "%mixedcaseuser%"
+        )
+    )
+
+    result = pg_session.scalars(
+        statement
+    ).all()
+
+    assert len(result) == 1
+
+    assert (
+        result[0].email
+        == "mixed-case@example.com"
+    )
+
+def test_invalid_post_status_constraint(
+    pg_session: Session,
+):
+    user = make_user(
+        email="post-status-pg@example.com",
+    )
+
+    pg_session.add(user)
+    pg_session.flush()
+
+    post = Post(
+        title="Invalid Status",
+        content="Content",
+        user_id=user.id,
+        status="deleted",
+    )
+
+    pg_session.add(post)
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        pg_session.flush()
+
+    pg_session.rollback()
+```
+
+
+---
+
 ## `tests/swagger/test_auth_swagger.py`
 
 ```python
@@ -11406,4 +15833,441 @@ def screenshot(
 
 ```python
 
+```
+
+
+---
+
+## `tests/unit/test_query_efficiency.py`
+
+```python
+from collections.abc import Callable
+
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
+
+from app.models import Post, User
+from app.repositories.post_repository import (
+    PostRepository,
+)
+from app.repositories.user_repository import (
+    UserRepository,
+)
+
+
+def count_select_queries(
+    db_session: Session,
+    operation: Callable,
+) -> int:
+    engine = db_session.get_bind()
+
+    if not isinstance(
+        engine,
+        Engine,
+    ):
+        raise RuntimeError(
+            "Expected Session to be bound "
+            "to an Engine"
+        )
+
+    statements: list[str] = []
+
+    def before_cursor_execute(
+        connection,
+        cursor,
+        statement,
+        parameters,
+        context,
+        executemany,
+    ):
+        normalized = (
+            statement
+            .lstrip()
+            .upper()
+        )
+
+        if normalized.startswith(
+            "SELECT"
+        ):
+            statements.append(
+                statement
+            )
+
+    event.listen(
+        engine,
+        "before_cursor_execute",
+        before_cursor_execute,
+    )
+
+    try:
+        operation()
+
+    finally:
+        event.remove(
+            engine,
+            "before_cursor_execute",
+            before_cursor_execute,
+        )
+
+    return len(statements)
+
+
+def seed_users_and_posts(
+    db_session: Session,
+) -> None:
+    users = []
+
+    for index in range(3):
+        user = User(
+            name=(
+                f"Query User {index}"
+            ),
+            email=(
+                f"query-user-{index}"
+                "@example.com"
+            ),
+            role="user",
+            password="test-hash",
+            full_name=(
+                f"Query User {index}"
+            ),
+        )
+
+        db_session.add(user)
+        users.append(user)
+
+    db_session.flush()
+
+    for index, user in enumerate(
+        users
+    ):
+        db_session.add(
+            Post(
+                title=(
+                    f"Query Post {index}"
+                ),
+                content="Content",
+                user_id=user.id,
+            )
+        )
+
+    db_session.commit()
+
+    db_session.expunge_all()
+
+
+def test_user_list_uses_two_select_queries(
+    db_session,
+):
+    seed_users_and_posts(
+        db_session
+    )
+
+    repository = UserRepository(
+        db_session
+    )
+
+    query_count = (
+        count_select_queries(
+            db_session,
+            lambda: repository.get_all(
+                limit=10,
+                offset=0,
+            ),
+        )
+    )
+
+    # SELECT users
+    # +
+    # SELECT posts WHERE user_id IN (...)
+    assert query_count == 2
+
+
+def test_post_list_uses_one_select_query(
+    db_session,
+):
+    seed_users_and_posts(
+        db_session
+    )
+
+    repository = PostRepository(
+        db_session
+    )
+
+    query_count = (
+        count_select_queries(
+            db_session,
+            lambda: repository.get_all(
+                limit=10,
+                offset=0,
+            ),
+        )
+    )
+
+    # Post.owner is many-to-one,
+    # so joinedload can load everything
+    # in one SELECT.
+    assert query_count == 1
+```
+
+
+---
+
+## `tests/unit/test_service_exceptions.py`
+
+```python
+import pytest
+
+from app.core.exceptions import (
+    PermissionDeniedError,
+    ResourceNotFoundError,
+)
+from app.models import Post, User
+from app.schemas.post import PostUpdate
+from app.services.post_service import PostService
+from app.services.user_service import UserService
+
+
+def test_user_service_not_found(
+    db_session,
+):
+    service = UserService(
+        db_session
+    )
+
+    with pytest.raises(
+        ResourceNotFoundError
+    ) as exc_info:
+        service.get_user(
+            999999
+        )
+
+    assert (
+        exc_info.value.message
+        == "User not found"
+    )
+
+
+def test_post_service_not_found(
+    db_session,
+):
+    service = PostService(
+        db_session
+    )
+
+    with pytest.raises(
+        ResourceNotFoundError
+    ) as exc_info:
+        service.get_post(
+            999999
+        )
+
+    assert (
+        exc_info.value.message
+        == "Post not found"
+    )
+
+
+def test_post_service_rejects_non_owner(
+    db_session,
+):
+    owner = User(
+        name="Owner",
+        email="owner-service@example.com",
+        role="user",
+        password="hashed-password",
+        full_name="Owner",
+    )
+
+    other_user = User(
+        name="Other User",
+        email="other-service@example.com",
+        role="user",
+        password="hashed-password",
+        full_name="Other User",
+    )
+
+    db_session.add_all(
+        [
+            owner,
+            other_user,
+        ]
+    )
+
+    db_session.commit()
+
+    post = Post(
+        title="Owned Post",
+        content="Content",
+        user_id=owner.id,
+    )
+
+    db_session.add(post)
+    db_session.commit()
+    db_session.refresh(post)
+
+    service = PostService(
+        db_session
+    )
+
+    update_data = PostUpdate(
+        title="Updated Post",
+        content="Updated Content",
+    )
+
+    with pytest.raises(
+        PermissionDeniedError
+    ) as exc_info:
+        service.update_post(
+            post.id,
+            update_data,
+            other_user.id,
+        )
+
+    assert (
+        exc_info.value.message
+        == "You do not own this post"
+    )
+```
+
+
+---
+
+## `tests/unit/test_user_integrity.py`
+
+```python
+import pytest
+from sqlalchemy.exc import IntegrityError
+
+from app.core.exceptions import ConflictError
+from app.core.security import hash_password
+from app.models import User
+from app.schemas.user import UserCreate
+from app.services.user_service import UserService
+
+
+def test_user_default_role_is_user(
+    db_session,
+):
+    user = User(
+        name="Default Role User",
+        email="default-role@example.com",
+        password=hash_password(
+            "123456"
+        ),
+        full_name="Default Role User",
+    )
+
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+
+    assert user.role == "user"
+
+
+def test_database_rejects_invalid_role(
+    db_session,
+):
+    user = User(
+        name="Invalid Role User",
+        email="invalid-role-db@example.com",
+        role="superadmin",
+        password=hash_password(
+            "123456"
+        ),
+        full_name="Invalid Role User",
+    )
+
+    db_session.add(user)
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        db_session.commit()
+
+    db_session.rollback()
+
+
+def test_database_unique_constraint_rejects_duplicate_email(
+    db_session,
+):
+    first_user = User(
+        name="First User",
+        email="duplicate-db@example.com",
+        role="user",
+        password=hash_password(
+            "123456"
+        ),
+        full_name="First User",
+    )
+
+    second_user = User(
+        name="Second User",
+        email="duplicate-db@example.com",
+        role="user",
+        password=hash_password(
+            "123456"
+        ),
+        full_name="Second User",
+    )
+
+    db_session.add(first_user)
+    db_session.commit()
+
+    db_session.add(second_user)
+
+    with pytest.raises(
+        IntegrityError
+    ):
+        db_session.commit()
+
+    db_session.rollback()
+
+
+def test_service_converts_unique_race_to_conflict(
+    db_session,
+    monkeypatch,
+):
+    existing_user = User(
+        name="Existing User",
+        email="race@example.com",
+        role="user",
+        password=hash_password(
+            "123456"
+        ),
+        full_name="Existing User",
+    )
+
+    db_session.add(existing_user)
+    db_session.commit()
+
+    service = UserService(
+        db_session
+    )
+
+    monkeypatch.setattr(
+        service.repository,
+        "get_by_email",
+        lambda email: None,
+    )
+
+    user_data = UserCreate(
+        name="Race User",
+        email="race@example.com",
+        password="123456",
+        full_name="Race User",
+    )
+
+    with pytest.raises(
+        ConflictError
+    ) as exc_info:
+        service.create_user(
+            user_data
+        )
+
+    assert (
+        exc_info.value.message
+        == "Email already exists"
+    )
 ```
